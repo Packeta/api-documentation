@@ -1,0 +1,1031 @@
+---
+sidebar_position: 1
+---
+
+# API Methods Reference
+
+:::info
+All functions take API password as their first parameter. Due to its repetitiveness, it will be omitted from the function reference.
+:::
+
+:::info
+The above also applies for an error message [`IncorrectApiPasswordFault`](errors-reference#incorrectapipasswordfault).
+:::
+
+For usage examples we will assume following prerequisities:
+
+Usage:
+```php
+<?php
+
+$client = new SoapClient("https://soap.api.packeta.com/api/soap-php-bugfix.wsdl"); // initialize the client
+$pw = "1234567890abcdef1234567890abcdef"; // API password
+```
+
+### `barcodePng()`
+
+Function prototype: `binary barcodePng(string barcode)`
+
+Returns a PNG image of the specified `barcode`. The barcode is created with `Code 128` symbology.
+
+<div class="alert alert-info" markdown="1">
+**NOTE**: The method does not validate the `barcode` in any way. If you wish to create a barcode to use it on your labels, it is important that you use `packetId` prefixed by the letter `Z` e.g. `Z1234567890`.
+</div>
+
+Usage:
+```php
+<?php
+
+$packetId = 'Z1234567890';
+try {
+	$client->barcodePng($pw, $barcode);
+}
+catch (SoapFault $e){
+	...
+}
+```
+```xml
+<barcodePng>
+	<apiPassword>...</apiPassword>
+	<barcode>Z1234567890</barcode>
+</barcodePng>
+```
+
+### `createPacket()`
+
+Function prototype: `PacketIdDetail createPacket(PacketAttributes attributes)`
+
+Creates packet from [`PacketAttributes`](data-structures-reference#packetattributes).
+
+On success returns [`PacketIdDetail`](data-structures-reference#packetiddetail) with information about the newly created packet.
+
+Possible errors:
+
+- [`PacketAttributesFault`](errors-reference#packetattributesfault)
+
+Usage:
+```php
+<?php
+
+$attributes = [
+	'number' => '123abc',
+	'name' => 'John',
+	'surname' => 'Doe',
+	'company' => 'Company',
+	'email' => 'example@packetatest.com',
+	'addressId' => 95,
+	'cod' => 100.00,
+	'value' => 100.00,
+	'currency' => 'CZK',
+	'weight' => 2,
+	'eshop' => 'MyEshop',
+];
+
+try {
+	$client->createPacket($pw, $attributes);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<createPacket>
+	<apiPassword>...</apiPassword>
+	<packetAttributes>
+		<number>123abc</number>
+		<name>John</name>
+		<surname>Doe</surname>
+		<email>example@packetatest.com</email>
+		<addressId>95</addressId>
+		<value>100.00</value>
+		<weight>2</weight>
+		<eshop>MyEshop</eshop>
+	</packetAttributes>
+</createPacket>
+```
+
+### `createPacketClaim()`
+
+Function prototype: `PacketIdDetail createPacketClaim(ClaimAttributes attributes)`
+
+Creates a claim assistant packet from [`ClaimAttributes`](data-structures-reference#claimattributes).
+
+On success returns [`PacketIdDetail`](data-structures-reference#packetiddetail) with information about the newly created packet.
+
+Possible errors:
+
+- [`PacketAttributesFault`](errors-reference#packetattributesfault)
+
+Usage:
+```php
+<?php
+
+$claimAttributes = [
+	'number' => 'RET123abc',
+	'email' => 'example@packetatest.com',
+	'phone' => '+420777777777',
+	'value' => 100.00,
+	'currency' => CZK,
+	'eshop' => 'MyEshop',
+	'sendLabelToEmail' => true,
+];
+
+try {
+	$client->createPacketClaim($pw, $claimAttributes);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<createPacketClaim>
+	<apiPassword>...</apiPassword>
+	<claimAttributes>
+		<number>RET123abc</number>
+		<email>example@packetatest.com</email>
+		<value>100.00</value>
+		<eshop>MyEshop</eshop>
+	</claimAttributes>
+</createPacketClaim>
+```
+
+### `createPacketClaimWithPassword()`
+
+Function prototype: `PacketDetail createPacketClaimWithPassword(ClaimWithPasswordAttributes attributes)`
+
+Creates a claim assistant packet from [`ClaimWithPasswordAttributes`](data-structures-reference#claimwithpasswordattributes).
+
+On success returns [`PacketDetail`](data-structures-reference#packetdetail) with information about the newly created packet.
+
+Possible errors:
+
+- [`PacketAttributesFault`](errors-reference#packetattributesfault)
+- `PacketEmailNotFilled`: when `sendEmailToCustomer` is true, loaded packet by given `id` have to contain valid email; otherwise `PacketEmailNotFilled` is raised
+
+Usage:
+```php
+<?php
+
+$claimAttributes = [
+	'number' => 'RET123abc',
+	'email' => 'example@packetatest.com',
+	'phone' => '+4207777777777',
+	'value' => 100.00,
+	'currency' => 'CZK',
+	'eshop' => 'MyEshop',
+	'consignCountry' => 'cz'
+	'sendEmailToCustomer' => false,
+];
+
+try {
+	$client->createPacketClaimWithPassword($pw, $claimAttributes);
+} catch (SoapFault $e) {
+	...
+}
+```
+
+```xml
+<createPacketClaimWithPassword>
+	<apiPassword>...</apiPassword>
+	<claimWithPasswordAttributes>
+		<id>123456789</id>
+		<number>objednavka2</number>
+		<email>example@packetatest.com</email>
+		<phone>+420723456789</phone>
+		<value>100</value>
+		<currency>CZK</currency>
+		<eshop>MyEshop</eshop>
+		<consignCountry>sk</consignCountry>
+		<sendEmailToCustomer>false</sendEmailToCustomer>
+	</claimWithPasswordAttributes>
+</createPacketClaimWithPassword>
+```
+
+### `createShipment()`
+
+Function prototype: `ShipmentIdDetail createShipment(PacketIds packetIds, string customBarcode)`
+
+Creates a shipment from [`PacketIds`](data-structures-reference#packetids). If `customBarcode` is specified and available for your account, the shipment will be created with the entered `customBarcode`.
+
+On success returns [`ShipmentIdDetail`](data-structures-reference#shipmentiddetail) with information about the newly created shipment.
+
+Possible errors:
+
+- [`PacketIdsFault`](errors-reference#packetidsfault)
+- [`NoPacketIdsFault`](errors-reference#nopacketidsfault)
+- [`CustomBarcodeNotAllowedFault`](errors-reference#custombarcodenotallowedfault)
+
+:::note
+The method does not accept IDs of claim assistant packets in `PacketIds`. If claim assistant packet ID is entered, function will return [`PacketIdsFault`](errors-reference#packetidsfault).
+:::
+
+Usage:
+```php
+<?php
+
+$packetIds = [
+	'1234567890',
+	'1234567891',
+	'1234567892',
+	'1234567893',
+];
+
+try {
+	$client->createShipment($pw, $packetIds);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<createShipment>
+	<apiPassword>...</apiPassword>
+	<packetIds>
+		<id>1234567890</id>
+		<id>1234567891</id>
+		<id>1234567892</id>
+		<id>1234567893</id>
+	</packetIds>
+</createShipment>
+```
+
+### `packetAttributesValid()`
+
+Function prototype: `void packetAttributesValid(PacketAttributes attributes)`
+
+Validates [`PacketAttributes`](data-structures-reference#packetattributes).
+
+On success (the attributes are valid) does not return anything.
+
+Possible errors:
+
+- [`PacketAttributesFault`](errors-reference#packetattributesfault)
+
+Usage:
+```php
+<?php
+
+$attributes = [
+	'number' => '123abc',
+	'name' => 'John',
+	'surname' => 'Doe',
+	'email' => 'example@packetatest.com',
+	'addressId' => 95,
+	'value' => 100.00,
+	'eshop' => 'MyEshop',
+];
+
+try {
+	$client->packetAttributesValid($pw, $attributes);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetAttributesValid>
+	<apiPassword>...</apiPassword>
+	<packetAttributes>
+		<number>123abc</number>
+		<name>John</name>
+		<surname>Doe</surname>
+		<email>example@packetatest.com</email>
+		<addressId>95</addressId>
+		<value>100.00</value>
+		<currency>CZK</currency>
+		<eshop>Myshop</eshop>
+	</packetAttributes>
+</packetAttributesValid>
+```
+
+### `packetClaimAttributesValid()`
+
+Function prototype: `void packetClaimAttributesValid(ClaimAttributes attributes)`
+
+Validates [`ClaimAttributes`](data-structures-reference#claimattributes).
+
+On success (the attributes are valid) does not return anything.
+
+Possible errors:
+
+- [`PacketAttributesFault`](errors-reference#packetattributesfault)
+
+Usage:
+```php
+<?php
+
+$claimAttributes = [
+	'number' => 'RET123abc',
+	'email' => 'example@packetatest.com',
+	'phone' => '+420777777777',
+	'value' => 100.00,
+	'currency' => CZK,
+	'eshop' => 'Myshop',
+	'sendLabelToEmail' => 'true',
+];
+try {
+	$client->packetClaimAttributesValid($pw, $claimAttributes);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetClaimAttributesValid>
+	<apiPassword>...</apiPassword>
+	<claimAttributes>
+		<number>RET123abc</number>
+		<email>example@packetatest.com</email>
+		<phone>+420777777777</phone>
+		<value>100.00</value>
+		<currency>100.00</currency>
+		<eshop>Myshop</eshop>
+		<sendLabelToEmail>true</sendLabelToEmail>
+	</claimAttributes>
+</packetClaimAttributesValid>
+```
+
+### `packetCourierLabelPdf()`
+
+Function prototype: `binary packetCourierLabelPdf(unsignedLong packetId, string courierNumber)`
+
+Returns label as string containing the PDF document (base64 encoded binary) if the external carrier allows it, ie. its `apiAllowed` [attribute](../address-delivery/carrier-selection#carrier) is set to `true`.
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+- [`NotSupportedFault`](errors-reference#notsupportedfault)
+- [`ExternalGatewayFault`](errors-reference#externalgatewayfault)
+- [`InvalidCourierNumber`](errors-reference#invalidcouriernumber)
+
+Usage:
+```php
+<?php
+
+$packetId = '1234567890';
+$courierNumber = 'abcd1234567890';
+
+try {
+	$pdf = $client->packetCourierLabelPdf($pw, $packetId, $courierNumber);
+	header('Content-Type: application/pdf');
+	echo $pdf;
+} catch (SoapFault $e) {
+	...
+}
+```
+
+```xml
+<packetCourierLabelPdf>
+	<apiPassword>...</apiPassword>
+	<packetId>1234567890</packetId>
+	<courierNumber>abcd1234567890</courierNumber>
+</packetCourierLabelPdf>
+```
+
+### `packetCourierLabelPng()`
+
+Function prototype: `base64binary packetCourierLabelPng(unsignedLong packetId, string courierNumber)`
+
+Returns label as string containing the PNG image (base64 encoded binary) if the external carrier allows it, ie. its `apiAllowed` [attribute](../address-delivery/carrier-selection#carrier) is set to `true`.
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+- [`NotSupportedFault`](errors-reference#notsupportedfault)
+- [`ExternalGatewayFault`](errors-reference#externalgatewayfault)
+- [`InvalidCourierNumber`](errors-reference#invalidcouriernumber)
+
+Usage:
+```php
+<?php
+
+$packetId = '1234567890';
+$courierNumber = 'abcd1234567890';
+
+try {
+	$png = $client->packetCourierLabelPng($pw, $packetId, $courierNumber);
+	header('Content-Type: image/png');
+	echo $png;
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetCourierLabelPng>
+	<apiPassword>...</apiPassword>
+	<packetId>1234567890</packetId>
+	<courierNumber>abcd1234567890</courierNumber>
+</packetCourierLabelPng>
+```
+
+### `packetCourierLabelZpl()`
+
+Function prototype: `string packetCourierLabelZpl(unsignedLong packetId, string courierNumber, unsignedInt dpi = 300)`
+
+If the external carrier allows it, the method returns their label in ZPL format. Parameter `dpi` is not required, and defaults as 300 DPI.
+
+This method is currently allowed for the following carriers:
+
+- CZ Packeta Home
+- SK Packeta Home
+- PL Home Delivery
+- CH Post
+- FR Colis Privé HD
+- PL InPost Paczkomaty Box
+- RO Sameday HD
+- RO Sameday Easybox
+
+Allowed DPI values:
+
+- 203
+- 300
+
+On success returns an **HTML escaped** string containing the ZPL file.
+
+<div class="alert alert-warning" markdown="1">
+**WARNING**: It is necessary to HTML unescape the string before printing. Otherwise the label may be rendered incorrectly.
+</div>
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+- [`NotSupportedFault`](errors-reference#notsupportedfault)
+- [`ExternalGatewayFault`](errors-reference#externalgatewayfault)
+- [`InvalidCourierNumber`](errors-reference#invalidcouriernumber)
+
+Usage:
+```php
+<?php
+
+$packetId = '1234567890';
+$courierNumber = 'abcd1234567890';
+$dpi = 300;
+
+try {
+	$zpl = $client->packetCourierLabelZpl($pw, $packetId, $courierNumber, $dpi);
+	echo $zpl;
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetCourierLabelZpl>
+	<apiPassword>...</apiPassword>
+	<packetId>1234567890</packetId>
+	<courierNumber>abcd1234567890</courierNumber>
+	<dpi>300</dpi>
+</packetCourierLabelZpl>
+```
+
+### `packetCourierNumber()`
+
+Function prototype: `string packetCourierNumber(unsignedLong packetId)`
+
+Returns a tracking code if the external carrier allows it, ie. its `apiAllowed` [attribute](../address-delivery/carrier-selection#carrier) is set to `true`.
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+- [`NotSupportedFault`](errors-reference#notsupportedfault)
+- [`ExternalGatewayFault`](errors-reference#externalgatewayfault)
+
+Usage:
+```php
+<?php
+
+$packetId = '1234567890';
+
+try {
+	$client->packetCourierNumber($pw, $packetId);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetCourierNumber>
+	<apiPassword>...</apiPassword>
+	<packetId>1234567890</packetId>
+</packetCourierNumber>
+```
+
+### `packetCourierNumberV2()`
+
+Function prototype: `string packetCourierNumberV2(unsignedLong packetId)`
+
+Version 2 of the method [`packetCourierNumber()`](#packetcouriernumber), works the same way, except:
+
+on success it returns [`packetCourierNumberV2Result`](data-structures-reference#packetcouriernumberv2result).
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+- [`NotSupportedFault`](errors-reference#notsupportedfault)
+- [`ExternalGatewayFault`](errors-reference#externalgatewayfault)
+
+Usage:
+```php
+<?php
+
+$packetId = '1234567890';
+
+try {
+	$client->packetCourierNumberV2($pw, $packetId);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetCourierNumberV2>
+	<apiPassword>...</apiPassword>
+	<packetId>1234567890</packetId>
+</packetCourierNumberV2>
+```
+
+### `packetCourierTracking()`
+
+Function prototype: `ExternalStatusRecords packetCourierTracking(unsignedLong packetId)`
+
+Fetches the whole tracking history of the packet from external carrier specified by `packetId`.
+
+On success returns [`ExternalStatusRecords`](data-structures-reference#externalstatusrecords).
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+
+Usage:
+```php
+<?php
+
+$packetId = '1234567890';
+
+try {
+	$client->packetCourierTracking($pw, $packetId);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetCourierTracking>
+	<apiPassword>...</apiPassword>
+	<packetId>1234567890</packetId>
+</packetCourierTracking>
+```
+
+### `packetGetStoredUntil()`
+
+Function prototype: `NullableDate packetGetStoredUntil(unsignedLong packetId)`
+
+Fetches the date until which the packet specified by `packetId` is stored and waiting for pick-up. If the packet is not yet ready for pick-up or is already returning to sender `null` is returned.
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+
+Usage:
+```php
+<?php
+
+$packetId = '1234567890';
+
+try {
+	$client->packetGetStoredUntil($pw, $packetId);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetGetStoredUntil>
+	<apiPassword>...</apiPassword>
+	<packetId>1234567890</packetId>
+</packetGetStoredUntil>
+```
+
+### `packetInfo()`
+
+Function prototype: `PacketInfoResult packetInfo(unsignedLong packetId)`
+
+Returns additional information about packet and its consignment to an external courier, if there is one.
+
+On success it returns [`PacketInfoResult`](data-structures-reference#packetinforesult).
+
+Possible errors:
+
+- [`IncorrectApiPasswordFault`](errors-reference#incorrectapipasswordfault)
+
+Usage:
+```php
+<?php
+
+try {
+    $client->packetInfo($pw, $packetId);
+} catch (SoapFault $e) {
+    ...
+}
+```
+
+```xml
+<packetInfo>
+    <apiPassword>...</apiPassword>
+    <packetId>Z1234567890</packetId>
+</packetInfo>
+```
+
+Example output:
+
+```xml
+<?xml version="1.0"?>
+<response>
+    <status>ok</status>
+    <result>
+        <branchId>999</branchId>
+        <invoicedWeightGrams>570</invoicedWeightGrams>
+        <courierInfo>
+            <courierInfoItem>
+                <courierId>999</courierId>
+                <courierName>Example courier</courierName>
+                <courierNumbers>
+                    <courierNumber>12345678</courierNumber>
+                </courierNumbers>
+                <courierBarcodes>
+                    <courierBarcode>987654321</courierBarcode>
+                </courierBarcodes>
+                <courierTrackingNumbers>
+                    <courierTrackingNumber>1234567890</courierTrackingNumber>
+                </courierTrackingNumbers>
+                <courierTrackingUrls>
+                    <courierTrackingUrl>
+                        <lang>en</lang>
+                        <url>https://www.example-courier/tracking/en/1234567890</url>
+                    </courierTrackingUrl>
+                    <courierTrackingUrl>
+                        <lang>cs</lang>
+                        <url>https://www.example-courier/tracking/cs/1234567890</url>
+                    </courierTrackingUrl>
+                </courierTrackingUrls>
+            </courierInfoItem>
+        </courierInfo>
+    </result>
+</response>
+```
+
+### `packetLabelPdf()`
+
+Function prototype: `binary packetLabelPdf(unsignedLong packetId, string format, unsignedInt offset)`
+
+Fetches a label for packet specified by `packetId` in format specified by `format` on a position specified by `offset`. The position is calculated left to right starting at top left corner of the document.
+
+On success returns a PDF file with the label.
+
+The `format` parameter accepts following values:
+
+- `A6 on A6` - 105x148 mm (A6) label on a page of the same size
+- `A7 on A7` - 105x74 mm (A7) label on a page of the same size
+- `A6 on A4` - 105x148 mm (A6) label on a page of size 210x297 mm (A4)
+- `A7 on A4` - 105x74 mm (A7) label on a page of size 210x297 mm (A4)
+- `105x35mm on A4` - 105x35 mm label on a page of size 210x297 mm (A4)
+- `A8 on A8` - 50x74 mm (A8) label on a page of the same size
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+- [`UnknownLabelFormatFault`](errors-reference#unknownlabelformatfault)
+
+Usage:
+```php
+<?php
+
+$packetId = '1234567890';
+$format = 'A7 on A4';
+$offset = 0;
+
+try {
+	$client->packetLabelPdf($pw, $packetId, $format, $offset);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetLabelPdf>
+	<apiPassword>...</apiPassword>
+	<packetId>1234567890</packetId>
+	<format>A7 on A4</format>
+	<offset>0</offset>
+</packetLabelPdf>
+```
+
+### `packetLabelZpl()`
+
+Function prototype: `binary packetLabelZpl(unsignedLong packetId, unsignedInt dpi)`
+
+Fetches a label for a packet specified by `packetId` with DPI specified by `dpi`.
+
+On success returns an **html escaped** string representing the ZPL label.
+
+<div class="alert alert-warning" markdown="1">
+**WARNING**: It is necessary to HTML unescape the string before printing. Otherwise the label may be rendered incorrectly.
+</div>
+
+The `dpi` parameter accepts the following values:
+
+- `203`
+- `300`
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+- [`UnknownLabelFormatFault`](errors-reference#unknownlabelformatfault)
+
+Usage:
+```php
+<?php
+
+$packetId = 1234567890;
+$dpi = 203;
+
+try {
+	$client->packetLabelZpl($pw, $packetId, $dpi);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetLabelZpl>
+	<apiPassword>...</apiPassword>
+	<packetId>1234567890</packetId>
+	<dpi>300</dpi>
+</packetLabelZpl>
+```
+
+### `packetSetStoredUntil()`
+
+Function prototype: `void packetSetStoredUntil(unsignedLong packetId, date date)`
+
+Sets the `date` until which the packet specified by `packetId` is stored and waiting for pickup.
+
+On success (the date has been changed) does not return anything.
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+- [`DateOutOfRangeFault`](errors-reference#dateoutofrangefault)
+
+Usage:
+```php
+<?php
+
+$packetId = '1234567890';
+$date = '2016-08-30';
+
+try {
+	$client->packetSetStoredUntil($pw, $packetId, $date);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetSetStoredUntil>
+	<apiPassword>...</apiPassword>
+	<packetId>1234567890</packetId>
+	<date>2016-08-30</date>
+</packetSetStoredUntil>
+```
+
+### `packetStatus()`
+
+Function prototype: `CurrentStatusRecord packetStatus(unsignedLong packetId)`
+
+Fetches information about the current status of the packet specified by `packetId`.
+
+On success returns [`CurrentStatusRecord`](data-structures-reference#currentstatusrecord).
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+
+Usage:
+```php
+<?php
+
+$packetId = '1234567890';
+
+try {
+	$client->packetStatus($pw, $packetId);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetStatus>
+	<apiPassword>...</apiPassword>
+	<packetId>1234567890</packetId>
+</packetStatus>
+```
+
+### `packetTracking()`
+
+Function prototype: `StatusRecords packetTracking(unsignedLong packetId)`
+
+Fetches the whole tracking history of the packet specified by `packetId`.
+
+On success returns [`StatusRecords`](data-structures-reference#statusrecords).
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+
+Usage:
+```php
+<?php
+
+$packetId = '1234567890';
+
+try {
+	$client->packetTracking($pw, $packetId);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetTracking>
+	<apiPassword>...</apiPassword>
+	<packetId>1234567890</packetId>
+</packetTracking>
+```
+
+### `packetsCourierLabelsPdf()`
+
+Function prototype: `binary packetCourierLabelPdf(PacketIdsWithCourierNumbers packetIdsWithCourierNumbers, unsignedInt offset, string format)`
+
+Returns labels as string containing the PDF document (base64 encoded binary) if the external carrier allows it, ie. its `apiAllowed` [attribute](../pick-up-point-selection/branch-export-v5#carriers-feed-address-delivery) is set to `true`.
+
+The returned PDF page format is, by default, A4 with four 100x150 mm labels placed on each page. There is the optional argument `format` to specify the output PDF format. It accepts following values:
+
+- `A6 on A4` - 105x148 mm (A6) label on a page of size 210x297 mm (A4)
+- `A6 on A6` - 105x148 mm (A6) label on a page of the same size (`offset` argument is ignored for this format)
+
+If there is more than one label per page, the second argument `offset` allows skipping some places on the first page.
+
+<div class="alert alert-info" markdown="1">
+**NOTE**: To avoid lost responses, set your request timeout to five seconds times the requested label count. E.g. 120 seconds for 24 labels. Typically, the labels will be generated much faster, but occasionally there may be delays.
+</div>
+
+Possible errors:
+
+- [`PacketIdFault`](errors-reference#packetidfault)
+- [`NotSupportedFault`](errors-reference#notsupportedfault)
+- [`ExternalGatewayFault`](errors-reference#externalgatewayfault)
+- [`InvalidCourierNumber`](errors-reference#invalidcouriernumber)
+- [`NoPacketIdsFault`](errors-reference#nopacketidsfault)
+- [`UnknownLabelFormatFault`](errors-reference#unknownlabelformatfault)
+
+Usage:
+```php
+<?php
+$packetIdsWithCourierNumbers = [
+	[
+		'packetId' => '1234567890',
+		'courierNumber' => 'abcd1234567890',
+	],
+	[
+		'packetId' => '2345678901',
+		'courierNumber' => 'bcde2345678901',
+	],
+];
+
+try {
+	$pdf = $client->packetsCourierLabelsPdf($pw, $packetIdsWithCourierNumbers, 0, 'A6 on A4');
+	header('Content-Type: application/pdf');
+	echo $pdf;
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetsCourierLabelsPdf>
+	<apiPassword>...</apiPassword>
+	<packetIdsWithCourierNumbers>
+		<packetIdWithCourierNumber>
+			<packetId>1234567890</packetId>
+			<courierNumber>abcd1234567890</courierNumber>
+		</packetIdWithCourierNumber>
+		<packetIdWithCourierNumber>
+			<packetId>2345678901</packetId>
+			<courierNumber>bcde2345678901</courierNumber>
+		</packetIdWithCourierNumber>
+	</packetIdsWithCourierNumbers>
+	<offset>0</offset>
+	<format>A6 on A4</format>
+</packetsCourierLabelsPdf>
+```
+
+### `packetsLabelsPdf()`
+
+Function prototype: `binary packetsLabelsPdf(PacketIds packetIds, string format, unsignedInt offset)`
+
+Fetches labels for packets specified by `packetIds` in format specified by `format` starting on a position specified by `offset`. The position is calculated left to right starting at top left corner of the document.
+
+On success returns a PDF file with the labels.
+
+The `format` parameter accepts the same values as in the [`packetLabelPdf()`](#packetlabelspdf) method.
+
+Possible errors:
+
+- [`PacketIdsFault`](errors-reference#packetidsfault)
+- [`NoPacketIdsFault`](errors-reference#nopacketidsfault)
+- [`UnknownLabelFormatFault`](errors-reference#unknownlabelformatfault)
+
+Usage:
+```php
+<?php
+
+$packetIds = [
+	'1234567890',
+	'1234567891',
+	'1234567892',
+];
+$format = 'A7 on A4';
+$offset = 0;
+
+try {
+	$client->packetsLabelsPdf($pw, $packetIds, $format, $offset);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<packetsLabelsPdf>
+	<apiPassword>...</apiPassword>
+	<packetIds>
+		<id>1234567890</id>
+		<id>1234567891</id>
+		<id>1234567892</id>
+	</packetId>
+	<format>A7 on A4</format>
+	<offset>0</offset>
+</packetsLabelsPdf>
+```
+
+### `senderGetReturnRouting()`
+
+Function prototype: `string[] senderGetReturnRouting(string senderLabel)`
+
+Returns an array of 2 return routing strings for a sender specified by `senderLabel`.
+
+Possible errors:
+
+- [`SenderNotExists`](errors-reference#sendernotexists)
+
+:::info
+These strings are generated from your account settings and need to be downloaded each time you want to use them. If you were to download the strings just once and use the stored value, your return address might change and the strings would be deprecated.
+:::
+
+:::info
+It is preferred that the return routing strings are printed each on separate line.
+[See our label specifications](../label-printing/creating-own-label).
+:::
+
+Usage:
+```php
+<?php
+
+$senderLabel = 'my-eshop';
+
+try {
+	$client->senderGetReturnRouting($pw, $senderLabel);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<senderGetReturnRouting>
+	<apiPassword>...</apiPassword>
+	<senderLabel>my-eshop</senderLabel>
+</senderGetReturnRouting>
+```
+
+### `shipmentPackets()`
+
+Function prototype: `ShipmentPacketsResult shipmentPackets(string $shipmentId)`
+
+Finds the packets inside shipment identified by D-code or B-code `shipmentId`.
+
+On success returns [`ShipmentPacketsResult`](data-structures-reference#shipmentpacketsresult) with information about shipment packets.
+
+Possible errors:
+
+- [`ShipmentNotFoundFault`](errors-reference#shipmentnotfoundfault)
+
+Usage:
+```php
+<?php
+
+$shipmentId = 'D-***-XM-12345678';
+
+try {
+	$client->shipmentPackets($pw, $shipmentId);
+} catch (SoapFault $e) {
+	...
+}
+```
+```xml
+<shipmentPackets>
+    <apiPassword>...</apiPassword>
+    <shipmentId>D-***-XM-12345678</shipmentId>
+</shipmentPackets>
+```

@@ -1,0 +1,98 @@
+---
+sidebar_position: 3
+---
+
+# Errors Reference
+
+### `AttributeFault`
+
+Indicates an error that occured on a field specified by field's `name` and `fault` string.
+
+| Type     | Field name | Required | Description                            |
+|----------|------------|----------|----------------------------------------|
+| `string` | `name`     | yes      | Name of the invalid attribute (field). |
+| `string` | `fault`    | yes      | Description of the error.              |
+
+### `ShipmentNotFoundFault`
+
+Shipment was not found by provided shipment identifier.
+
+Does not contain any additional information.
+
+### `CustomBarcodeNotAllowedFault`
+
+A custom barcode was used while its usage was not allowed.
+
+Does not contain any additional information.
+
+### `DateOutOfRangeFault`
+
+An entered `date` was out of supported range.
+
+Does not contain any additional information.
+
+### `DispatchOrderNotAllowedFault`
+
+An error has occured while validating packet attributes: trying to issue a [`DispatchOrder`](data-structures-reference#dispatchorder) by setting [`PacketAttributes.dispatchOrder`](data-structures-reference#packetattributes), while no fullfillment agreement is in place.
+
+Does not contain any additional information.
+
+### `IncorrectApiPasswordFault`
+
+An invalid API password was used.
+
+Does not contain any additional information.
+
+### `NoPacketIdsFault`
+
+An empty [`packetIds`](data-structures-reference#packetids) structure was passed to the method.
+
+Does not contain any additional information.
+
+### `NotSupportedFault`
+
+The action is not supported by the third party.
+
+Does not contain any additional information.
+
+### `PacketAttributesFault`
+
+An error has occured while validating packet attributes.
+
+Contains an array of type [`AttributeFault`](data-structures-reference#attributefault).
+
+### `PacketIdFault`
+
+An error has occured while validating packet attributes, an entered [`packetId`](data-structures-reference#packetattributes) is either not valid .
+
+Does not contain any additional information.
+
+### `PacketIdsFault`
+
+Some of the [`packetIds`](data-structures-reference#packetids) passed to the method were not valid.
+
+Contains an array of invalid `Ids`.
+
+### `SenderNotExists`
+
+A specified sender does not exist under your account.
+
+Does not contain any additional information.
+
+### `UnknownLabelFormatFault`
+
+An unknown label format was requested.
+
+Does not contain any additional information.
+
+### `ExternalGatewayFault`
+
+An error occured while communicating with third party service.
+
+Does not contain any additional information.
+
+### `InvalidCourierNumber`
+
+Supplied courier number was either not valid or couldn't be verified.
+
+Does not contain any additional information.

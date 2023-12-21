@@ -1,0 +1,721 @@
+---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+# Carrier labels
+
+To print carrier labels, you first have to obtain the **courier number**. Courier number
+is the number of a packet in the carrier's system. You can obtain the courier number using [`packetCourierNumber()`](../api-reference/api-methods-reference#packetcouriernumber) or [`packetCourierNumberV2()`](../api-reference/api-methods-reference#packetcouriernumberv2) API methods. After you have obtained a courier number, you can call any of the
+API methods used for carrier label printing.
+
+**Carrier labels** can be printed using the following API methods:
+- [`packetCourierLabelPdf()`](../api-reference/api-methods-reference#packetcourierlabelpdf)
+- [`packetCourierLabelPng()`](../api-reference/api-methods-reference#packetcourierlabelpng)
+- [`packetsCourierLabelsPng()`](../api-reference/api-methods-reference#packetscourierlabelspdf)
+- [`packetCourierLabelZpl()`](../api-reference/api-methods-reference#packetcourierlabelzpl)
+
+### Example requests
+
+<details>
+<summary>
+Example <code>packetCourierLabelPdf()</code> request/response
+</summary>
+<Tabs>
+<TabItem value="rest" label="REST">
+
+```xml
+
+<!--request-->
+<packetCourierLabelPdf>
+    <apiPassword>{{apiPassword}}</apiPassword>
+    <packetId>1234567890</packetId>
+    <courierNumber>DR4362230958U</courierNumber>
+</packetCourierLabelPdf>
+
+
+<!--response-->
+<response>
+    <status>ok</status>
+    <result>JVBERi0xLjcKJeLjz9MKNSAwIG9iago8PCAvVHlwZSAvU.....JlZWU5YjQ1MD4gXSA+PgpzdGFydHhyZWYKMjAyMTUKJSVFT0YK</result>
+</response>
+
+
+```
+
+</TabItem>
+<TabItem value="soap" label="SOAP">
+
+```xml
+
+<!--request-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://www.zasilkovna.cz/api/soap.wsdl2">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <soap:packetCourierLabelPdf>
+         <apiPassword>{{apiPassword}}</apiPassword>
+         <packetId>1234567890</packetId>
+         <courierNumber>DR4362230958U</courierNumber>
+      </soap:packetCourierLabelPdf>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+
+<!--response-->
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <SOAP-ENV:Body>
+      <ns1:packetCourierLabelPdfResponse>
+         <packetCourierLabelPdfResult>JVBERi0xLjcKJeLjz9MKNSAwIG9iago8PCj4.....gXSA+PgpzdGFydHhyZWYKMjAyMTUKJSVFT0YK</packetCourierLabelPdfResult>
+      </ns1:packetCourierLabelPdfResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+
+```
+
+</TabItem>
+<TabItem value="php" label="PHP">
+
+```php
+<?php
+
+$apiPassword = "apiPassword";
+$packetId = "1234567890";
+$courierNumber = "994717547550625744";
+
+try {
+    $client = new SoapClient('https://soap.api.packeta.com/api/soap.wsdl');
+    $result = $client->packetCourierLabelPdf($apiPassword, $packetId, $courierNumber);
+
+    header('Content-Type: application/pdf');
+    echo $result;
+} catch (SoapFault $e) {
+    echo $e->getMessage();
+}
+
+?>
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+using System;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using PacketeryService;
+using System.IO;
+
+namespace PacketaClientExample
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            BasicHttpsBinding binding = new BasicHttpsBinding() { MaxReceivedMessageSize = int.MaxValue };
+            EndpointAddress endpointAddress = new EndpointAddress("https://www.zasilkovna.cz/api/soap");
+
+            string apiPassword = "apiPassword";
+            ulong packetId = 1234567890;
+            string courierNumber = "5451339442605";
+
+            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            try
+            {
+                packetCourierLabelPdfResponse response = await client.packetCourierLabelPdfAsync(
+                    new packetCourierLabelPdfRequest(apiPassword, packetId, courierNumber)
+                );
+
+                //Process response
+                await File.WriteAllBytesAsync("./label.pdf", response.packetCourierLabelPdfResult);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="js" label="Node.js">
+
+```js
+import { Builder, Parser } from "xml2js"
+import * as fs from "node:fs/promises"
+
+const requestBody = {
+    packetCourierLabelPdf: {
+        apiPassword: "apiPassword",
+        packetId: "4318560169",
+        courierNumber: "994717547550625744"
+    }
+}
+
+try {
+    const response = await fetch(
+        "https://www.zasilkovna.cz/api/rest",
+        {
+            method: "POST",
+            body: new Builder().buildObject(requestBody)
+        }
+    );
+
+    const responseBody = await new Parser({ explicitArray: false }).parseStringPromise(await response.text());
+
+    //process response
+    if(responseBody.response.status === "ok") {
+        await fs.writeFile("label.pdf", Buffer.from(responseBody.response.result, 'base64'));
+    }
+}
+catch (exception) {
+    console.log(exception);
+}
+```
+
+</TabItem>
+</Tabs>
+</details>
+
+<details>
+<summary>
+Example <code>packetCourierLabelPng()</code> request/response
+</summary>
+<Tabs>
+<TabItem value="rest" label="REST">
+
+```xml
+
+<!--request-->
+<packetCourierLabelPng>
+    <apiPassword>{{apiPassword}}</apiPassword>
+    <packetId>1234567890</packetId>
+    <courierNumber>DR4362230958U</courierNumber>
+</packetCourierLabelPng>
+
+
+<!--response-->
+<?xml version="1.0" encoding="utf-8"?>
+<response>
+    <status>ok</status>
+    <result>iVBORw0KGgoAAAANSUhEUgAABIwAA.....TjrppJMm5P8DkxJkWU8DjcEAAAAASUVORK5CYII=</result>
+</response>
+
+
+```
+
+</TabItem>
+<TabItem value="soap" label="SOAP">
+
+```xml
+
+<!--request-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://www.zasilkovna.cz/api/soap.wsdl2">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <soap:packetCourierLabelPng>
+         <apiPassword>{{apiPassword}}</apiPassword>
+         <packetId>3981392029</packetId>
+         <courierNumber>DR4362230958U</courierNumber>
+      </soap:packetCourierLabelPng>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+
+<!--response-->
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <SOAP-ENV:Body>
+      <ns1:packetCourierLabelPngResponse>
+         <packetCourierLabelPngResult>iVBORw0KGgoAAAANSUhP8Dk.....xJkWU8DjcEAAAAASUVORK5CYII=</packetCourierLabelPngResult>
+      </ns1:packetCourierLabelPngResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+
+```
+
+</TabItem>
+<TabItem value="php" label="PHP">
+
+```php
+<?php
+
+$apiPassword = 'apiPassword';
+$packetId = '4318560169';
+$courierNumber = '994717547550625744';
+
+try {
+    $client = new SoapClient('https://www.zasilkovna.cz/api/soap.wsdl');
+    $result = $client->packetCourierLabelPng($apiPassword, $packetId, $courierNumber);
+
+    header('Content-Type: image/png');
+    echo $result;
+} catch (SoapFault $e) {
+    echo $e->getMessage();
+}
+
+?>
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+using System;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using PacketeryService;
+using System.IO;
+
+namespace PacketaClientExample
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            BasicHttpsBinding binding = new BasicHttpsBinding() { MaxReceivedMessageSize = int.MaxValue };
+            EndpointAddress endpointAddress = new EndpointAddress("https://www.zasilkovna.cz/api/soap");
+
+            string apiPassword = "apiPassword";
+            ulong packetId = 1234567890;
+            string courierNumber = "5451339442605";
+
+            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            try
+            {
+                packetCourierLabelPngResponse response = await client.packetCourierLabelPngAsync(
+                    new packetCourierLabelPngRequest(apiPassword, packetId, courierNumber)
+                );
+
+                //Process response
+                await File.WriteAllBytesAsync("./label.png", response.packetCourierLabelPngResult);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="js" label="Node.js">
+
+```js
+import { Builder, Parser } from "xml2js"
+import * as fs from "node:fs/promises"
+
+const requestBody = {
+    packetCourierLabelPng: {
+        apiPassword: "apiPassword",
+        packetId: "4318560169",
+        courierNumber: "994717547550625744"
+    }
+}
+
+try {
+    const response = await fetch(
+        "https://www.zasilkovna.cz/api/rest",
+        {
+            method: "POST",
+            body: new Builder().buildObject(requestBody)
+        }
+    );
+
+    const responseBody = await new Parser({ explicitArray: false }).parseStringPromise(await response.text());
+
+    //process response
+    if(responseBody.response.status === "ok") {
+        await fs.writeFile("label.png", Buffer.from(responseBody.response.result, 'base64'));
+    }
+}
+catch (exception) {
+    console.log(exception);
+}
+```
+
+</TabItem>
+</Tabs>
+</details>
+
+<details>
+<summary>
+Example <code>packetsCourierLabelsPdf()</code> request/response
+</summary>
+<Tabs>
+<TabItem value="rest" label="REST">
+
+```xml
+
+<!--request-->
+<packetsCourierLabelsPdf>
+    <apiPassword>{{apiPassword}}</apiPassword>
+    <packetIdsWithCourierNumbers>
+        <packetIdWithCourierNumber>
+            <packetId>1234567890</packetId>
+            <courierNumber>DR4362230958U</courierNumber>
+        </packetIdWithCourierNumber>
+        <packetIdWithCourierNumber>
+            <packetId>1234567891</packetId>
+            <courierNumber>DR4362235031U</courierNumber>
+        </packetIdWithCourierNumber>
+    </packetIdsWithCourierNumbers>
+    <offset>0</offset>
+    <format>A6 on A4</format>
+</packetsCourierLabelsPdf>
+
+
+<!--response-->
+<response>
+    <status>ok</status>
+    <result>JVBERi0xLjcKJeLjz9MKNSAwIG9iago8PCA.....vVHlwZSAvUGFYKMzQ0MDAKJSVFT0YK</result>
+</response>
+
+
+```
+
+</TabItem>
+<TabItem value="soap" label="SOAP">
+
+```xml
+
+<!--request-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://www.zasilkovna.cz/api/soap.wsdl2" xmlns:soap1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <soap:packetsCourierLabelsPdf>
+         <apiPassword>{{apiPassword}}</apiPassword>
+         <packetIdsWithCourierNumbers>
+            <soap1:packetIdWithCourierNumber>
+               <soap1:packetId>1234567890</soap1:packetId>
+               <soap1:courierNumber>DR4362230958U</soap1:courierNumber>
+            </soap1:packetIdWithCourierNumber>
+            <soap1:packetIdWithCourierNumber>
+               <soap1:packetId>1234567891</soap1:packetId>
+               <soap1:courierNumber>DR4362235031U</soap1:courierNumber>
+            </soap1:packetIdWithCourierNumber>
+         </packetIdsWithCourierNumbers>
+         <offset>0</offset>
+         <format>A6 on A4</format>
+      </soap:packetsCourierLabelsPdf>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+
+<!--response-->
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <SOAP-ENV:Body>
+      <ns1:packetsCourierLabelsPdfResponse>
+         <packetsCourierLabelsPdfResult>JVBERi0xLjcKJeLjz9MKNSAwIG9i.....ZWYKMzQ0MDAKJSVFT0YK</packetsCourierLabelsPdfResult>
+      </ns1:packetsCourierLabelsPdfResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+
+```
+
+</TabItem>
+<TabItem value="php" label="PHP">
+
+```php
+<?php
+
+$apiPassword = "apiPassword";
+$format = "A6 on A4";
+$offset = 0;
+$packetIdsWithCourierNumbers = [
+    [
+        'packetId' => "1234567890",
+        'courierNumber' => "394340427354",
+    ],
+    [
+        'packetId' => "1234567891",
+        'courierNumber' => "394340156330",
+    ],
+];
+
+try {
+    $client = new SoapClient('https://www.zasilkovna.cz/api/soap.wsdl');
+    $result = $client->packetsCourierLabelsPdf($apiPassword, $packetIdsWithCourierNumbers, $offset, $format);
+    
+    header('Content-Type: application/pdf');
+    echo $result;
+} catch (SoapFault $e) {
+    echo $e->getMessage();
+}
+
+?>
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+using System;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using PacketeryService;
+using System.IO;
+
+namespace PacketaClientExample
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            BasicHttpsBinding binding = new BasicHttpsBinding() { MaxReceivedMessageSize = int.MaxValue };
+            EndpointAddress endpointAddress = new EndpointAddress("https://www.zasilkovna.cz/api/soap");
+
+            string apiPassword = "apiPassword";
+            PacketIdWithCourierNumber[] packetIdsWithCourierNumbers =
+            {
+                new PacketIdWithCourierNumber {packetId = 1234567890, courierNumber= "5451339442605"}
+            };
+            string format = "A6 on A4";
+            uint offset = 0;
+
+            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            try
+            {
+                packetsCourierLabelsPdfResponse response = await client.packetsCourierLabelsPdfAsync(
+                    new packetsCourierLabelsPdfRequest(apiPassword, packetIdsWithCourierNumbers, offset, format)
+                );
+
+                //Process response
+                await File.WriteAllBytesAsync("./label.pdf", response.packetsCourierLabelsPdfResult);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="js" label="Node.js">
+
+```js
+import { Builder, Parser } from "xml2js"
+import * as fs from "node:fs/promises"
+
+const requestBody = {
+    packetsCourierLabelsPdf: {
+        apiPassword: "apiPassword",
+        packetIdsWithCourierNumbers: {
+            packetIdWithCourierNumber: [
+                {
+                    packetId: "4845043543",
+                    courierNumber: "394340427354"
+                },
+                {
+                    packetId: "1614361369",
+                    courierNumber: "394340156330"
+                }
+            ]
+        },
+        offset: 0,
+        format: "A6 on A4"
+    }
+}
+
+try {
+    const response = await fetch(
+        "https://www.zasilkovna.cz/api/rest",
+        {
+            method: "POST",
+            body: new Builder().buildObject(requestBody)
+        }
+    );
+
+    const responseBody = await new Parser({ explicitArray: false }).parseStringPromise(await response.text());
+
+    //process response
+    if(responseBody.response.status === "ok") {
+        await fs.writeFile("label.pdf", Buffer.from(responseBody.response.result, 'base64'));
+    }
+}
+catch (exception) {
+    console.log(exception);
+}
+```
+
+</TabItem>
+</Tabs>
+</details>
+
+<details>
+<summary>
+Example <code>packetCourierLabelZpl()</code> request/response
+</summary>
+<Tabs>
+<TabItem value="rest" label="REST">
+
+```xml
+
+<!--request-->
+<packetCourierLabelZpl>
+    <apiPassword>{{apiPassword}}</apiPassword>
+    <packetId>1234567890</packetId>
+    <courierNumber>994717547550338388</courierNumber>
+    <dpi>300</dpi>
+</packetCourierLabelZpl>
+
+
+<!--response-->
+<response>
+    <status>ok</status>
+    <result>^XA^CI28^CWN,TT0003M_.FNT^LH0,0^FO118,366^BY6^BCN,271,N,N,N,A^FD994717547550338388^FS^FT118,708^ANN,58^FD99.47.175475.50338388^FS^FT118,708^ANN,58^FD99.47.175475.50338388^FS^FT118,709^ANN,58^FD99.47.175475.50338388^FS^FT118,708^ANN,58^FD99.47.175475.50338388^FS^FT117,708^ANN,58^FD99.47.175475.50338388^FS^FT118,708^ANN,58^FD99.47.175475.50338388^FS^FT118,707^ANN,58^FD99.47.175475.50338388^FS^FT118,708^ANN,58^FD99.47.175475.50338388^FS^FT119,708^ANN,58^FD99.47.175475.50338388^FS^FO118,118^BY3^BCN,95,N,N,N,A^FDCD503383886LI^FS^FT229,248^ANN,29^FDCD503383886LI^FS^FT229,248^ANN,29^FDCD503383886LI^FS^FT229,249^ANN,29^FDCD503383886LI^FS^FT229,248^ANN,29^FDCD503383886LI^FS^FT228,248^ANN,29^FDCD503383886LI^FS^FT229,248^ANN,29^FDCD503383886LI^FS^FT229,247^ANN,29^FDCD503383886LI^FS^FT229,248^ANN,29^FDCD503383886LI^FS^FT230,248^ANN,29^FDCD503383886LI^FS^FO821,268^GFA,1040,1040,13,,:::::g0C,R03F80FE03F8FFC,R03FC1FF07F8FFC,R030E3870EI0C,R030E3838EI0C,R030E3838FI0C,R030E3038FE00C,R03FC70387F00C,R03F870381F80C,R0300303803C0C,R0300383801C0C,R030038780380C,R03001C70E780C,R03I0FE1FF00C,R03I07C07E00C,,:::::R0QF8,Q01QF,Q03QF,Q07PFE,Q0QFC,X0JF8,W01JF,W03IFE,W07IFC,W0JF8,V01JF,V01IFE,O03IFC003IFC,O07IF8007IFC,O0JF800JF8,N01JF001JF,N03IFE003IFE,N07IFC007IFC,N0JF800JF8,M01JF001JF,M03IFE003IFE,M07IFC007IFC,M0JF8007IF8,L01JFI0JF,L01IFE001JF,L03IFC003IFE,L07IF8007IFC,L0JF800JF8,K01JF001IFE,K03IFE003IF8,K07IFC007IF,K0JF800IF8,J01JF001FF8,J03IFE,J07IFC,J07IF8,J0JF,I01IFE,I03IFC,I07IF8,I0JF8,001JF,003IFE,007IFC,00JF8,01JF,03IFC,07IF8,07FFC,0FFE,,::^FS^FT161,1096^ANB,29^FDtest^FS^FT205,1096^ANB,29^FDPacketa Holding^FS^FT249,1096^ANB,29^FDc/o IMPC Schaan^FS^FT293,1096^ANB,29^FDPostfach 5601^FS^FT336,1096^ANB,29^FD9494  Schaan^FS^FT468,872^ANN,47^FDUmpa Lumpa^FS^FT468,934^ANN,47^FDViktoriapl. 1^FS^FT468,996^ANN,47^FD3013  Bern^FS^XZ</result>
+</response>
+
+
+```
+
+</TabItem>
+<TabItem value="soap" label="SOAP">
+
+```xml
+
+<!--request-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://www.zasilkovna.cz/api/soap.wsdl2">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <soap:packetCourierLabelZpl>
+         <apiPassword>{{apiPassword}}</apiPassword>
+         <packetId>1234567890</packetId>
+         <courierNumber>994717547550338388</courierNumber>
+         <dpi>300</dpi>
+      </soap:packetCourierLabelZpl>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+
+<!--response-->
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <SOAP-ENV:Body>
+      <ns1:packetCourierLabelZplResponse>
+         <packetCourierLabelZplResult>^XA^CI28^CWN,TT0003M_.FNT^LH0,0^FO118,366^BY6^BCN,271,N,N,N,A^FD994717547550338388^FS^FT118,708^ANN,58^FD99.47.175475.50338388^FS^FT118,708^ANN,58^FD99.47.175475.50338388^FS^FT118,709^ANN,58^FD99.47.175475.50338388^FS^FT118,708^ANN,58^FD99.47.175475.50338388^FS^FT117,708^ANN,58^FD99.47.175475.50338388^FS^FT118,708^ANN,58^FD99.47.175475.50338388^FS^FT118,707^ANN,58^FD99.47.175475.50338388^FS^FT118,708^ANN,58^FD99.47.175475.50338388^FS^FT119,708^ANN,58^FD99.47.175475.50338388^FS^FO118,118^BY3^BCN,95,N,N,N,A^FDCD503383886LI^FS^FT229,248^ANN,29^FDCD503383886LI^FS^FT229,248^ANN,29^FDCD503383886LI^FS^FT229,249^ANN,29^FDCD503383886LI^FS^FT229,248^ANN,29^FDCD503383886LI^FS^FT228,248^ANN,29^FDCD503383886LI^FS^FT229,248^ANN,29^FDCD503383886LI^FS^FT229,247^ANN,29^FDCD503383886LI^FS^FT229,248^ANN,29^FDCD503383886LI^FS^FT230,248^ANN,29^FDCD503383886LI^FS^FO821,268^GFA,1040,1040,13,,:::::g0C,R03F80FE03F8FFC,R03FC1FF07F8FFC,R030E3870EI0C,R030E3838EI0C,R030E3838FI0C,R030E3038FE00C,R03FC70387F00C,R03F870381F80C,R0300303803C0C,R0300383801C0C,R030038780380C,R03001C70E780C,R03I0FE1FF00C,R03I07C07E00C,,:::::R0QF8,Q01QF,Q03QF,Q07PFE,Q0QFC,X0JF8,W01JF,W03IFE,W07IFC,W0JF8,V01JF,V01IFE,O03IFC003IFC,O07IF8007IFC,O0JF800JF8,N01JF001JF,N03IFE003IFE,N07IFC007IFC,N0JF800JF8,M01JF001JF,M03IFE003IFE,M07IFC007IFC,M0JF8007IF8,L01JFI0JF,L01IFE001JF,L03IFC003IFE,L07IF8007IFC,L0JF800JF8,K01JF001IFE,K03IFE003IF8,K07IFC007IF,K0JF800IF8,J01JF001FF8,J03IFE,J07IFC,J07IF8,J0JF,I01IFE,I03IFC,I07IF8,I0JF8,001JF,003IFE,007IFC,00JF8,01JF,03IFC,07IF8,07FFC,0FFE,,::^FS^FT161,1096^ANB,29^FDtest^FS^FT205,1096^ANB,29^FDPacketa Holding^FS^FT249,1096^ANB,29^FDc/o IMPC Schaan^FS^FT293,1096^ANB,29^FDPostfach 5601^FS^FT336,1096^ANB,29^FD9494  Schaan^FS^FT468,872^ANN,47^FDUmpa Lumpa^FS^FT468,934^ANN,47^FDViktoriapl. 1^FS^FT468,996^ANN,47^FD3013  Bern^FS^XZ</packetCourierLabelZplResult>
+      </ns1:packetCourierLabelZplResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+
+```
+
+</TabItem>
+<TabItem value="php" label="PHP">
+
+```php
+<?php
+
+$apiPassword = 'apiPassword';
+$packetId = '1234567890';
+$courierNumber = '994717547550625744';
+$dpi = 300;
+
+try {
+    $client = new SoapClient('https://www.zasilkovna.cz/api/soap.wsdl');
+    $result = $client->packetCourierLabelZpl($apiPassword, $packetId, $courierNumber, $dpi);
+
+    echo $result;
+} catch (SoapFault $e) {
+    echo $e->getMessage();
+}
+
+?>
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+using System;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using PacketeryService;
+using System.IO;
+
+namespace PacketaClientExample
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+           BasicHttpsBinding binding = new BasicHttpsBinding() { MaxReceivedMessageSize = int.MaxValue };
+            EndpointAddress endpointAddress = new EndpointAddress("https://www.zasilkovna.cz/api/soap");
+
+            string apiPassword = "apiPassword";
+            ulong packetId = 1234567890;
+            string courierNumber = "994717547550638255";
+            uint dpi = 300;
+
+            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            try
+            {
+                packetCourierLabelZplResponse response = await client.packetCourierLabelZplAsync(
+                    new packetCourierLabelZplRequest(apiPassword, packetId, courierNumber, dpi)
+                );
+
+                //Process response
+                await File.WriteAllTextAsync("./label.zpl", response.packetCourierLabelZplResult);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="js" label="Node.js">
+
+```js
+import { Builder, Parser } from "xml2js"
+import * as fs from "node:fs/promises"
+
+const requestBody = {
+    packetCourierLabelZpl: {
+        apiPassword: "apiPassword",
+        packetId: "4318560169",
+        courierNumber: "994717547550625744",
+        dpi: 300
+    }
+}
+
+try {
+    const response = await fetch(
+        "https://www.zasilkovna.cz/api/rest",
+        {
+            method: "POST",
+            body: new Builder().buildObject(requestBody)
+        }
+    );
+
+    const responseBody = await new Parser({ explicitArray: false }).parseStringPromise(await response.text());
+
+    //process response
+        if (responseBody.response.status === "ok") {
+            await fs.writeFile("label.zpl", responseBody.response.result);
+        }
+}
+catch (exception) {
+    console.log(exception);
+}
+```
+
+</TabItem>
+</Tabs>
+</details>
+
+Similarily to Packeta labels, `PDF` and `PNG` labels are returned in a base64 encoded format and need to be decoded. 
+
+`ZPL` labels are XML escaped since the ZPL format can contain characters that are used as special characters in the XML format. Because of this, ZPL labels need to be
+XML Unescaped before printing.

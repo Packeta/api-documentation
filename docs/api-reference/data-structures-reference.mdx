@@ -1,0 +1,400 @@
+---
+sidebar_position: 2
+---
+
+# Data structures reference
+
+### `ClaimAttributes`
+
+| Type           | Field name         | Constraints                                                                              | Required                | Description                                                                                                          |
+|----------------|--------------------|------------------------------------------------------------------------------------------|-------------------------|----------------------------------------------------------------------------------------------------------------------|
+| `unsignedLong` | `id`               | 10 digits                                                                                | no                      | deprecated attribute    |
+| `string`       | `number`           | 1-36 alphanumeric                                                                        | yes                     | An unique ID of the order (from your e-shop).                                                                        |
+| `string`       | `email`            | valid e-mail                                                                             | if no phone             | Recipient's e-mail.                                                                                                  |
+| `string`       | `phone`            | valid phone number, examples are in [phone number formats](phone-number-formats) | if no e-mail         | Recipient's phone.                                                                                                   |
+| `decimal`      | `value`            | see max values in [TOS](https://www.zasilkovna.cz/en/documents-for-partners#4-parametry-zasilky)    | yes                     | Packet's value (for insurance purposes).                                                                             |
+| `string`       | `currency`         | CZK, EUR, HUF, PLN, RON                                                                  | no                      | Packet value currency.                                                                                               |
+| `string`       | `eshop`            |                                                                                          | when using more senders | [Sender label](https://client.packeta.com/senders/). If the entered sender does not exist yet, a new one is created. |
+| `bool`         | `sendLabelToEmail` |                                                                                          | no                      | If set to true, PDF label will be sent to the recipient via email.                                                   |
+
+### `ClaimWithPasswordAttributes`
+
+| Type           | Field name         | Constraints                                                                                             | Required                | Description                                                                                                          |
+|----------------|--------------------|---------------------------------------------------------------------------------------------------------|-------------------------|----------------------------------------------------------------------------------------------------------------------|
+| `unsignedLong` | `id`               | 10 digits                                                                                               | yes                     | deprecated attribute   |
+| `string`       | `number`           | 1-36 alphanumeric                                                                                       | yes                     | An unique ID of the order (from your e-shop).                                                                        |
+| `string`       | `email`            | valid e-mail                                                                                            | yes                     | Recipient's e-mail.                                                                                                  |
+| `string`       | `phone`            | valid phone number, examples are in [phone number formats](phone-number-formats)                        | yes                     | Recipient's phone.                                                                                                   |
+| `decimal`      | `value`            | see max values in [TOS](https://www.zasilkovna.cz/en/documents-for-partners#4-parametry-zasilky)    | yes                     | Packet's value (for insurance purposes).                                                                             |
+| `string`       | `currency`         | CZK, EUR, HUF, PLN, RON                                                                                 | no                      | Packet value currency.                                                                                               |
+| `string`       | `eshop`            |                                                                                                         | yes                     | [Sender label](https://client.packeta.com/senders/). If the entered sender does not exist yet, a new one is created. |
+| `string`       | `consignCountry`   | 2 alphanumerical                                                                                        | yes                     | Country where packet will be consigned and in which language notification will be sent
+| `bool`         | `sendEmailToCustomer` |                                                                                                      | no                      | If set to true, email with password and instructions will be sent to customer                                                   |
+
+### `CurrentStatusRecord`
+
+An extension of [`StatusRecord`](#statusrecord), so it contains the same and some additional fields.
+
+| Type          | Field name    | Required | Description                                                                                          |
+|---------------|---------------|----------|------------------------------------------------------------------------------------------------------|
+| ...           | ...           | ...      | ...                                                                                                  |
+| `boolean`     | `isReturning` | yes      | Indicates whether the packet is on its way back to the sender.                                       |
+| `date`        | `storedUntil` | yes      | The last possible day to pick up the packet. After this date, it will start returning to the sender. |
+| `unsignedInt` | `carrierId`   | no       | Numeric identifier of the chosen carrier method.                                                     |
+| `string`      | `carrierName` | no       | Name of the chosen carrier method, in english.                                                       |
+
+### `AttributeCollection`
+
+It represents additional information about packet or packet item. Is an array of type [`Attribute`](#attribute).
+
+### `PacketCollection`
+
+Is an array of type [`PacketIdDetail`](#packetiddetail).
+
+### `ShipmentPacketsResult`
+
+| Type             | Field name    | Constraints                                          | Required | Description                                                          |
+|------------------|---------------|------------------------------------------------------|----------|----------------------------------------------------------------------|
+|`PacketCollection`| `packets`     | type [`PacketCollection`](#packetcollection)     | yes      | Packet collection                                                    |
+
+### `Security`
+
+| Type                                                   | Field name              | Required | Description                                                   |
+|--------------------------------------------------------|-------------------------|----------|---------------------------------------------------------------|
+| `boolean`                                              | `allowPublicTracking`   | no       | Allow each user to view the tracking of the packet.           |
+| [`AllowTrackingForUsers`](#allowtrackingforusers)  | `allowTrackingForUsers` | no       | Allow specified users to view the tracking of the packet.     |
+
+### `AllowTrackingForUsers`
+
+| Type                 | Field name    | Constraints                                          | Required | Description                                                          |
+|----------------------|---------------|------------------------------------------------------|----------|----------------------------------------------------------------------|
+|`ApiKeys`             | `apiKeys`     | type [`ApiKeys`](#apikeys)                       | yes      | Packet collection                                                    |
+
+### `ApiKeys`
+
+An array of objects `apiKey` which contain a `string` value user's API key (16 characters).
+
+### `Services`
+
+**This attribute has not yet been implemented. This is reserved record for future use.**
+
+| Type                                                        | Field name           | Required | Description                                                                                                                                   |
+|-------------------------------------------------------------|----------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| [`FirstMileCarrierService`](#firstmilecarrierservice)   | `firstMileCarrier`   | no       | Specify external carrier that will deliver the packet into our network. Tracking starts before accepting packet into our network              |
+| [`LastMileCarrierService`](#lastmilecarrierservice)     | `lastMileCarrier`    | no       | Specify external carrier that will deliver the packet to the client. Allows sender to pass carrier data such as barcode or tracking code.  |
+| [`ReturnDestinationService`](#returndestinationservice) | `returnDestination`  | no       | Service to override default return address for a single packet.                                                                               |
+
+### `FirstMileCarrierService`
+
+**This attribute has not yet been implemented. This is reserved record for future use.**
+
+A service that specifies that an external carrier will forward a packet to us for delivery. This allows us to track the packet before we physically receive it.
+
+| Type           | Field name           | Required | Description                                                                                                                                                                |
+|----------------|----------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| unsignedInt    | `addressId`          | yes      | ID of external carrier                                                                                                                                                     |
+| string         | `barcode`            | no       | Packet barcode. If not supplied, we will consign the packet on your behalf. You can then obtain the carriers label. If supplied, trackingCode has to be supplied as well.  |
+| string         | `trackingCode`       | no       | Packet tracking code. If supplied, barcode has to be supplied as well.                                                                                                     |
+| string         | `foreignId`          | no       | The foreign ID. The identifier used for communication with carrier trough their API. Usually same as trackingCode which is also the default value for this attribute       |
+
+### `LastMileCarrierService`
+
+**This attribute has not yet been implemented. This is a reserved record for future use.**
+
+Allows to configure the carrier delivering the packet. The carrier is supplied trough root addressId attribute. The current usage is to support the clients who use assigned offline barcodes obtained from the carrier.
+
+| Type           | Field name           | Required | Description                                                                                                                                                                |
+|----------------|----------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| string         | `barcode`            | no       | Packet barcode.                                                                                                                                                            |
+| string         | `trackingCode`       | no       | Packet tracking code.                                                                                                                                                      |
+| string         | `foreignId`          | no       | The foreign ID. The identifier used for communication with carrier trough their API. Usually same as trackingCode which is also the default value for this attribute       |
+
+### `ReturnDestinationService`
+
+**This attribute has not yet been implemented. This is reserved record for future use.**
+
+Service to override default return address for a single packet.
+
+| Type                                                                              | Field name           | Required | Description                                                    |
+|-----------------------------------------------------------------------------------|----------------------|----------|----------------------------------------------------------------|
+| unsignedInt                                                                       | `addressId`          | yes      | Id of branch or external carrier                               |
+| string                                                                            | `carrierPickupPoint` | no       | Id of carrier's pick-up point or box                            |
+| [`ReturnDestinationServiceAddress`](#returndestinationserviceaddress)         | `returnAddress`      | no       | Address, required in the case of using an carrier HD or box    |
+
+### `ReturnDestinationServiceAddress`
+
+**This attribute has not yet been implemented. This is reserved record for future use.**
+
+Service to override default return address for a single packet. Note: Country is retrieved from addressId of the parent element (branch/carrier)
+
+| Type              | Field name           | Required | Description                                                    |
+|-------------------|----------------------|----------|----------------------------------------------------------------|
+| `string`          | `name`               | Yes      |                                                                |
+| `string`          | `surname`            | Yes      |                                                                |
+| `string`          | `street`             | Yes      |                                                                |
+| `string`          | `houseNumber`        | Yes      |                                                                |
+| `string`          | `city`               | Yes      |                                                                |
+| `string`          | `zip`                | Yes      |                                                                |
+| `string`          | `email`              | No*      | The requirement of this parameter differ per carrier           |
+| `string`          | `phone`              | No*      | The requirement of this parameter differ per carrier           |
+
+### `ItemCollection`
+
+It represents things in the packet. Is an array of type [`Item`](#item).
+
+### `Item`
+
+It represent one kind of thing in the packet. Is an array of type [`Attribute`](#attribute).
+
+### `Attribute`
+
+It's represents additional information about packet or packet item (thing in packet). See to list of attributes.
+
+| Type         | Field name    | Required | Description                                                                                          |
+|--------------|---------------|----------|------------------------------------------------------------------------------------------------------|
+| `string`     | `key`         | yes      | Name of property.                                                                                    |
+| `string`     | `value`       | yes      | Value of property.                                                                                   |
+
+
+Additional information about content of packet (for example for customs proceedings).
+
+### `CustomsDeclaration`
+
+It is deprecated. Use attributes and items.
+
+| Type                      | Constraints                                                  | Field name        | Required | Description                                                                                                                                            |
+|---------------------------|--------------------------------------------------------------|-------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `decimal`                 |                                                              | `deliveryCostEur` | yes      | A cost charged to the customer for shipping in EUR.                                                                                                    |
+| `decimal`                 |                                                              | `deliveryCost`    | yes      | A cost charged to the customer for shipping in the currency of the destination country.                                                                |
+| `CustomsDeclarationItems` | type [CustomsDeclarationItems](#customsdeclarationitems) | `items`           | yes      | An array describing customs declaration forms. One packet can consist of multiple goods, every one of each must have its own customs declaration form. |
+
+### `CustomsDeclarationItem`
+
+It is deprecated. Use attributes and items.
+
+| Type          | Field name         | Required | Description                                                                                                                                                                                                                                                 |
+|---------------|--------------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `string`      | `customsCode`      | yes      | Harmonized System code (see http://www.tariffnumber.com/).                                                                                                                                                                                                  |
+| `decimal`     | `valueEur`         | yes      | Value of the product in EUR.                                                                                                                                                                                                                                |
+| `decimal`     | `value`            | yes      | Value of the product in the currency of the destination country.                                                                                                                                                                                            |
+| `string`      | `productEan`       | yes      | Product EAN code.                                                                                                                                                                                                                                           |
+| `string`      | `productNameEn`    | yes      | Product name in English.                                                                                                                                                                                                                                    |
+| `string`      | `productName`      | yes      | Product name in the language of the destination country.                                                                                                                                                                                                    |
+| `unsignedInt` | `unitsCount`       | yes      | Count of units. If you have multiple units of the same product, specify just one CustomsDeclarationItem for the product and set this value to count of units e.g. if you want to send 1000 screws then your product is a screw and the units count is 1000. |
+| `string`      | `countryOfOrigin`  | yes      | Country of origin (COO) - country where the product was made.                                                                                                                                                                                               |
+| `string`      | `currency`         | no       | Currency of product value. Required by the Swiss Post.                                                                                                                                                                                                      |
+| `string`      | `invoiceNumber`    | no       | Current product's invoice number. Required by the Swiss Post.                                                                                                                                                                                               |
+| `date`        | `invoiceIssueDate` | no       | Current product's invoice issue date in format `Y-m-d`, example: `2018-09-25`. Required by the Swiss Post.                                                                                                                                                  |
+| `unsignedInt` | `weight`           | no       | Weight of the product(s) in grams. Required by the Swiss Post.                                                                                                                                                                                              |
+| `boolean`     | `isFoodBook`       | no       | Does the current product classify as food or book? Required by the Swiss Post.                                                                                                                                                                              |
+| `boolean`     | `isVoc`            | no       | Does the current product classify as Volatile Organic Compound? Required by the Swiss Post.                                                                                                                                                                 |
+
+### `CustomsDeclarationItems`
+
+It is deprecated. Use attributes and items.
+
+Is an array of type [`CustomsDeclarationItem`](#customsdeclarationitem).
+
+### `PacketAttributes`
+
+| Type                  | Field name            | Constraints                                                                                                                            | Required                       | Description                                                                                                                                                                                                                                                           |
+|-----------------------|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `unsignedLong`        | `id`                  | 10 digits                                                                                                                              | no                             | deprecated attribute                                                                                                                                                      |
+| `string`              | `number`              | 1-36 alphanumeric                                                                                                                      | yes                            | A unique ID of the order (from your e-shop).                                                                                                                                                                                                                          |
+| `string`              | `name`                | 1-32 alphanumeric                                                                                                                      | yes                            | Recipient's name.                                                                                                                                                                                                                                                     |
+| `string`              | `surname`             | 1-32 alphanumeric                                                                                                                      | yes                            | Recipient's surname.                                                                                                                                                                                                                                                  |
+| `string`              | `company`             | 1-32 alphanumeric                                                                                                                      | no                             | Recipient's company.                                                                                                                                                                                                                                                  |
+| `string`              | `email`               | valid e-mail                                                                                                                           | if no phone                    | Recipient's e-mail.                                                                                                                                                                                                                                                   |
+| `string`              | `phone`               | valid phone number, examples are in [phone number formats](phone-number-formats)                                               | if no e-mail                   | Recipient's phone.                                                                                                                                                                                                                                                    |
+| `unsignedInt`         | `addressId`           | valid active branch ID                                                                                                                 | yes                            | Branch ID or an ID of the external carrier.                                                                                                                                                                                                                           |
+| `string`              | `currency`            | CZK, EUR, HUF, PLN, RON                                                                                                                | no                             | Currency of COD and packet value.                                                                                                                                                                                                                                     |
+| `decimal`             | `cod`                 | integer for CZK, a multiple of 5 for HUF                                                                                               | no                             | COD amount.                                                                                                                                                                                                                                                           |
+| `decimal`             | `value`               | see max. values in [TOS](https://www.zasilkovna.cz/eshopy/vop#4-parametry-zasilky)                                                 | yes                            | Packet's value (for insurance purposes).                                                                                                                                                                                                                              |
+| `decimal`             | `weight`              |                                                                                                                                        | yes                            | Weight in `kg`                                                                                                                                                                                                                                                        |
+| `date`                | `deliverOn`           | date within next 14 days                                                                                                               | no                             | Date for scheduled delivery in future. Package can be delivered on this date or later. The format is YYYY-MM-DD.                                                                                                                                                      |
+| `string`              | `eshop`               |                                                                                                                                        | when using more senders        | [Sender label](https://client.packeta.com/senders/). If the entered sender does not exist yet, a new one is created.                                                                                                                                                  |
+| `boolean`             | `adultContent`        | 0-1                                                                                                                                    | no                             | If set to 1, the packet will be handed over only to person older than 18 years. An identification will be required. Functionality is accessible just for Packeta internal pick-up points in CZ/SK/HU/RO, it is not accessible for couriers and external pick-up points. |
+| `string`              | `note`                | 1-128 alphanumeric                                                                                                                     | no                             | Sender's note. It will be displayed on the label, if supported by courier. It will be shortened up to 32 characters, if limited by courier.                                                                                                                           |
+| `string`              | `street`              | 1-32 alphanumeric                                                                                                                      | on address delivery            | Street.                                                                                                                                                                                                                                                               |
+| `string`              | `houseNumber`         | 1-16 alphanumeric                                                                                                                      | on address delivery            | House number.                                                                                                                                                                                                                                                         |
+| `string`              | `city`                | 1-32 alphanumeric                                                                                                                      | on address delivery            | City.                                                                                                                                                                                                                                                                 |
+| `string`              | `province`            | 1-32 alphanumeric                                                                                                                      | no                             | Province.                                                                                                                                                                                                                                                             |
+| `string`              | `zip`                 | valid ZIP                                                                                                                              | on address delivery            | ZIP code.                                                                                                                                                                                                                                                             |
+| `string`              | `carrierService`      | alphanumeric, comma separated                                                                                                          | no                             | Carrier services separated by comma. More information [here](#carrier-service).                                                                                                                                                                                   |
+| `string`              | `customerBarcode`     | 1-32 alphanumeric                                                                                                                      | no                             | A custom barcode. Only applicable if you have an agreement about using custom barcodes.                                                                                                                                                                               |
+| `string`              | `carrierPickupPoint`  | 1-32 alphanumeric                                                                                                                      | yes for some carriers          | Code of a carrier's pick up point. Required only if the chosen carrier offers them.                                                                                                                                                                                   |
+| `CustomsDeclaration`  | `customsDeclaration`  | type [CustomsDeclaration](#customsdeclaration) - deprecated (use `attributes` and `items`)                                         | on address delivery outside EU | A collection of forms required for goods shipped outside of the European Union.                                                                                                                                                                                       |
+| `Size`                | `size`                | type [Size](#size)                                                                                                                 | yes for some carriers          | Some carriers require the dimensions of the packet.                                                                                                                                                                                                                   |
+| `AttributeCollection` | `attributes`          | type [AttributeCollection](#attributecollection)                                                                                   | yes for some carriers          | Additional information which are specific for some carriers or other cases.                                                                                                                                                                                           |
+| `ItemCollection`      | `items`               | type [ItemCollection](#itemcollection)                                                                                             | yes for some carriers          | Additional information about content of packet (for example for customs proceedings).                                                                                                                                                                                 |
+| `Security`            | `security`            | type [Security](#security)                                                                                                         | no                             | Defines additional security options.                                                                                                                                                                                                                               |
+| `Services`            | `services`            | type [Services](#services)                                                                                                         | no                             | Optional services. **This attribute has not yet been implemented. This is reserved record for future use.**                                                                                                                                                             |
+
+You can find more information about `PacketAttributes` associated with [Direct label printing for carriers](../label-printing/carrier-label) in it's own chapter. 
+
+#### `Carrier service` ####
+
+Each carrier may offer additional optional services. This field is used to choose any of those services for individual packets. The services may be charged.
+
+Individual services are typed in lower case, separated by comma, without whitespace.
+
+Example: `service1,service2,service3`
+
+| Service    | Carriers                   | Description                                                 |
+|------------|----------------------------|-------------------------------------------------------------|
+| signature  | frcolissimohome            | If present, the receipient is required to sign upon delivery. |
+
+### `PacketIdDetail`
+
+| Type           | Field name    | Constraints  | Required | Description                                                                                    |
+|----------------|---------------|--------------|----------|------------------------------------------------------------------------------------------------|
+| `unsignedLong` | `id`          | 10 digits    | yes      | A unique ID packet                                                                             |
+| `string`       | `barcode`     |              | yes      | The `id` prefixed by letter 'Z'. This format is used for generating a readable barcode.        |
+| `string`       | `barcodeText` |              | yes      | The `barcode` in following format `Z 123 4567 890`. Used for printing, for better readability. |
+
+### `PacketDetail`
+
+| Type           | Field name    | Constraints  | Required | Description                                                                                    |
+|----------------|---------------|--------------|----------|------------------------------------------------------------------------------------------------|
+| `unsignedLong` | `id`          | 10 digits    | yes      | A unique ID packet                                                                             |
+| `string`       | `barcode`     |              | yes      | The `id` prefixed by letter 'Z'. This format is used for generating a readable barcode.        |
+| `string`       | `barcodeText` |              | yes      | The `barcode` in following format `Z 123 4567 890`. Used for printing, for better readability. |
+| `string`       | `password`    |              | yes      | Password for submitting packet																    |
+
+### `PacketIds`
+
+An array of packet IDs, a packet ID is 64-bit `unsignedLong`.
+
+### `PacketIdWithCourierNumber`
+
+| Type           | Field name      | Constraints  | Required | Description                                                                                    |
+|----------------|-----------------|--------------|----------|------------------------------------------------------------------------------------------------|
+| `unsignedLong` | `packetId`      | 10 digits    | yes      | A packet ID, e.g. an id returned by [`createPacket()`](#createpacket).                     |
+| `string`       | `courierNumber` |              | yes      | A courier number returned by [`packetCourierNumber()`](#packetcouriernumber).              |
+
+### `PacketIdsWithCourierNumbers`
+
+An array of PacketIdWithCourierNumber structures, which contain packet IDs together with courier numbers.
+
+### `Size`
+
+Dimensions of the packet in millimetres (mm). Is not required, except for certain carriers.
+
+| Type           | Field name    | Required | Description               |
+|----------------|---------------|----------|---------------------------|
+| `unsignedInt`  | `length`      | yes      | Length of the packet.     |
+| `unsignedInt`  | `width`       | yes      | Width of the packet.      |
+| `unsignedInt`  | `height`      | yes      | Height of the packet.     |
+
+### `PacketInfoResult`
+
+Object with a packet's additional information.
+
+| Type           | Field name            | Constraints                            | Required | Description                                                                                    |
+|----------------|-----------------------|----------------------------------------|----------|------------------------------------------------------------------------------------------------|
+| `unsignedInt`  | `branchId`            |                                        | yes      | Destination branch ID                                                                          |
+| `unsignedInt`  | `invoicedWeightGrams` |                                        | no       | Verified weight of the packet which is used in the invoice (if available).                     |
+| `CourierInfo`  | `courierInfo`         | type [`CourierInfo`](#courierinfo)     | no       | Info about courier consignment, if the packet is heading to a courier and has been consigned.  |
+
+### `CourierInfo`
+
+An array of objects [`CourierInfoItem`](#courierinfoitem)
+
+### `CourierInfoItem`
+
+An object with additional information regarding packet's consignment to an external courier.
+
+| Type                      | Field name               | Constraints                                                 | Required | Description                                          |
+|---------------------------|--------------------------|-------------------------------------------------------------|----------|------------------------------------------------------|
+| `unsignedInt`             | `courierId`              |                                                             | yes      | Courier ID.                                          |
+| `string`                  | `courierName`            |                                                             | yes      | Name of the courier.                                 |
+| `CourierNumbers`          | `courierNumbers`         | type [`CourierNumbers`](#couriernumbers)                    | no       | Array of courier numbers, if available.              |
+| `CourierBarcodes`         | `courierBarcodes`        | type [`CourierBarcodes`](#courierbarcodes)                  | no       | Array of courier barcodes, if available.             |
+| `CourierTrackingNumbers`  | `courierTrackingNumbers` | type [`CourierTrackingNumbers`](#couriertrackingnumbers)    | no       | Array of courier tracking numbers, if available.     |
+| `CourierTrackingUrls`     | `courierTrackingUrls`    | type [`CourierTrackingUrls`](#couriertrackingurls)          | no       | Array of courier tracking urls, if available.        |
+
+### `CourierNumbers`
+
+An array of objects `courierNumber` which contain a `string` identifier of the external courier's number of the packet.
+
+### `CourierBarcodes`
+
+An array of objects `courierBarcode` which contain a `string` barcode from the courier's label.
+
+### `CourierTrackingNumbers`
+
+An array of objects `courierTrackingNumber` which contain a `string` number that is used on courier's online tracking application.
+
+### `CourierTrackingUrls`
+
+An array of [`courierTrackingUrl`](#couriertrackingurl).
+
+### `CourierTrackingUrl`
+
+A list of tracking URLs of external courier's tracking application. 
+
+| Type        | Field name     | Constraints         | Required | Description                                 |
+|-------------|----------------|---------------------|----------|---------------------------------------------|
+| string      | lang           | 2 letters           | yes      | Language of the tracking web page.          |
+| string      | url            |                     | yes      | Tracking URL.                               |
+
+
+### `ShipmentIdDetail`
+
+| Type          | Field name    | Constraints | Required | Description                                                                                                               |
+|---------------|---------------|-------------|----------|---------------------------------------------------------------------------------------------------------------------------|
+| `unsignedInt` | `id`          |             | yes      | A unique ID of the shipment.                                                                                              |
+| `string`      | `checksum`    |             | yes      | Empty string. Deprecated.                                                                                                 |
+| `string`      | `barcode`     |             | yes      | A shipment barcode in format: `D-***-XM-<id>`. Id is numeric value that may be prefixed with 0, length is not restricted. |
+| `string`      | `barcodeText` |             | yes      | Same value as `barcode`. Deprecated.                                                                                      |
+
+### `StatusRecord`
+
+| Type          | Field name             | Required | Description                                                                                                                                                                        |
+|---------------|------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `dateTime`    | `dateTime`             | yes      | Date and time of the status change. The format is `Y-m-d\TH:i:s`, example: `2016-07-25T12:00:00`.                                                                                  |
+| `unsignedInt` | `statusCode`           | yes      | Integer [status code](#packet-status-codes), see the [status code](#packet-status-codes) table for more info.                                                              |
+| `string`      | `codeText`             | yes      | Text representation of the code, see the [status code](#packet-status-codes) table for more info.                                                                              |
+| `string`      | `statusText`           | yes      | Text description of the status.                                                                                                                                                    |
+| `unsignedInt` | `branchId`             | yes      | ID of the position of the packet in the moment of the last status change. Defaults to `0` if the branch data is not available.                                                     |
+| `unsignedInt` | `destinationBranchId`  | yes      | If status change regards moving to different branch, this field contains the ID of the destination branch. Defaults to `0` if the field is not relevant.                           |
+| `string`      | `externalTrackingCode` | ne       | If the packet is being delivered by an external carrier and this status change indicates handing over of the packet to the carrier, you can find the carrier's tracking code here. |
+
+### `ExternalStatusRecord`
+
+| Type       | Field name             | Required | Description                                                                                       |
+|------------|------------------------|----------|---------------------------------------------------------------------------------------------------|
+| `dateTime` | `dateTime`             | yes      | Date and time of the status change. The format is `Y-m-d\TH:i:s`, example: `2016-07-25T12:00:00`. |
+| `string`   | `carrierClass`         | yes      | External carrier identificator, example: czpacketahome                                            |
+| `string`   | `statusCode`           | yes      | Text representation of the status code from external carrier.                                     |
+| `string`   | `externalStatusName`   | yes      | Text description of the status.                                                                   |
+| `string`   | `externalNote`         | no       | Additional note for status.                                                                       |
+| `string`   | `externalTrackingCode` | no       | External carrier's tracking code                                                                  |
+
+### `StatusRecords`
+
+Is an array of type [`StatusRecord`](#statusrecord).
+
+### `ExternalStatusRecords`
+
+Is an array of type [`ExternalStatusRecord`](#externalstatusrecord).
+
+### `PacketB2BAttributes`
+
+| Type       | Field name             | Required | Description                                                                                       |
+|------------|------------------------|----------|---------------------------------------------------------------------------------------------------|
+| `integer`  | `addressId`            | yes      | Address ID of destination Pickup Point..                                                          |
+| `integer`  | `count`                | no       | Count of packets to create, default 1.                                                            |
+| `boolean`  | `isReturn`             |no        | Whether packet is return, default false                                                           |
+
+### `NullableDate`
+
+Is a `date` field with a possibility of `null` value.
+
+### `PacketCourierNumberV2Result`
+
+| Type           | Field name      | Constraints  | Required | Description                                                                                    |
+|----------------|-----------------|--------------|----------|------------------------------------------------------------------------------------------------|
+| `string`       | `courierNumber` |              | yes      | The courier's number.                                                                          |
+| `unsignedInt`  | `carrierId`     |              | no       | Numeric identifier of the chosen carrier method.                                               |
+| `string`       | `carrierName`   |              | no       | Name of the chosen carrier method, in english.                                                 |

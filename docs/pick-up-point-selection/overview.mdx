@@ -1,0 +1,44 @@
+---
+sidebar_position: 1
+---
+
+# Overview
+
+Before you are able to create pick-up point packets, you first have to be able to let your customers choose their preferred pick-up point. You can do this in two ways:
+1. [Widget](widget) (**recommended**)
+2. [Data feeds](branch-export-v5)
+
+## Widget
+
+Our Widget is a ready-made solution, that can be easily embedded into your eshop. It can be used to offer both Packeta pick-up points, as well as Carrier pick-up points.
+
+The main advantages of Widget over feed are:
+- **Less maintanance** - you don't have to keep a database of our/carrier pick-up points
+- **Easy and fast implementation**
+- **A standard look accross many eshops** - better experience for the end-user
+
+If you would like widget implementation examples for Packeta pick-up points or Carrier pick-up points, you can find them [here](examples/packeta-pickup-points#using-widget) and [here](examples/carrier-pickup-points#using-widget) respectively.
+
+You can find a comprehensive guide on how to implement our widget in the [Widget](widget) section.
+
+## Data feeds
+
+If you wish to build your own solution for offering pick-up points to end users, you can use our data feeds to obtain raw pick-up point data from our API.
+
+We have two data feeds:
+1. [Branch export](branch-export-v5)
+2. [Carrier pick-up points export](carrier-pickup-points-export)
+
+When using data feeds, its important that you update your data every hour.
+
+:::caution
+Data feeds were not designed to be used in conjunction with our Widget. Please, do not validate data obtained form our widget with data from our feed, if possible.
+:::
+
+### Branch export
+
+[Branch export](branch-export-v5) contains data for all our Packeta pick-up points, as well as address delivery carriers.
+
+### Carrier pick-up points export
+
+[Carrier pick-up points export](carrier-pickup-points-export) contains carrier pick-up points data.

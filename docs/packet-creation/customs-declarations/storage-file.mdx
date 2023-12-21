@@ -1,0 +1,69 @@
+---
+sidebar_position: 3
+---
+
+
+# Storage File
+
+Database files for use in customs declarations. Typical files are EADs or Invoices. The function will be available from 7. 6. 2021. 
+
+## Types
+
+Every values are represented as string. The type only determines the format of this string.
+
+### Base64File
+
+Binary content in base64.
+
+### String
+
+String. For example `red hat with Packet logo`.
+
+## Storage File Attributes
+| Key              | Type                              | Required | Description                                                |
+|------------------|-----------------------------------|----------|------------------------------------------------------------|
+| content          | Base64File                        | yes      | File contents in base64.                                   |
+| name             | string                            | yes      | File name for easier identification in the Client section. |
+
+## Examples
+
+### XML Request
+```xml
+<createStorageFile>
+    <apiPassword>{{xmlAuth}}</apiPassword>
+    <storageFileAttributes>
+        <content>{{Base64File}}</content>
+        <name>file_name.pdf</name>
+    </storageFileAttributes>
+</createStorageFile>
+```
+
+### XML Response
+```xml
+<createStorageFileResponse>
+    <storageFile>
+        <id>1</id>
+        <name>file_name.pdf</name>
+        <created>2021-05-14 14:26:30</created>
+    </storageFile>
+</createStorageFileResponse>
+```
+
+### PHP Create Storage File
+```php
+<?php
+$gw = new SoapClient('http://www.zasilkovna.cz/api/soap.wsdl');
+$apiPassword = '1234567890abcdef1234567890abcdef';
+
+try {
+	$storageFile = $gw->createStorageFile(
+    	$apiPassword,
+        [
+            'content' => base64_encode(file_get_contents('invoice_202101112.pdf')),
+            'name' => 'invoice_202101112.pdf',
+        ]
+    );
+} catch(SoapFault $e) {
+	var_dump($e->detail); // property detail contains error info
+}
+```

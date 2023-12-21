@@ -1,0 +1,535 @@
+---
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+# Packeta labels
+
+As mentioned in the chapter about [label types](../getting-started/label-types.mdx), Packeta labels can be used for all packets, but we recommend
+using [direct labels](../getting-started/label-types.mdx#carrier-labels) for packets heading to external carriers. 
+
+**Packeta labels** can be printed using the following API methods:
+- [`packetLabelPdf()`](../api-reference/api-methods-reference#packetlabelpdf)
+- [`packetsLabelsPdf()`](../api-reference/api-methods-reference#packetslabelspdf)
+- [`packetLabelZpl()`](../api-reference/api-methods-reference#packetlabelzpl)
+
+### Example requests
+
+<details>
+<summary>
+Example <code>packetLabelPdf()</code> request/response
+</summary>
+<Tabs>
+<TabItem value="rest" label="REST">
+
+```xml
+
+<!--request-->
+<packetLabelPdf>
+    <apiPassword>{{apiPassword}}</apiPassword>
+    <packetId>1234567890</packetId>
+    <format>A7 on A4</format>
+    <offset>0</offset>
+</packetLabelPdf>
+
+
+<!--response-->
+<response>
+    <status>ok</status>
+    <result>JVBERi0xLjcKJeLjz9MKNyAwIG9iago8P.....NDU1PiBdID4+CnN0YXJ0eHJlZgo4ODE1NwolJUVPRgo=</result>
+</response>
+
+
+```
+
+</TabItem>
+<TabItem value="soap" label="SOAP">
+
+```xml
+
+<!--request-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://www.zasilkovna.cz/api/soap.wsdl2">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <soap:packetLabelPdf>
+         <apiPassword>{{apiPassword}}</apiPassword>
+         <packetId>1234567890</packetId>
+         <format>A7 on A4</format>
+         <offset>0</offset>
+      </soap:packetLabelPdf>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+
+<!--response-->
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <SOAP-ENV:Body>
+      <ns1:packetLabelPdfResponse>
+         <packetLabelPdfResult>JVBERi0xLjcKJeLjz9MKNyAwIG9iago8.....PCAvVHVmCjc4OTU5CiUlRU9GCg==</packetLabelPdfResult>
+      </ns1:packetLabelPdfResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+
+```
+
+</TabItem>
+<TabItem value="php" label="PHP">
+
+```php
+
+<?php
+
+$apiPassword = 'apiPasswordx';
+$packetId = '1234567890';
+$format = 'A6 on A4';
+$offset = 0;
+
+try {
+    $client = new SoapClient("https://soap.api.packeta.com/api/soap.wsdl");
+    $result = $client->packetLabelPdf($apiPassword, $packetId, $format, $offset);
+
+    header('Content-Type: application/pdf');
+    echo $result;
+} catch (SoapFault $e) {
+    echo $e->getMessage();
+}
+
+
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+using System;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using PacketeryService;
+using System.IO;
+
+namespace PacketaClientExample
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            BasicHttpsBinding binding = new BasicHttpsBinding() { MaxReceivedMessageSize = int.MaxValue };
+            EndpointAddress endpointAddress = new EndpointAddress("https://www.zasilkovna.cz/api/soap");
+
+            string apiPassword = "apiPassword";
+            ulong packetId = 1234567890;
+            string format = "A6 on A4";
+            uint offset = 0;
+
+            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            try
+            {
+                packetLabelPdfResponse response = await client.packetLabelPdfAsync(
+                    new packetLabelPdfRequest(apiPassword, packetId, format, offset)
+                );
+
+                //Process response
+                await File.WriteAllBytesAsync("./label.pdf", response.packetLabelPdfResult);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="js" label="Node.js">
+
+```js
+import { Builder, Parser } from "xml2js"
+import * as fs from "node:fs/promises"
+
+const requestBody = {
+    packetLabelPdf: {
+        apiPassword: "apiPassword",
+        packetId: "1234567890",
+        format: "A7 on A4",
+        offset: 0
+    }
+}
+
+try {
+    const response = await fetch(
+        "https://www.zasilkovna.cz/api/rest",
+        {
+            method: "POST",
+            body: new Builder().buildObject(requestBody)
+        }
+    );
+
+    const responseBody = await new Parser({ explicitArray: false }).parseStringPromise(await response.text());
+
+    //process response
+    if(responseBody.response.status === "ok") {
+        await fs.writeFile("label.pdf", Buffer.from(responseBody.response.result, 'base64'));
+    }
+}
+catch (exception) {
+    console.log(exception);
+}
+```
+
+</TabItem>
+</Tabs>
+</details>
+
+<details>
+<summary>
+Example <code>packetsLabelsPdf()</code> request/response
+</summary>
+<Tabs>
+<TabItem value="rest" label="REST">
+
+```xml
+
+<!--request-->
+<packetsLabelsPdf>
+    <apiPassword>{{apiPassword}}</apiPassword>
+    <packetIds>
+        <id>1234567890</id>
+        <id>1234567891</id>
+    </packetIds>
+    <format>A7 on A4</format>
+    <offset>0</offset>
+</packetsLabelsPdf>
+
+
+<!--response-->
+<response>
+    <status>ok</status>
+    <result>JVBERi0xLjcKJeLjz9MKNyAwIG9iago8PCAv.....OT4gXSA+PgpzdGFydHhyZWYKODg1MjQKJSVFT0YK</result>
+</response>
+
+
+```
+
+</TabItem>
+<TabItem value="soap" label="SOAP">
+
+```xml
+
+<!--request-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://www.zasilkovna.cz/api/soap.wsdl2" xmlns:soap1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <soap:packetsLabelsPdf>
+         <apiPassword>{{apiPassword}}</apiPassword>
+         <packetIds>
+            <soap1:id>1234567890</soap1:id>
+            <soap1:id>1234567891</soap1:id>
+         </packetIds>
+         <format>A7 on A4</format>
+         <offset>0</offset>
+      </soap:packetsLabelsPdf>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+
+<!--response-->
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <SOAP-ENV:Body>
+      <ns1:packetLabelPdfResponse>
+         <packetLabelPdfResult>JVBERi0xLJeLjz9MKNyAwI.....G9iago8vjc4OTU5CiUlRU9GCg==</packetLabelPdfResult>
+      </ns1:packetLabelPdfResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+
+```
+
+</TabItem>
+<TabItem value="php" label="PHP">
+
+```php
+
+<?php
+
+$apiPassword = "apiPassword";
+
+$packetIds = [
+    "1234567890",
+    "1234567891",
+    "1234567892",
+];
+
+$format = 'A6 on A4';
+$offset = 0;
+
+try {
+    $client = new SoapClient('https://www.zasilkovna.cz/api/soap.wsdl');
+    $result = $client->packetsLabelsPdf($apiPassword, $packetIds, $format, $offset);
+
+    header('Content-Type: application/pdf');
+    echo $result;
+} catch (SoapFault $e) {
+    echo $e->getMessage();
+}
+
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+using System;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using PacketeryService;
+using System.IO;
+
+namespace PacketaClientExample
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            BasicHttpsBinding binding = new BasicHttpsBinding() { MaxReceivedMessageSize = int.MaxValue };
+            EndpointAddress endpointAddress = new EndpointAddress("https://www.zasilkovna.cz/api/soap");
+
+            string apiPassword = "apiPassword";
+            ulong[] packetIds = { 1234567890 };
+            string format = "A6 on A4";
+            uint offset = 0;
+
+            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            try
+            {
+                packetsLabelsPdfResponse response = await client.packetsLabelsPdfAsync(
+                    new packetsLabelsPdfRequest(apiPassword, packetIds, format, offset)
+                );
+
+                //Process response
+                await File.WriteAllBytesAsync("./label.pdf", response.packetsLabelsPdfResult);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="js" label="Node.js">
+
+```js
+import { Builder, Parser } from "xml2js"
+import * as fs from "node:fs/promises"
+
+const requestBody = {
+    packetsLabelsPdf: {
+        apiPassword: "apiPassword",
+        packetIds: {
+            id: [
+                "1234567890",
+                "1234567891"
+            ]
+        },
+        format: "A7 on A4",
+        offset: 0
+    }
+}
+
+try {
+    const response = await fetch(
+        "https://www.zasilkovna.cz/api/rest",
+        {
+            method: "POST",
+            body: new Builder().buildObject(requestBody)
+        }
+    );
+
+    const responseBody = await new Parser({ explicitArray: false }).parseStringPromise(await response.text());
+
+    //process response
+    if (responseBody.response.status === "ok") {
+        await fs.writeFile("label.pdf", Buffer.from(responseBody.response.result, 'base64'));
+    }
+}
+catch (exception) {
+    console.log(exception);
+}
+```
+
+</TabItem>
+</Tabs>
+</details>
+
+<details>
+<summary>
+Example <code>packetLabelZpl()</code> request/response
+</summary>
+<Tabs>
+<TabItem value="rest" label="REST">
+
+```xml
+
+<!--request-->
+<packetLabelZpl>
+    <apiPassword>{{apiPassword}}</apiPassword>
+    <packetId>4308024368</packetId>
+    <dpi>300</dpi>
+</packetLabelZpl>
+
+
+<!--response-->
+<?xml version="1.0" encoding="utf-8"?>
+<response>
+    <status>ok</status>
+    <result>^XA^CI28^CWN,TT0003M_.FNT^LH0,0^FO25,25^GB1187,1700,4^FS^FO25,25^GB363,700,2^FS^FO100,100^BY4^BCB,140,N,N,N,A^FDZ4308024368^FS^ANB,50^FB700,1,0,C^FT322,725^FDZ 123 4567 890\&amp;^FS^FO388,25^GB230,700,2^FS^ANB,70^FB700,1,0,C^FT538,725^FDZasilkovna.cz\&amp;^FS^FO618,25^GB593,1133,2^FS^ANB,40^FB983,1,0,L^FT750,1083^FDPříjemce\&amp;^FS^ANB,50^FB983,1,0,L^FT830,1084^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT829,1084^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT828,1084^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT828,1083^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT828,1082^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT829,1082^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT830,1082^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT830,1083^FDJohn Doe\&amp;^FS^FO841,591^GB73,491,73^FS^ANB,50^FB491,1,0,C^FR^FT903,1083^FDC25--0--8395\&amp;^FS^ANB,50^FB983,4,0,L^FT1126,1083^FDDEPO Praha - Nehvizdy\&amp;^FS^FO25,725^GB593,1000,2^FS^ANB,40^FB850,1,0,L^FT156,1650^FDOdesílatel\&amp;^FS^ANB,50^FB850,1,0,L^FT236,1650^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT235,1651^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT235,1650^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT234,1650^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT235,1649^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT235,1649^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT236,1649^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT236,1650^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT310,1650^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT309,1651^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT309,1650^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT308,1650^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT309,1649^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT309,1649^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT310,1649^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT310,1650^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT383,1650^FD=C16-D99-7135=P\&amp;^FS^ANB,50^FB850,1,0,L^FT457,1650^FD7.3.2022 10:00:07\&amp;^FS^ANB,40^FB850,2,0,L^FT584,1650^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT583,1651^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT582,1650^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT582,1650^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT582,1649^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT583,1649^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT584,1649^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT584,1650^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT583,1650^FDNote: Label note\&amp;^FS^FO618,1158^GB593,566,2^FS^XZ</result>
+</response>
+
+
+```
+
+</TabItem>
+<TabItem value="soap" label="SOAP">
+
+```xml
+
+<!--request-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://www.zasilkovna.cz/api/soap.wsdl2">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <soap:packetLabelZpl>
+         <apiPassword>{{apiPassword}}</apiPassword>
+         <packetId>4308024368</packetId>
+         <dpi>300</dpi>
+      </soap:packetLabelZpl>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+
+<!--response-->
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <SOAP-ENV:Body>
+      <ns1:packetLabelZplResponse>
+         <packetLabelZplResult><![CDATA[^XA^CI28^CWN,TT0003M_.FNT^LH0,0^FO25,25^GB1187,1700,4^FS^FO25,25^GB363,700,2^FS^FO100,100^BY4^BCB,140,N,N,N,A^FDZ4308024368^FS^ANB,50^FB700,1,0,C^FT322,725^FDZ 430 8024 368\&amp;^FS^FO388,25^GB230,700,2^FS^ANB,70^FB700,1,0,C^FT538,725^FDZasilkovna.cz\&amp;^FS^FO618,25^GB593,1133,2^FS^ANB,40^FB983,1,0,L^FT750,1083^FDPříjemce\&amp;^FS^ANB,50^FB983,1,0,L^FT830,1084^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT829,1084^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT828,1084^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT828,1083^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT828,1082^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT829,1082^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT830,1082^FDJohn Doe\&amp;^FS^ANB,50^FB983,1,0,L^FT830,1083^FDJohn Doe\&amp;^FS^FO841,591^GB73,491,73^FS^ANB,50^FB491,1,0,C^FR^FT903,1083^FDC25--0--8395\&amp;^FS^ANB,50^FB983,4,0,L^FT1126,1083^FDDEPO Praha - Nehvizdy\&amp;^FS^FO25,725^GB593,1000,2^FS^ANB,40^FB850,1,0,L^FT156,1650^FDOdesílatel\&amp;^FS^ANB,50^FB850,1,0,L^FT236,1650^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT235,1651^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT235,1650^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT234,1650^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT235,1649^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT235,1649^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT236,1649^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT236,1650^FDMyEshop.cz\&amp;^FS^ANB,50^FB850,1,0,L^FT310,1650^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT309,1651^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT309,1650^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT308,1650^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT309,1649^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT309,1649^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT310,1649^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT310,1650^FD12345 - test order\&amp;^FS^ANB,50^FB850,1,0,L^FT383,1650^FD=C16-D99-7135=P\&amp;^FS^ANB,50^FB850,1,0,L^FT457,1650^FD7.3.2022 04:26:05\&amp;^FS^ANB,40^FB850,2,0,L^FT584,1650^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT583,1651^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT582,1650^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT582,1650^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT582,1649^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT583,1649^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT584,1649^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT584,1650^FDNote:\&amp;^FS^ANB,40^FB850,2,0,L^FT583,1650^FDNote: Label note\&amp;^FS^FO618,1158^GB593,566,2^FS^XZ]]></packetLabelZplResult>
+      </ns1:packetLabelZplResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+
+```
+
+</TabItem>
+<TabItem value="php" label="PHP">
+
+```php
+
+<?php
+
+$apiPassword = "apiPassword";
+$packetId = "1234567890";
+$dpi = 203;
+
+try {
+    $client = new SoapClient("https://www.zasilkovna.cz/api/soap.wsdl");
+    $result = $client->packetLabelZpl($apiPassword, $packetId, $dpi);
+    var_dump($result);
+} catch (SoapFault $e) {
+    echo $e->getMessage();
+}
+
+
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+using System;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using PacketeryService;
+using System.IO;
+
+namespace PacketaClientExample
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            BasicHttpsBinding binding = new BasicHttpsBinding() { MaxReceivedMessageSize = int.MaxValue };
+            EndpointAddress endpointAddress = new EndpointAddress("https://www.zasilkovna.cz/api/soap");
+
+            string apiPassword = "apiPassword";
+            ulong packetId = 1234567890;
+            uint dpi = 300;
+
+            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            try
+            {
+                packetLabelZplResponse response = await client.packetLabelZplAsync(
+                    new packetLabelZplRequest(apiPassword, packetId, dpi)
+                );
+
+                //Process response
+                await File.WriteAllTextAsync("./label.zpl", response.packetLabelZplResult);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="js" label="Node.js">
+
+```js
+import { Builder, Parser } from "xml2js"
+import * as fs from "node:fs/promises"
+
+const requestBody = {
+    packetLabelZpl: {
+        apiPassword: "apiPassword",
+        packetId: "1234567890",
+        dpi: 300
+    }
+}
+
+try {
+    const response = await fetch(
+        "https://www.zasilkovna.cz/api/rest",
+        {
+            method: "POST",
+            body: new Builder().buildObject(requestBody)
+        }
+    );
+
+    const responseBody = await new Parser({ explicitArray: false }).parseStringPromise(await response.text());
+
+    //process response
+    if (responseBody.response.status === "ok") {
+        await fs.writeFile("label.zpl", responseBody.response.result);
+    }
+}
+catch (exception) {
+    console.log(exception);
+}
+```
+
+</TabItem>
+</Tabs>
+</details>
+
+`PDF` labels are returned in a base64 encoded format and need to be decoded. 
+
+`ZPL` labels are XML escaped since the ZPL format can contain characters that are used as special characters in the XML format. Because of this, ZPL labels need to be
+XML Unescaped before printing.

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="Vrstva_2"
+   data-name="Vrstva 2"
+   viewBox="0 0 88.56 120.63"
+   version="1.1"
+   width="39"
+   height="49"
+   sodipodi:docname="logo.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <metadata
+     id="metadata140">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="986"
+     id="namedview138"
+     showgrid="false"
+     inkscape:zoom="12.699992"
+     inkscape:cx="14.653797"
+     inkscape:cy="24.187015"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Vrstva_2"
+     inkscape:document-rotation="0" />
+  <defs
+     id="defs121">
+    <style
+       id="style119">.cls-1,.cls-3{fill:#fff;}.cls-1{stroke:#ba1b02;stroke-miterlimit:10;stroke-width:0.57px;}.cls-2{fill:#ba1b02;}.cls-3,.cls-4,.cls-5{fill-rule:evenodd;}.cls-4{fill:#aaa;}.cls-5{fill:#d8d8d8;}</style>
+  </defs>
+  <title
+     id="title123">Zasilkovna_pin_vyber</title>
+  <rect
+     style="fill:#ba1b02;fill-opacity:1;stroke:#666666;stroke-width:0.284088"
+     id="rect837"
+     width="95.363403"
+     height="95.127937"
+     x="-3.3130183"
+     y="12.625067" />
+  <circle
+     class="cls-2"
+     cx="44.640926"
+     cy="60.117245"
+     id="circle127"
+     style="stroke-width:1.16308"
+     r="47.139271" />
+  <path
+     class="cls-3"
+     d="M 46.279286,53.191575 44.639434,53.968986 42.999582,53.191575 20.065945,41.858374 30.937558,37.704081 54.4664,49.122312 Z M 69.237218,41.858374 61.025809,45.842607 37.229731,35.262524 44.639434,32.407966 Z"
+     id="path129"
+     style="stroke-width:1.21471" />
+  <path
+     class="cls-3"
+     d="M 45.526169,25.083292 75.614421,36.708023 71.387246,40.109198 44.663728,29.735614 17.94021,40.109198 13.713036,36.708023 43.837729,25.083292 Z m 26.565606,16.021964 4.980292,-1.919234 -3.741292,30.853516 -0.753118,1.372617 -26.407694,23.735342 -0.862441,-5.454026 23.528843,-21.184462 z m -55.390564,30.306899 -0.753117,-1.372617 -3.741292,-30.853516 4.980291,1.919234 3.279705,27.476636 23.45596,21.135873 -0.826,5.429732 z"
+     id="path131"
+     style="stroke-width:1.21471" />
+  <polygon
+     class="cls-4"
+     points="64.56,29.57 62.1,50.02 44.41,65.93 45.39,41.29 53.15,36.52 52.63,48.6 57.47,45.21 58.31,33.38 "
+     id="polygon133"
+     transform="matrix(1.2147054,0,0,1.2147054,-9.1477184,6.2675065)" />
+  <polygon
+     class="cls-5"
+     points="44.15,65.91 26.49,50.02 24.01,29.57 43.17,41.29 "
+     id="polygon135"
+     transform="matrix(1.2147054,0,0,1.2147054,-9.1477184,6.2675065)" />
+</svg>

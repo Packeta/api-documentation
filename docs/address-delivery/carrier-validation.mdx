@@ -1,0 +1,322 @@
+---
+sidebar_position: 3
+---
+
+# Carrier validation
+
+Some external carriers do have specific limitations and properties which we aim to document in this section.
+
+## Common rules
+- weight is **mandatory** for all carriers (value must be bigger than 0)
+- allowed label print formats:
+  - A6 on A4
+  - A6 on A6
+
+## Possible errors
+- List of known error messages with details can be found at [Packetery API Reference](../api-reference/errors-reference) 
+
+Known restrictions are listed for relevant carriers.
+
+## Carrier validations
+
+### AT Aramex HD
+
+### AT DPD HD
+
+### AT Austrian Post HD
+- weight validation (max. 30kg)
+- note on label 
+
+### BE Belgian Post HD
+
+### BE Belgian Post PP
+
+### BE Dutch Post HD
+- weight validation (max. 10kg)
+- note on label 
+
+### BG Econt Box
+- note on label 
+
+### BG Econt HD
+- note on label 
+
+### BG Econt PP
+- note on label 
+
+### BG Speedy HD
+- recipient name validation (min. 3 chars)
+- address validation (zip, city)
+- note on label 
+
+### BG Speedy PP
+- name validation (min. 3 chars)
+- address validation (zip, city)
+
+### BG Sameday HD
+
+### BG Sameday Box
+
+### CH Swiss Post HD
+
+### CH Swiss Post Priority HD
+
+### CZ Packeta HD
+- email address validation
+- phone number validation
+- note on label 
+
+### DE Hermes HD
+- weight validation (max. 15kg)
+- note on label 
+
+### DE Hermes PP
+- weight validation (max. 15kg)
+- note on label 
+
+### DK PostNord HD
+- address validation (max. 35 chars)
+
+### DK PostNord PP
+- address validation (max. 35 chars)
+
+### EE Omniva Box
+- note on label 
+
+### EE Omniva HD
+- note on label 
+
+### EE Omniva PP
+- note on label 
+
+### ES Envialia HD
+- require size
+
+### ES Correos HD
+- address validation (zip)
+- recipient full name validation (max. 40 chars)
+- phone number validation (max. 15 chars)
+- note on label 
+
+### ES MRW HD
+- cash on delivery (cod) validation (min. 2.5 euro)
+- note on label 
+- forbidden prefixes for zip:
+  - `07`
+  - `35`
+  - `38`
+  - `51`
+  - `52`
+
+### ES MRW PP
+- cash on delivery (cod) validation (min. 2.5 euro)
+- note on label 
+- forbidden prefixes for zip:
+  - `07`
+  - `35`
+  - `38`
+  - `51`
+  - `52`
+
+### FI PostNord HD
+- address validation (max. 35 chars)
+
+### FI PostNord PP
+- address validation (max. 35 chars)
+
+### FR Colis Privé HD
+- address validation (zip)
+
+### FR Colissimo HD
+- address validation (zip)
+- recipient name validation
+- email is mandatory
+- note on label 
+
+### FR Colissimo PP
+- address validation (zip)
+- recipient name validation
+- email is mandatory
+
+### FR Mondial Relay PP
+
+### GB Royal Mail 24 HD
+
+### GB Royal Mail 48 HD
+
+### GR ACS HD
+- note on label 
+
+### GR ACS PP
+- note on label 
+
+### GR Geniki Taxydromiki HD
+- note on label 
+
+### GR Speedex HD
+- note on label 
+
+### HR DPD HD
+- note on label 
+
+### HR Hrvatska pošta HD
+- surname is mandatory
+
+### HR Hrvatska pošta PP
+- surname is mandatory
+
+### HR Overseas HD
+- note on label 
+
+### HR Overseas PP
+- note on label 
+
+### HU DPD HD
+- note on label 
+
+### HU Fáma Futár HD
+- note on label 
+
+### HU Magyar Posta HD
+- address validation
+- note on label 
+
+### HU Express One (Trans-o-flex) HD
+- address validation (zip, country)
+
+### IR Fastway Couriers HD
+
+### IL Fedex Priority HD
+- note on label 
+
+### IL Fedex Economy HD
+- note on label 
+
+### IT Bartolini HD
+
+### IT Bartolini PP
+
+### IT GLS HD
+- address validation (street, city)
+- note on label 
+
+### IT HR Parcel HD
+- note on label 
+
+### LV Omniva Box
+- note on label 
+
+### LV Omniva HD
+- note on label 
+
+### LT Omniva Box
+- note on label 
+
+### LT Omniva HD
+- note on label 
+
+### LU Post Luxembourg HD
+- weight validation (max. 10kg)
+- note on label 
+
+### NL DHL HD
+
+### NL DHL PP
+
+### NL PostNL HD
+- weight validation (max. 10kg) 
+- note on label
+
+### OM Aramex HD
+
+### PL DPD HD
+- note on label
+
+### PL Inpost HD
+- note on label
+
+### PL Paczkomaty Box
+- email is mandatory
+- note on label 
+- require size
+
+### PL Poczta Polska HD
+- note on label 
+
+### PL Poczta Polska 24 HD
+- note on label 
+
+### PL Poczta Polska PP
+- note on label 
+
+### PT MRW HD
+- note on label 
+
+### PT MRW PP
+- note on label 
+
+### QA Aramex HD
+
+### RO Cargus HD
+- note on label 
+
+### RO DPD HD
+- note on label
+
+### RO FAN HD
+- address validation (zip)
+- note on label 
+
+### RO Sameday Box
+- note on label 
+- require size
+
+### RO Sameday HD
+- note on label 
+- require size
+
+### SA Aramex HD
+
+### SE PostNord HD
+
+### SE PostNord PP
+
+### SI DPD HD
+- address validation
+- recipient name validation (max. 35 chars)
+- note on label 
+
+### SI DPD PP
+- note on label 
+
+### SI Pošta Slovenije Box
+- note on label
+- surname is mandatory
+- surname is mandatory
+
+### SI Pošta Slovenije HD
+- note on label
+- surname is mandatory
+- surname is mandatory
+
+### SI Pošta Slovenije PP
+- note on label
+- surname is mandatory
+- surname is mandatory
+
+### SK Packeta HD
+- note on label
+
+### TR Aramex HD
+
+### TR Fedex Priority HD
+- note on label
+
+### TR Fedex Economy HD
+- note on label
+
+### US Fedex Economy HD
+- note on label
+
+### US Fedex Priority HD
+- note on label

@@ -1,0 +1,440 @@
+---
+sidebar_position: 5
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+# Claim Assistant
+
+## Claim Assistant
+
+[Claim Assistant](../getting-started/available-delivery-services#claim-assistant) is a service that can be used to easily allow your customers to return their parcels to the sender.
+
+Claim Assistant parcels can be generated either through our API using the [`createPacketClaim()`](../api-reference/api-methods-reference#createpacketclaim) or 
+[`createPacketClaimWithPassword()`](../api-reference/api-methods-reference#createpacketclaimwithpassword) methods, or using our [client section](https://client.packeta.com/claim-assistant/post).
+
+The pick-up point to which a Claim Assistant parcel will be returned cannot be chosen dynamically, instead, it has to be set through our client section [here](https://client.packeta.com/cs/invoice-addresses/) on a per-billing address basis.
+
+<details>
+<summary>
+Example <code>createPacketClaim()</code> request/response
+</summary>
+<Tabs>
+<TabItem value="rest" label="REST">
+
+```xml
+<!--request-->
+<createPacketClaim>
+    <apiPassword>{{apiPassword}}</apiPassword>
+    <claimAttributes>
+        <number>claimNumber</number>
+        <email>example@packetatest.com</email>
+        <value>100.00</value>
+        <currency>CZK</currency>
+        <eshop>MyEshop</eshop>
+        <sendLabelToEmail>false</sendLabelToEmail>
+    </claimAttributes>
+</createPacketClaim>
+
+
+<!--response-->
+<?xml version="1.0" encoding="utf-8"?>
+<response>
+    <status>ok</status>
+    <result>
+        <id>123456789</id>
+        <barcode>Z123456789</barcode>
+        <barcodeText>Z 12345 67890</barcodeText>
+    </result>
+</response>
+
+
+```
+
+</TabItem>
+<TabItem value="soap" label="SOAP">
+
+```xml
+<!--request-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://www.zasilkovna.cz/api/soap.wsdl2" xmlns:soap1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <soap:createPacketClaim>
+         <apiPassword>{{apiPassword}}</apiPassword>
+         <claimAttributes>
+            <soap1:number>claimNumber</soap1:number>
+            <soap1:email>example@packetatest.com</soap1:email>
+            <soap1:phone>+420777777777</soap1:phone>
+            <soap1:value>100</soap1:value>
+            <soap1:currency>CZK</soap1:currency>
+            <soap1:eshop>MyEshop</soap1:eshop>
+            <soap1:sendLabelToEmail>false</soap1:sendLabelToEmail>
+         </claimAttributes>
+      </soap:createPacketClaim>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+
+<!--response-->
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <SOAP-ENV:Body>
+      <ns1:createPacketClaimResponse>
+         <createPacketClaimResult>
+            <ns1:id>1234567890</ns1:id>
+            <ns1:barcode>Z1234567890</ns1:barcode>
+            <ns1:barcodeText>Z 12345 67890</ns1:barcodeText>
+         </createPacketClaimResult>
+      </ns1:createPacketClaimResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+
+```
+
+</TabItem>
+<TabItem value="php" label="PHP">
+
+```php
+<?php
+
+$apiPassword = 'apiPassword';
+
+$claimAttributes = [
+    'number' => '20220513001',
+    'email' => 'example@packetatest.com',
+    'value' => '100',
+    'currency' => 'CZK',
+    'eshop' => 'MyEshop',
+    'sendEmailToCustomer' => false,
+];
+
+try {
+    $client = new SoapClient("https://www.zasilkovna.cz/api/soap.wsdl");
+    $result = $client->createPacketClaim($apiPassword, $claimAttributes);
+
+    var_dump($result);
+}
+catch (SoapFault $e){
+    echo $e->getMessage();
+
+    if (isset($e->detail->PacketAttributesFault)) {
+        var_dump($e->detail->PacketAttributesFault->attributes->fault);
+    } elseif(isset($e->detail->IncorrectApiPasswordFault)) {
+        var_dump('Incorrect API password.');
+    }
+}
+
+
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+using System;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using PacketeryService;
+
+namespace PacketaClientExample
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+             BasicHttpsBinding binding = new BasicHttpsBinding();
+            EndpointAddress endpointAddress = new EndpointAddress("https://www.zasilkovna.cz/api/soap");
+
+            const string apiPassword = "apiPassword";
+            ClaimAttributes claimAttributes = new ClaimAttributes
+            {
+                phone = "+48698183000",
+                email = "example@packetatest.com",
+                value = 500,
+                eshop = "MyEshop",
+                number = "orderNumber",
+                currency = "CZK",
+                sendLabelToEmail = false
+            };
+
+            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            try
+            {
+                createPacketClaimResponse response = await client.createPacketClaimAsync(new createPacketClaimRequest(apiPassword, claimAttributes));
+
+                //Process response
+                Console.WriteLine(response.createPacketClaimResult.id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="js" label="Node.js">
+
+```js
+import { Builder, Parser } from "xml2js"
+
+const requestBody = {
+    createPacketClaim: {
+        apiPassword: "",
+        claimAttributes: {
+            number: "claimNumber",
+            phone: "+420777777777",
+            email: "example@packetatest.com",
+            value: 100,
+            currency: "CZK",
+            eshop: "MyEshop",
+            sendEmailToCustomer: false     
+        }
+    }
+}
+
+try {
+    const response = await fetch(
+        "https://www.zasilkovna.cz/api/rest",
+        {
+            method: "POST",
+            body: new Builder().buildObject(requestBody)
+        }
+    );
+
+    const responseBody = await new Parser({ explicitArray: false }).parseStringPromise(await response.text());
+
+    //process response
+    console.dir({body: responseBody, status: response.status}, {depth: null});
+}
+catch (exception) {
+    console.log(exception);
+}
+```
+
+</TabItem>
+</Tabs>
+</details>
+
+<details>
+<summary>
+Example <code>createPacketClaimWithPassword()</code> request/response
+</summary>
+<Tabs>
+<TabItem value="rest" label="REST">
+
+```xml
+<!--request-->
+<createPacketClaimWithPassword>
+    <apiPassword>{{apiPassword}}</apiPassword>
+    <claimWithPasswordAttributes>
+        <number>claimNumber</number>
+        <email>example@packetatest.com</email>
+        <soap1:phone>+420777777777</soap1:phone>
+        <value>100.00</value>
+        <currency>CZK</currency>
+        <eshop>MyEshop</eshop>
+        <consignCountry>CZ</consignCountry>
+        <sendEmailToCustomer>false</sendEmailToCustomer>
+    </claimWithPasswordAttributes>
+</createPacketClaimWithPassword>
+
+
+<!--response-->
+<?xml version="1.0" encoding="utf-8"?>
+<response>
+    <status>ok</status>
+    <result>
+        <id>1234567890</id>
+        <barcode>Z1234567890</barcode>
+        <barcodeText>Z 123 4567 890</barcodeText>
+        <password>P186A9</password>
+    </result>
+</response>
+
+
+```
+
+</TabItem>
+<TabItem value="soap" label="SOAP">
+
+```xml
+
+<!--request-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://www.zasilkovna.cz/api/soap.wsdl2" xmlns:soap1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <soap:createPacketClaimWithPassword>
+         <apiPassword>{{apiPassword}}</apiPassword>
+         <claimWithPasswordAttributes>
+            <soap1:number>claimNumber</soap1:number>
+            <soap1:email>umpa.lumpa@packetatest.com</soap1:email>
+            <soap1:phone>+420777777777</soap1:phone>
+            <soap1:value>100</soap1:value>
+            <soap1:currency>CZK</soap1:currency>
+            <soap1:eshop>MyEshop</soap1:eshop>
+            <soap1:sendEmailToCustomer>false</soap1:sendEmailToCustomer>
+         </claimWithPasswordAttributes>
+      </soap:createPacketClaimWithPassword>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+
+<!--response-->
+<?xml version="1.0" encoding="utf-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <SOAP-ENV:Body>
+      <ns1:createPacketClaimWithPasswordResponse>
+         <createPacketClaimWithPasswordResult>
+            <ns1:id>1234567890</ns1:id>
+            <ns1:barcode>Z1234567890</ns1:barcode>
+            <ns1:barcodeText>Z 123 4567 890</ns1:barcodeText>
+            <ns1:password>P186A9</ns1:password>
+         </createPacketClaimWithPasswordResult>
+      </ns1:createPacketClaimWithPasswordResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+
+```
+
+</TabItem>
+<TabItem value="php" label="PHP">
+
+```php
+
+<?php
+
+$apiPassword = 'apiPassword';
+
+$claimAttributes = [
+    'number' => '20220513001',
+    'email' => 'umpa.lumpa@packetatest.com',
+    'phone' => '603603603',
+    'value' => '100',
+    'currency' => 'CZK',
+    'eshop' => 'my-eshop.com',
+    'consignCountry' => 'CZ',
+    'sendEmailToCustomer' => false,
+];
+
+try {
+    $client = new SoapClient("https://www.zasilkovna.cz/api/soap.wsdl");
+    $result = $client->createPacketClaimWithPassword($apiPassword, $claimAttributes);
+
+    var_dump($result);
+}
+catch (SoapFault $e){
+    echo $e->getMessage();
+
+    if (isset($e->detail->PacketAttributesFault)) {
+        var_dump($e->detail->PacketAttributesFault->attributes->fault);
+    } elseif(isset($e->detail->IncorrectApiPasswordFault)) {
+        var_dump('Incorrect API password.');
+    }
+}
+
+
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp
+using System;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using PacketeryService;
+
+namespace PacketaClientExample
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+           BasicHttpsBinding binding = new BasicHttpsBinding();
+            EndpointAddress endpointAddress = new EndpointAddress("https://www.zasilkovna.cz/api/soap");
+
+            const string apiPassword = "apiPassword";
+            ClaimWithPasswordAttributes claimAttributes = new ClaimWithPasswordAttributes
+            {
+                phone = "+48698183000",
+                email = "test@test.cz",
+                value = 500,
+                eshop = "MyEshop",
+                number = "orderNumber",
+                currency = "CZK",
+                sendEmailToCustomer = false
+            };
+
+            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            try
+            {
+                createPacketClaimWithPasswordResponse response = await client.createPacketClaimWithPasswordAsync(new createPacketClaimWithPasswordRequest(apiPassword, claimAttributes));
+
+                //Process response
+                Console.WriteLine(response.createPacketClaimWithPasswordResult.id);
+                Console.WriteLine(response.createPacketClaimWithPasswordResult.password);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            } 
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="js" label="Node.js">
+
+```js
+import { Builder, Parser } from "xml2js"
+
+const requestBody = {
+    createPacketClaimWithPassword: {
+        apiPassword: "apiPassword",
+        claimWithPasswordAttributes: {
+            number: "claimNumber",
+            phone: "+420777777777",
+            email: "test@test.com",
+            value: 100,
+            currency: "CZK",
+            eshop: "MyEshop",
+            consignCountry: "cz", 
+            sendEmailToCustomer: false     
+        }
+    }
+}
+
+try {
+    const response = await fetch(
+        "https://www.zasilkovna.cz/api/rest",
+        {
+            method: "POST",
+            body: new Builder().buildObject(requestBody)
+        }
+    );
+
+    const responseBody = await new Parser({ explicitArray: false }).parseStringPromise(await response.text());
+
+    //process response
+    console.dir({body: responseBody, status: response.status}, {depth: null});
+}
+catch (exception) {
+    console.log(exception);
+}
+```
+
+</TabItem>
+</Tabs>
+</details>
+
+## Return Parcels
+
+Our Return Parcels service can be used only by generating a Return parcel code through our client section [here](https://client.packeta.com/cs/eshop-identifiers/edit).
+**This service cannot be used through our API**.

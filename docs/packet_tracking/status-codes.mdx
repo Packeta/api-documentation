@@ -1,0 +1,26 @@
+---
+sidebar_position: 2
+---
+
+# Status codes
+
+## Tracking status codes
+
+| `statusCode` | `codeText`                 | Extra valid fields                | Description                                                                                                                                        |
+|--------------|----------------------------|-----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `1`          | `received data`            |                                   | We have received the packet data. Freshly created packet.                                                                                          |
+| `2`          | `arrived`                  | `branchId`                        | Packet has been accepted at our branch.                                                                                                            |
+| `3`          | `prepared for departure`   | `branchId`, `destinationBranchId` | Packet is waiting to be dispatched from branch `branchId` to branch `destinationBranchId`.                                                         |
+| `4`          | `departed`                 | `branchId`, `destinationBranchId` | Packet is on the way from branch `branchId` to branch `destinationBranchId`.                                                                       |
+| `5`          | `ready for pickup`         | `branchId`                        | Packet has been delivered to its destination (`branchId`), the customer has been informed via SMS.                                                 |
+| `6`          | `handed to carrier`        | `externalTrackingCode`            | Packet has been handed over to an external carrier for delivery. It can be traced via carrier's tracking application under `externalTrackingCode`. |
+| `7`          | `delivered`                | `branchId`                        | Packet was picked up by the customer at the branch `branchId`.                                                                                     |
+| `9`          | `posted back`              |                                   | Packet is on the way back to the sender.                                                                                                           |
+| `10`         | `returned`                 |                                   | Packet has been returned to the sender.                                                                                                            |
+| `11`         | `cancelled`                |                                   | Packet has been cancelled.                                                                                                                         |
+| `12`         | `collected`                | `branchId`                        | Packet has been collected and is on its way to the depot `branchId`.                                                                               |
+| `14`         | `customs`                  |                                   | Customs declaration process.                                                                                                                       |
+| `15`         | `reverse packet arrived`   |                                   | Reverse packet has been accepted at our branch.                                                                                                    |
+| `16`         | `delivery attempt`         |                                   | Packeta Home made unsuccessful delivery attempt of packet.                                                                                         |
+| `17`         | `rejected by recipient`    |                                   | Packeta Home delivery attempt of packet end in rejected by recipient response.                                                                     |
+| `999`        | `unknown`                  |                                   | Unknown packet status.                                                                                                                             |

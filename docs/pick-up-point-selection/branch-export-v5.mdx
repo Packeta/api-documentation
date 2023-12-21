@@ -1,0 +1,427 @@
+---
+sidebar_position: 3
+---
+
+# Branch export version 5
+
+## Branches feed
+
+The feed contains data about all the currently open branches. You can access the feed via following URLs:
+
+```
+https://pickup-point.api.packeta.com/v5/__API_KEY__/branch.json?lang=__LANGUAGE__
+```
+
+Only [two-letter ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format is allowed for __LANGUAGE__ parameter, e.g. cs, en, sk.
+
+
+## Boxes feed
+
+The feed contains data about all the currently open boxes. You can access the feed via following URLs:
+
+```
+https://pickup-point.api.packeta.com/v5/__API_KEY__/box.json?lang=__LANGUAGE__
+```
+
+Only [two-letter ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format is allowed for __LANGUAGE__ parameter, e.g. cs, en, sk.
+
+
+## Carriers feed (Address delivery)
+
+The above exports only include standard branches and boxes, since they are primarily used to generate a list of options for the end user to pick from. However, if you wish to use our services for address delivery, whether just in the Czech Republic or in other countries as well, you will need to download a list of address delivery options.
+
+Address delivery option is represented by a branch entry and is also treated like one when creating a packet entry in our system. You just use its ID as you would with a standard branch.
+
+You can access the feed via following URLs:
+
+```
+https://pickup-point.api.packeta.com/v5/__API_KEY__/carrier.json?lang=__LANGUAGE__
+```
+
+## Export specification - branches, boxes and carriers
+
+### Branches
+
+```json
+[
+ {
+        "id": "12",
+        "name": "České Budějovice, Rudolfovská 1 (Tvořilka)",
+        "special": "vstup z ul. Otakarova",
+        "place": "Tvořilka",
+        "street": "Rudolfovská 1",
+        "city": "České Budějovice",
+        "zip": "370 01",
+        "country": "cz",
+        "currency": "CZK",
+        "status": {
+            "statusId": "1",
+            "description": "In operation"
+        },
+        "displayFrontend": "1",
+        "directions": "<p>Vstup je z Otakarovy ulice (naproti elektru U Helmichů). Přímo před obchodem 2 parkovací místa pro klienty.</p>",
+        "directionsCar": "<p>Dostupnost z nedalekého hlavního tahu Budějovicemi - z ulice Na Sadech, Otakarova tř. či z ulice Nádražní.</p>\n<p>Před prodejnou 2 vyhrazená parkovací místa pro naše zákazníky</p>",
+        "directionsPublic": "<p>Nejbližší zastávky a linky:</p>\n<p>Zastávka Poliklinika Sever - Trolejbus 2 a 9, Bus 4, 6 a také 11.</p>\n<p>Zastávka Jeronýmova - Bus 11 a 14.</p>",
+        "wheelchairAccessible": "no",
+        "creditCardPayment": "yes",
+        "dressingRoom": "0",
+        "claimAssistant": "1",
+        "packetConsignment": "1",
+        "latitude": "48.97585",
+        "longitude": "14.47978",
+        "url": "https://www.zasilkovna.cz/pobocky/ceske-budejovice-otakarova-tvorilka",
+        "maxWeight": "15",
+        "labelRouting": "C22-511-012",
+        "labelName": "České Budějovice, Otakarova Tvořilka",
+        "photos": [
+            {
+                "thumbnail": "https://files.packeta.com/points/thumb/point_12_c2c414ea3d96.jpg",
+                "normal": "https://files.packeta.com/points/normal/point_12_c2c414ea3d96.jpg"
+            },
+            {
+                "thumbnail": "https://files.packeta.com/points/thumb/point_12_3327f9a3b81f.jpg",
+                "normal": "https://files.packeta.com/points/normal/point_12_3327f9a3b81f.jpg"
+            },
+            {
+                "thumbnail": "https://files.packeta.com/points/thumb/point_12_02921ef2c293.jpg",
+                "normal": "https://files.packeta.com/points/normal/point_12_02921ef2c293.jpg"
+            }
+        ],
+
+```
+
+### Boxes
+
+```json
+[
+   {
+          "id": "8292",
+          "type": "zbox",
+          "name": "Z-BOX Praha 4, Braník, Vavřenova 1172/12 (Billa)",
+          "place": "Z-BOX",
+          "street": "Vavřenova 1172/12",
+          "city": "Praha",
+          "zip": "142 00",
+          "country": "cz",
+          "currency": "CZK",
+          "status": {
+              "statusId": "1",
+              "description": "In operation"
+          },
+          "codAllowed": "1",
+          "displayFrontend": "1",
+          "directions": "<p>Z-BOX se nachází na parkovišti z boku Billy v ulici Vavřenova 1172/12.</p>\n<p><strong>Dobré vědět:</strong></p>\n<p>Standardní úložní doba zásilek jsou 2 dny s možností prodloužení o další den.</p>\n<p><strong>Co potřebujete k vyzvednutí zásilky?</strong></p>\n<ul><li>mobilní aplikaci Zásilkovna</li><li>zapnutý Bluetooth a polohové služby (GPS)</li><li>uhrazenou dobírku předem</li></ul>\n<p>Dobírku lze uhradit předem přímo v mobilní aplikaci Zásilkovna</p>",
+          "directionsCar": {},
+          "directionsPublic": {},
+          "wheelchairAccessible": "no",
+          "creditCardPayment": "yes",
+          "dressingRoom": "0",
+          "claimAssistant": "0",
+          "packetConsignment": "1",
+          "latitude": "50.02433",
+          "longitude": "14.4267",
+          "url": "https://www.zasilkovna.cz/pobocky/z-box-praha-4-branik-vavrenova-1172-12-billa",
+          "maxWeight": "15",
+          "labelRouting": "C10-411-8292",
+          "labelName": "Z-BOX Praha 4, Braník, Vavřenova 1172/12 (Billa)",
+          "photos": [
+              {
+                  "thumbnail": "https://files.packeta.com/points/thumb/IMG_20200830_113905_1600083073lk48s.jpg",
+                  "normal": "https://files.packeta.com/points/normal/IMG_20200830_113905_1600083073lk48s.jpg"
+              },
+              {
+                  "thumbnail": "https://files.packeta.com/points/thumb/IMG_20200830_114014_1600083074e29qt.jpg",
+                  "normal": "https://files.packeta.com/points/normal/IMG_20200830_114014_1600083074e29qt.jpg"
+              }
+          ],
+          "openingHours": {
+              "regular": {
+                  "monday": "00:00–23:59",
+                  "tuesday": "00:00–23:59",
+                  "wednesday": "00:00–23:59",
+                  "thursday": "00:00–23:59",
+                  "friday": "00:00–23:59",
+                  "saturday": "00:00–23:59",
+                  "sunday": "00:00–23:59"
+              },
+              "exceptions": {
+                  "exception": [
+                      {
+                          "date": "2023-12-24",
+                          "hours": "00:00–23:59"
+                      },
+                      {
+                          "date": "2023-12-25",
+                          "hours": "00:00–23:59"
+                      },
+                      {
+                          "date": "2023-12-26",
+                          "hours": "00:00–23:59"
+                      },
+                      {
+                          "date": "2024-01-01",
+                          "hours": "00:00–23:59"
+                      }
+                  ]
+              }
+          }
+      }
+]
+```
+
+### `Branch attributes`
+
+| Name                 | Mandatory | Type    | Description                                                                                                                                                                                             |
+|----------------------|-----------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| id                   | **Yes**   | Integer | A unique id.                                                                                                                                                                                            |
+| name                 | **Yes**   | String  | Branch name.                                                                                                                                                                                            |
+| special              | No        | String  | Special orientation feature of the location.                                                                                                                                                            |
+| place                | **Yes**   | String  | Name of the place hosting the branch i.e. Baker & Sons bakery.                                                                                                                                          |
+| street               | **Yes**   | String  | Street name and number.                                                                                                                                                                                 |
+| city                 | **Yes**   | String  | City.                                                                                                                                                                                                   |
+| zip                  | **Yes**   | String  | Zip code. Contains spaces based on standard country format.                                                                                                                                             |
+| country              | **Yes**   | String  | Country code.                                                                                                                                                                                           |
+| currency             | **Yes**   | String  | Currency code accepted by the branch.                                                                                                                                                                   |
+| status               | **Yes**   | Object  | Container for the status code and status message of the branch. See [`status`](#status).                                                                                                                |
+| displayFrontend      | **Yes**   | Integer | Indicates whether the branch is supposed to be shown to the end customer. If the value equals '0', the branch is intended to be used only for your administrative purposes.                             |
+| exportedUntil        | No        | Date    | If the branch is scheduled to close, the field contains date when the branch is last contained in the export. The format is YYYY-MM-DD.                                                                 |
+| enterableUntil       | No        | Date    | If the branch is scheduled to close, the field contains last date when our system will accept packet data for this branch. The format is YYYY-MM-DD.                                                    |
+| openUntil            | No        | Date    | If the branch is scheduled to close, the field contains last date of the branch being open for pick up of delivered packets. The format is YYYY-MM-DD.                                                  |
+| openSince            | No        | Date    | If the branch is scheduled to open, the field contains the first date of the branch being open for pick up of delivered packets. The format is YYYY-MM-DD.                                              |
+| directions           | No        | String  | HTML directions to the branch.                                                                                                                                                                          |
+| directionsCar        | No        | String  | HTML directions to the branch when travelling by car.                                                                                                                                                   |
+| directionsPublic     | No        | String  | HTML directions to the branch when travelling via public transport.                                                                                                                                     |
+| wheelchairAccessible | **Yes**   | String  | Indicates whether the branch is wheelchair accessible.                                                                                                                                                  |
+| creditCardPayment    | **Yes**   | String  | Indicates whether the branch accepts credit card as payment option.                                                                                                                                     |
+| dressingRoom         | **Yes**   | Integer | Indicates whether the branch has a dressing room.                                                                                                                                                       |
+| claimAssistant       | **Yes**   | Integer | Indicates whether the branch accepts [Claim Assistant](../getting-started/available-delivery-services#claim-assistant) packets.                                                                                                                |
+| packetConsignment    | **Yes**   | Integer | Indicates whether the branch accepts packet consignment.                                                                                                                                                |
+| latitude             | **Yes**   | Decimal | Latitude.                                                                                                                                                                                               |
+| longitude            | **Yes**   | Decimal | Longitude.                                                                                                                                                                                              |
+| url                  | **Yes**   | String  | URL with branch information.                                                                                                                                                                            |
+| maxWeight            | **Yes**   | Integer | Maximal weight of the packet the branch is able to handle.                                                                                                                                              |
+| holidayStart         | No        | Date    | The date of the start of the holiday. If the branch is contiuously closed for at least 7 days, the time is considered a holiday. This field is present at most 14 days before the start of the holiday. |
+| holidayEnd           | No        | Date    | The date of the end of the holiday.                                                                                                                                                                     |
+| labelRouting         | No        | String  | Routing code of the branch. Used for custom labels.                                                                                                                                                     |
+| labelName            | No        | String  | Branch name for printing on custom labels.                                                                                                                                                              |
+| photos               | **Yes**   | Object  | Container for [`photo`](#photo) elements.                                                                                                                                                               |
+| openingHours         | **Yes**   | Object  | Container for opening hours information. See [`openingHours`](#openinghours) documentation.                                                                                                             |
+
+
+
+### `Box attributes`
+
+The box has same attributes as branch, plus the following:
+
+| Name       | Mandatory | Type    | Description                                                                                |
+|------------|-----------|---------|--------------------------------------------------------------------------------------------|
+| type       | **Yes**   | String  | Type of box. Current possible values: `zbox`, `alzabox`                                    |
+| codAllowed | **Yes**   | Integer | If 0 (zero) is marked, it is not possible to send a cash on delivery shipment to this box. |
+
+
+### `status`
+
+Contained once by [`branches`](#branches).
+
+Contains a status code and a message. The language of the status message is determined by the `lang` GET parameter. If no `lang` parameter is supplied, default value `en` is used.
+
+```json
+{
+  "statusId": "1",
+  "description": "In operation"
+}
+```
+
+| Name         | Type      | Description                                                                               |
+|--------------|-----------|-------------------------------------------------------------------------------------------|
+| statusId     | Integer   | Numeric code of branch status.                                                            |
+| description  | String    | Text message of the branch status in chosen language.                                     |
+
+#### Statuses
+
+| Status code  | Description                                                                                           |
+|--------------|-------------------------------------------------------------------------------------------------------|
+| 1            | In operation.                                                                                         |
+| 2            | Temporarily closed due to holiday.                                                                    |
+| 3            | Temporarily does not receive packets due to exceeded capacity.                                        |
+| 4            | Temporarily does not receive packets due to technical reasons.                                        |
+| 5            | The branch has ended cooperation and no longer accepts new packets.                                   |
+
+### `photo`
+
+Contained zero to many times by [`photos`](#branches) attribte.
+
+```json
+{
+  "thumbnail":"https://www.zasilkovna.cz/images/branch/thumb/img_1.jpg",
+  "normal":"https://www.zasilkovna.cz/images/branch/normal/img_1.jpg"
+}
+```
+
+| Name      | Type   | Description                           |
+|-----------|--------|---------------------------------------|
+| thumbnail | String | URL of a thumbnail image 160px*120px. |
+| normal    | String | URL of a image 720px*540px.           |
+
+### `openingHours`
+
+Contained once by [`branch`](#branches) and [`box`](#boxes) attribute.
+
+```json
+{
+  "regular": {
+    "monday": "08:30-18:30",
+    "tuesday": "08:30-18:30",
+    "wednesday": "08:30-18:30",
+    "thursday": "08:30-18:30",
+    "friday": "08:30-18:30",
+    "saturday": "08:30-14:00",
+    "sunday": ""
+  },
+  "upcoming": {
+    "monday": "08:30-18:30",
+    "tuesday": "08:30-18:30",
+    "wednesday": "08:30-18:30",
+    "thursday": "08:30-18:30",
+    "friday": "08:30-18:30",
+    "saturday": "08:30-14:00",
+    "sunday": "08:30-14:00",
+    "startDate": "2016-08-23"
+  },
+  "exceptions": [
+    {
+      "date": "2023-01-30",
+      "hours": "08:00-12:00, 12:45-16:30"
+    },
+    {
+      "date": "2023-01-31",
+      "hours": "08:00-12:00, 12:45-16:30"
+    }
+  ]
+}
+```
+
+| Name         | Type    | Description                                                                                          |
+|--------------|---------|------------------------------------------------------------------------------------------------------|
+| regular      | Object  | Container for opening hours by day. See documentation for [`regular`](#regular) element.             |
+| upcoming     | Object  | Container for upcoming opening hours by day. See documentation for [`upcoming`](#upcoming) element.  |
+| exceptions   | Object  | Container for [`exception`](#exception) elements.                                                    |
+
+
+### `regular`
+
+Contained once by [`openingHours`](#openinghours) attribute.
+
+Contains opening hours for each day in day-named elements. In the table below we only show `monday` since the same applies for other week days.
+
+```json
+{
+    "monday":"08:30-18:30",
+    "tuesday":"08:30-18:30",
+    "wednesday":"08:30-18:30",
+    "thursday":"08:30-18:30",
+    "friday":"08:30-18:30",
+    "saturday":"08:30-14:00",
+    "sunday":"08:30-14:00"
+}
+```
+
+| Name   | Type   | Description                                        |
+|--------|--------|----------------------------------------------------|
+| monday | String | Range representation of opening hours for the day. |
+
+### `upcoming`
+
+Contained once by [`openingHours`](#openinghours) element.
+
+Contains upcoming opening hours for each day in day-named elements along with an element indicating when the new opening hours start. In the table below we only show `<monday>` since the same applies for other week days.
+
+```json
+{
+    "monday": "08:30-18:30",
+    "tuesday": "08:30-18:30",
+    "wednesday": "08:30-18:30",
+    "thursday": "08:30-18:30",
+    "friday": "08:30-18:30",
+    "saturday": "08:30-14:00",
+    "sunday": "08:30-14:00",
+    "startDate": "2016-08-23"
+}
+```
+
+| Name      | Type   | Description                                            |
+|-----------|--------|--------------------------------------------------------|
+| monday    | String | Range representation of opening hours for the day.     |
+| startDate | Date   | The day on which the new opening hours come to effect. |
+
+### `exceptions`
+
+Contained once by [`openingHours`](#openinghours) attribute.
+
+### `exception`
+
+Contained none or many times by [`exceptions`](#exceptions) attribute.
+
+This object is optional and [`exceptions`](#exceptions) attribute can be empty.
+
+```json
+{
+  "exception": {
+    "date": "2016-08-02",
+    "hours": "10:00–13:30, 16:00–17:30"
+  }
+}
+```
+
+| Name  | Type   | Description                                                                                      |
+|-------|--------|--------------------------------------------------------------------------------------------------|
+| date  | Date   | Date of the opening hours exception.                                                             |
+| hours | String | Range representation of opening hours for the day. If omitted, the branch is closed on that day. |
+
+## `Carriers`
+
+```json
+[
+  {
+    "id":"1",
+    "name":"AT Austrian Post HD",
+    "pickupPoints":"false",
+    "apiAllowed":"true",
+    "separateHouseNumber":"false",
+    "customsDeclarations":"false",
+    "requiresEmail":"true",
+    "requiresPhone":"true",
+    "requiresSize":"false",
+    "disallowsCod":"false",
+    "country":"at",
+    "currency":"EUR",
+    "maxWeight":"30",
+    "labelRouting":"C38-***-080",
+    "labelName":"AT Austrian Post HD"
+  }
+]
+```
+
+### `carrier`
+
+Contained none or many times by [`carriers`](#carriers).
+
+Represents a carrier.
+
+| Name                 | Mandatory | Type     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|----------------------|-----------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| id                   | Yes       | Integer  | A unique id.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| name                 | Yes       | String   | Carrier name.                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| pickupPoints         | Yes       | Boolean  | Indicates whether the carrier offers its own pick-up points. Please refer to our [carrier pick up points documentation](carrier-pickup-points-export) for more information.                                                                                                                                                                                                                                                  |
+| apiAllowed           | Yes       | Boolean  | Indicates whether the carrier supports direct label printing, ie. whether the label is available via [packetCourierLabelPdf()](../api-reference/api-methods-reference#packetcourierlabelpdf), [packetCourierLabelPng()](../api-reference/api-methods-reference#toc-packetcourierlabelpng) and [packetsCourierLabelsPdf()](../api-reference/api-methods-reference#toc-packetscourierlabelspdf) methods. |
+| separateHouseNumber  | Yes       | Boolean  | Indicates whether the carrier requires a descriptive number to be entered in the houseNumber parameter.                                                                                                                                                                                                                                                                                                                                              |
+| customsDeclarations  | Yes       | Boolean  | Indicates whether the carrier requires the completion of customs declarations in the CustomsDeclaration parameter - [custom declarations documentation](../api-reference/api-methods-reference#customsdeclaration).                                                                                                                                                                                                                |
+| requiresEmail        | Yes       | Boolean  | Indicates whether the carrier requires an email.                                                                                                                                                                                                                                                                                                                                                                                                     |
+| requiresPhone        | Yes       | Boolean  | Indicates whether the carrier requires a phone number.                                                                                                                                                                                                                                                                                                                                                                                               |
+| requiresSize         | Yes       | Boolean  | Indicates whether the carrier requires size.                                                                                                                                                                                                                                                                                                                                                                                                         |
+| disallowsCod         | Yes       | Boolean  | If true is marked, it is not possible to send a cash on delivery shipment through this carrier.                                                                                                                                                                                                                                                                                                                                                      |
+| country              | Yes       | String   | Country code.                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| currency             | Yes       | String   | Currency code accepted by the carrier.                                                                                                                                                                                                                                                                                                                                                                                                               |
+| maxWeight            | Yes       | Integer  | Maximal weight of the packet the carrier is able to handle.                                                                                                                                                                                                                                                                                                                                                                                          |
+| labelRouting         | No        | String   | Routing code of the carrier. Used for custom labels.                                                                                                                                                                                                                                                                                                                                                                                                 |
+| labelName            | No        | String   | Carrier name for printing on custom labels.                                                                                                                                                                                                                                                                                                                                                                                                          |

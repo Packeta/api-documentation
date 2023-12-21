@@ -1,0 +1,53 @@
+---
+sidebar_position: 4
+---
+
+# Phone number formats
+
+When consigning a new packet via our API, the phone number must follow the format described below.
+
+It is also possible to add a plus sign ('+') or '00' at the beginning of the phone number. For example: '+420723456789' for CZ phone number.
+### The phone number formats for country codes are next:
+| Country code | Phone number regex format| Phone number format description |
+| ------------ |:-----------:|:------------|
+| `AE` | `9710?[2-7,9]\d{8}` | '9710', then number from '2' to '7', or '9', then 8 numbers |
+| `AT` | `43[0-9]{8,13}` | '43', then 8 to 13 numbers |
+| `BE` | `32[0-9]{9,10}` | '32', then 9 to 10 numbers |
+| `BG` | `359(2\d{7}&#124;8\d{8}&#124;[13-79]\d{7,8})` | '359', then there are different options: '2', then 7 numbers, or '8', then 8 numbers, or number from '13' to '79', then 7 to 8 numbers |
+| `CH` | `41[0-9]{9}` | '41', then 9 numbers |
+| `CN` | `86[0-9]{11,12}` | '86', then 11 to 12 numbers |
+| `CZ` | `420[0-9]{9}` | '420', then 9 numbers |
+| `DE` | `49[0-9]{7,13}` | '49', then 7 to 13 numbers |
+| `DK` | `45[0-9]{8}` | '45', then 8 numbers |
+| `EE` | `372[0-9]{7,8}` | '372', then 7 to 8 numbers | 
+| `ES` | `34[0-9]{9}` | '34', then 9 numbers |
+| `FI` | `358[0-9]{7,10}` | '358', then 7 to 10 numbers |
+| `FR` | `33[0-9]{9}` | '33', then 9 numbers |
+| `GB` | `44[0-9]{4,10}` | '44', then 4 to 10 numbers 
+| `GR` | `30[0-9]{10,11}` | '30', then 10 to 11 numbers |
+| `HK` | `852[0-9]{4,10}` | '852', then 4 to 10 numbers |
+| `HR` | `385[0-9]{8,9}` | '385', then 8 to 9 numbers |
+| `HU` | `36[0-9]{8,9}` | '36', then 8 to 9 numbers |
+| `IE` | `353[0-9]{8,9}` | '353', then 8 to 9 numbers |
+| `IL` | `972\d{9}` | '972', then 9 numbers |
+| `IT` | `39[0-9]{8,12}` | '39', then 8 to 12 numbers |
+| `LI` | `423[0-9]{7,9}` | '423', then 7 to 9 numbers |
+| `LT` | `370[0-9]{8,9}` | '370', then 8 to 9 numbers |
+| `LU` | `352[0-9]{4,11}` | '352', then 4 to 11 numbers |
+| `LV` | `3712[0-9]{7}` | '3712', then 7 numbers |
+| `ME` | `382[0-9]{6,8}` | '382', then 6 to 8 numbers |
+| `MT` | `356[0-9]{8}` | '356', then 8 numbers |
+| `NL` | `31[0-9]{9}` | '31', then 9 numbers |
+| `OM` | `968[0-9]{9}` | '968', then 9 numbers |
+| `PL` | `48[0-9]{9}` | '48', then 9 numbers |
+| `PT` | `351[0-9]{9}` | '351', then 9 numbers |
+| `QA` | `974[0-9]{8}` | '974', then 8 numbers |
+| `RO` | `400?[1-9]\d{8}` | '40', then optional 0, then non-zero number, then 8 numbers |
+| `RU` | `7[0-9]{10}` | '7', then 10 numbers |
+| `SA` | `966[0-9]{9}` | '966', then 9 numbers |
+| `SE` | `46[0-9]{7,12}` | '46', then 7 to 12 numbers |
+| `SI` | `386[0-9]{8}` | '386', then 8 numbers |
+| `SK` | `421[0-9]{9}` | '421', then 9 numbers |
+| `TR` | `90\d{10}` | '90', then 10 numbers |
+| `UA` | `380[0-9]{7,9}` | '380', then 7 to 9 numbers |
+| `US` | `1[0-9]{7,10}` | '1', then 7 to 10 numbers |

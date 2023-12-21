@@ -1,0 +1,728 @@
+---
+sidebar_position: 4
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+# Address delivery
+
+Address delivery packets are created by passing an ID of a address delivery carrier into the `addressId` field. IDs of external carriers can be obtained using our [address delivery feed](../pick-up-point-selection/branch-export-v5.mdx#carriers-feed-address-delivery)
+
+Unlike Pick-up point packets, when creating address delivery packets, you will also have to specify the recipient's address using the `street`, `houseNumber`, `city`, `zip`, and `province` attributes.
+
+For packets heading outside of the EU, you will also have to declare customs data using [`packetItems`](../api-reference/data-structures-reference#packetattributes) and 
+[`packetAttributes`](../api-reference/data-structures-reference#packetattributes)
+
+:::note
+No `country` attribute exists in our `packetAttributes`, since the destination country is inferred automatically based on the specified `addressId`.
+:::
+
+## Address delivery without customs
+<Tabs>
+<TabItem value="rest" label="REST">
+
+```xml
+
+<!--request-->
+<createPacket>
+    <apiPassword>{{apiPassword}}</apiPassword>
+    <packetAttributes>
+        <number>orderNumber</number>
+        <name>John</name>
+        <surname>Doe</surname>
+        <company>Example  Company</company>
+        <email>example@packetatest.com</email>
+        <phone>+420777777777</phone>
+        <addressId>106</addressId> <!--carrier ID-->
+        <cod>123</cod>
+        <weight>2.5</weight>
+        <value>123</value>
+        <currency>CZK</currency>
+        <!--Since we are creating a address delivery packet, we need to specify an address-->
+        <street>Českomoravská</street>
+        <houseNumber>2408/1a</houseNumber>
+        <city>Praha</city>
+        <zip>19000</zip>
+        <note>Note</note>
+        <eshop>MyEshop</eshop>
+   </packetAttributes>
+</createPacket>
+
+
+<!--response-->
+<response>
+  <status>ok</status>
+  <result>
+    <id>4154010000</id>
+    <barcode>Z4154010000</barcode>
+    <barcodeText>Z 415 4010 000</barcodeText>
+  </result>
+</response>
+
+
+```
+
+</TabItem>
+<TabItem value="soap" label="SOAP">
+
+```xml
+
+<!--request-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://www.zasilkovna.cz/api/soap.wsdl2" xmlns:soap1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <soap:createPacket>
+         <apiPassword>{{apiPassword}}</apiPassword>
+         <attributes>
+            <soap1:number>orderNumber</soap1:number>
+            <soap1:name>John</soap1:name>
+            <soap1:surname>Doe</soap1:surname>
+            <soap1:company>Example Company</soap1:company>
+            <soap1:email>example@packetatest.cm</soap1:email>
+            <soap1:phone>+420777777777</soap1:phone>
+            <soap1:addressId>106</soap1:addressId>
+            <soap1:cod>123</soap1:cod>
+            <soap1:currency>CZK</soap1:currency>
+            <soap1:value>123</soap1:value>
+            <soap1:weight>2.5</soap1:weight>
+            <soap1:eshop>MyEshop</soap1:eshop>
+            <soap1:note>Note</soap1:note>
+            <soap1:street>Českomoravská</soap1:street>
+            <soap1:houseNumber>2408/1a</soap1:houseNumber>
+            <soap1:city>Praha</soap1:city>
+            <soap1:zip>19000</soap1:zip>
+         </attributes>
+      </soap:createPacket>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+
+<!--response-->
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <SOAP-ENV:Body>
+      <ns1:createPacketResponse>
+         <createPacketResult>
+            <ns1:id>3426894000</ns1:id>
+            <ns1:barcode>Z3426894000</ns1:barcode>
+            <ns1:barcodeText>Z 342 6894 000</ns1:barcodeText>
+         </createPacketResult>
+      </ns1:createPacketResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+
+```
+
+</TabItem>
+<TabItem value="php" label="PHP">
+
+```php
+
+<?php
+
+$apiPassword = 'apiPassword';
+
+$packetAttributes = [
+    'number' => '20220513001',
+    'name' => 'John',
+    'surname' => 'Doe',
+    'company' => 'Company',
+    'email' => 'example@packetatest.com',
+    'phone' => '+420777123456',
+    'addressId' => 106, // carrier ID
+    'value' => '100',
+    'currency' => 'CZK',
+    'cod' => 115,
+    'weight' => 2.5,
+    'eshop' => 'MyEshop',
+    //Since we are creating a address delivery packet, we need to specify an address
+    'street' => 'Českomoravská',
+    'houseNumber' => '2408/1a',
+    'city' => 'Praha',
+    'zip' => '19000',
+    'note' => 'note',
+];
+
+try {
+    $client = new SoapClient('https://www.zasilkovna.cz/api/soap.wsdl');
+    $result = $client->createPacket($apiPassword, $packetAttributes);
+
+    var_dump($result);
+} catch (SoapFault $e) {
+    echo $e->getMessage();
+
+    if (isset($e->detail->PacketAttributesFault)) {
+        var_dump($e->detail->PacketAttributesFault->attributes->fault);
+    } elseif (isset($e->detail->IncorrectApiPasswordFault)) {
+        var_dump('Incorrect API password.');
+    }
+}
+
+
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp 
+using System;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using PacketeryService;
+namespace PacketaClientExample
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+             BasicHttpsBinding binding = new BasicHttpsBinding();
+            EndpointAddress endpointAddress = new EndpointAddress("https://www.zasilkovna.cz/api/soap");
+
+            const string apiPassword = "apiPassword";
+            PacketAttributes packetAttributes = new PacketAttributes
+            {
+                addressId = 106,
+                name = "John",
+                surname = "Doe",
+                email = "example@packetatest.com",
+                phone = "+420777777777",
+                value = 500,
+                weight = 1,
+                eshop = "MyEshop",
+                number = "orderNumber",
+                street = "Českomoravská",
+                houseNumber = "2408/1a",
+                city = "Praha",
+                zip = "19000"
+            };
+
+            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            try
+            {
+                createPacketResponse response = await client.createPacketAsync(new createPacketRequest(apiPassword, packetAttributes));
+
+                //Process response
+                Console.WriteLine(response.createPacketResult.id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="js" label="Node.js">
+
+```js showLineNumbers 
+
+import { Builder, Parser } from "xml2js"
+
+const requestBody = {
+    createPacket: {
+        apiPassword: "apiPassword",
+        packetAttributes: {
+            addressId: 106,
+            name: "John",
+            surname: "Doe",
+            phone: "+420777777777",
+            email: "example@packetatest.comz",
+            value: 100,
+            weight: 1,
+            eshop: "MyEshop",
+            number: "orderNumber",
+            street: "Českomoravská",
+            houseNumber: "2408/1a",
+            city: "Praha",
+            zip: "19000",
+            size: {
+                width: 50,
+                height: 200,
+                length: 150
+            }
+        }
+    }
+}
+
+try {
+    const response = await fetch(
+        "https://www.zasilkovna.cz/api/rest",
+        {
+            method: "POST",
+            body: new Builder().buildObject(requestBody)
+        }
+    );
+
+    const responseBody = await new Parser({ explicitArray: false }).parseStringPromise(await response.text());
+
+    //process response
+    console.dir(responseBody, {depth: null});
+}
+catch (exception) {
+    console.log(exception);
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Address delivery with customs data
+<Tabs>
+<TabItem value="rest" label="REST">
+
+```xml
+
+<!--request-->
+<createPacket>
+    <apiPassword>{{apiPassword}}</apiPassword>
+    <packetAttributes>
+        <number>orderNumber</number>
+        <name>John</name>
+        <surname>Doe</surname>
+        <email>example@packetatest.cz</email>
+        <phone>+41337237500</phone>
+        <addressId>3294</addressId> <!--ID of Swiss Post - requiress customs declarations-->
+        <currency>CZK</currency>
+        <cod></cod>
+        <value>1500</value>
+        <eshop>MyEshop</eshop>
+        <weight>1</weight>
+        <adultContent>0</adultContent>
+        <street>Viktoriapl.</street>
+        <houseNumber>1</houseNumber>
+        <city>Bern</city>
+        <zip>3013</zip>
+        <note>Note</note>
+        <attributes>
+            <attribute>
+                <key>ead</key>
+                <value>create</value>
+            </attribute>
+            <attribute>
+                <key>deliveryCost</key>
+                <value>200</value>
+            </attribute>
+            <attribute>
+                <key>invoiceNumber</key>
+                <value>35421568</value>
+            </attribute>
+            <attribute>
+                <key>invoiceIssueDate</key>
+                <value>2021-5-10</value>
+            </attribute>
+            <attribute>
+                <key>invoiceFile</key>
+                <value>31759</value>
+            </attribute>
+        </attributes>
+        <items>
+            <item>
+                <attributes>
+                    <attribute>
+                        <key>customsCode</key>
+                        <value>09030000</value>
+                    </attribute>
+                    <attribute>
+                        <key>countryOfOrigin</key>
+                        <value>CN</value>
+                    </attribute>
+                    <attribute>
+                        <key>value</key>
+                        <value>1500</value>
+                    </attribute>
+                    <attribute>
+                        <key>productNameEn</key>
+                        <value>Maté 1kg pack</value>
+                    </attribute>
+                    <attribute>
+                        <key>unitsCount</key>
+                        <value>1</value>
+                    </attribute>
+                    <attribute>
+                        <key>weight</key>
+                        <value>1</value>
+                    </attribute>
+                </attributes>
+            </item>
+        </items>
+  </packetAttributes>
+</createPacket>
+
+
+<!--response-->
+<response>
+  <status>ok</status>
+  <result>
+    <id>3218327000</id>
+    <barcode>Z3218327000</barcode>
+    <barcodeText>Z 321 8327 000</barcodeText>
+  </result>
+</response>
+
+
+```
+
+</TabItem>
+<TabItem value="soap" label="SOAP">
+
+```xml
+
+<!--request-->
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://www.zasilkovna.cz/api/soap.wsdl2" xmlns:soap1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <soap:createPacket>
+         <apiPassword>{{apiPassword}}</apiPassword>
+         <attributes>
+            <soap1:number>orderNumber</soap1:number>
+            <soap1:name>John</soap1:name>
+            <soap1:surname>Doe</soap1:surname>
+            <soap1:company>Company</soap1:company>
+            <soap1:email>example@packetatest.com</soap1:email>
+            <soap1:phone>+41337237500</soap1:phone>
+            <soap1:addressId>3294</soap1:addressId> <!--ID of Swiss Post - requiress customs declarations-->
+            <soap1:cod/>
+            <soap1:currency>CZK</soap1:currency>
+            <soap1:value>1500</soap1:value>
+            <soap1:weight>1</soap1:weight>
+            <soap1:eshop>MyEshop</soap1:eshop>
+            <soap1:note>Note</soap1:note>
+            <soap1:street>Viktoriapl.</soap1:street>
+            <soap1:houseNumber>1</soap1:houseNumber>
+            <soap1:city>Bern</soap1:city>
+            <soap1:zip>3013</soap1:zip>
+            <soap1:attributes>
+               <soap1:attribute>
+                  <soap1:key>ead</soap1:key>
+                  <soap1:value>create</soap1:value>
+               </soap1:attribute>
+               <soap1:attribute>
+                  <soap1:key>deliveryCost</soap1:key>
+                  <soap1:value>200</soap1:value>
+               </soap1:attribute>
+               <soap1:attribute>
+                  <soap1:key>invoiceNumber</soap1:key>
+                  <soap1:value>35421568</soap1:value>
+               </soap1:attribute>
+               <soap1:attribute>
+                  <soap1:key>invoiceIssueDate</soap1:key>
+                  <soap1:value>2021-05-10</soap1:value>
+               </soap1:attribute>
+               <soap1:attribute>
+                  <soap1:key>invoiceFile</soap1:key>
+                  <soap1:value>31759</soap1:value>
+               </soap1:attribute>
+            </soap1:attributes>
+            <soap1:items>
+               <soap1:item>
+                  <soap1:attributes>
+                     <soap1:attribute>
+                        <soap1:key>customsCode</soap1:key>
+                        <soap1:value>09030000</soap1:value>
+                     </soap1:attribute>
+                     <soap1:attribute>
+                        <soap1:key>countryOfOrigin</soap1:key>
+                        <soap1:value>CN</soap1:value>
+                     </soap1:attribute>
+                     <soap1:attribute>
+                        <soap1:key>value</soap1:key>
+                        <soap1:value>1500</soap1:value>
+                     </soap1:attribute>
+                     <soap1:attribute>
+                        <soap1:key>productNameEn</soap1:key>
+                        <soap1:value>Maté 1kg pack</soap1:value>
+                     </soap1:attribute>
+                     <soap1:attribute>
+                        <soap1:key>unitsCount</soap1:key>
+                        <soap1:value>1</soap1:value>
+                     </soap1:attribute>
+                     <soap1:attribute>
+                        <soap1:key>weight</soap1:key>
+                        <soap1:value>1</soap1:value>
+                     </soap1:attribute>
+                  </soap1:attributes>
+               </soap1:item>
+            </soap1:items>
+         </attributes>
+      </soap:createPacket>
+   </soapenv:Body>
+</soapenv:Envelope>
+
+
+<!--response-->
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.zasilkovna.cz/api/soap.wsdl">
+   <SOAP-ENV:Body>
+      <ns1:createPacketResponse>
+         <createPacketResult>
+            <ns1:id>1680442000</ns1:id>
+            <ns1:barcode>Z1680442000</ns1:barcode>
+            <ns1:barcodeText>Z 168 0442 000</ns1:barcodeText>
+         </createPacketResult>
+      </ns1:createPacketResponse>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+
+
+```
+
+</TabItem>
+<TabItem value="php" label="PHP">
+
+```php
+<?php
+
+$apiPassword = 'apiPassword';
+$packetAttributes = [
+    'number' => '20220513001',
+    'name' => 'John',
+    'surname' => 'Doe',
+    'company' => 'Company',
+    'email' => 'example@packetatest.com',
+    'phone' => '+41337237500',
+    'addressId' => 3294, // carrier ID
+    'value' => '100',
+    'currency' => 'CZK',
+    'weight' => 2.5,
+    'number' => 'orderNumber',
+    'eshop' => 'MyEshop',
+    //Since we are creating a address delivery packet, we need to specify an address
+    'street' => 'Viktoriapl',
+    'houseNumber' => '1',
+    'city' => 'Bern',
+    'zip' => '3013',
+    'note' => 'note',
+    'attributes' => [
+        [
+            'key' => 'ead',
+            'value' => 'create'
+        ],
+        [
+            'key' => 'deliveryCost',
+            'value' => '200'
+        ],
+        [
+            'key' => 'invoiceNumber',
+            'value' => '35421568'
+        ],
+        [
+            'key' => 'invoiceIssueDate',
+            'value' => '2021-5-10'
+        ],
+        [
+            'key' => 'invoiceFile',
+            'value' => '31759'
+        ]
+    ],
+    'items' => [
+        [
+            'attributes' => [
+                'attribute' => [
+                    [
+                        'key' => 'customsCode',
+                        'value' => '09030000'
+                    ],
+                    [
+                        'key' => 'countryOfOrigin',
+                        'value' => 'CN'
+                    ],
+                    [
+                        'key' => 'value',
+                        'value' => '100'
+                    ],
+                    [
+                        'key' => 'productNameEn',
+                        'value' => 'Maté 1kg pack'
+                    ],
+                    [
+                        'key' => 'unitsCount',
+                        'value' => '1'
+                    ],
+                    [
+                        'key' => 'weight',
+                        'value' => '1'
+                    ]
+                ]
+            ]
+        ]
+    ]
+];
+
+try {
+    $client = new SoapClient('https://www.zasilkovna.cz/api/soap.wsdl');
+    $result = $client->createPacket($apiPassword, $packetAttributes);
+    var_dump($result);
+} catch (SoapFault $e) {
+    echo $e->getMessage();
+    if (isset($e->detail->PacketAttributesFault)) {
+        var_dump($e->detail->PacketAttributesFault->attributes->fault);
+    } elseif (isset($e->detail->IncorrectApiPasswordFault)) {
+        var_dump('Incorrect API password.');
+    }
+}
+
+?>
+```
+
+</TabItem>
+<TabItem value="csharp" label="C#">
+
+```csharp 
+using System;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using PacketeryService;
+namespace PacketaClientExample
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            BasicHttpsBinding binding = new BasicHttpsBinding();
+            EndpointAddress endpointAddress = new EndpointAddress("https://www.zasilkovna.cz/api/soap");
+
+            const string apiPassword = "apiPassword";
+            PacketAttributes packetAttributes = new PacketAttributes
+            {
+                addressId = 3294,
+                name = "John",
+                surname = "Doe",
+                email = "example@packetatest.cz",
+                phone = "+41337237500",
+                value = 500,
+                weight = 1,
+                eshop = "MyEshop",
+                number = "orderNumber",
+                street = "Viktoriapl",
+                houseNumber = "1",
+                city = "Bern",
+                zip = "3013",
+                size = new Size
+                {
+                    height = 200,
+                    width = 50,
+                    length = 150,
+                },
+                attributes = new PacketeryService.Attribute[]
+                {
+                    new PacketeryService.Attribute { key = "ead",  value = "create" },
+                    new PacketeryService.Attribute { key = "deliveryCost",  value = "200" },
+                    new PacketeryService.Attribute { key = "invoiceNumber",  value = "35421568" },
+                    new PacketeryService.Attribute { key = "invoiceIssueDate",  value = "2021-5-10" },
+                    new PacketeryService.Attribute { key = "invoiceFile",  value = "31759" }
+                },
+                items = new PacketeryService.Item[]
+                {
+                        new PacketeryService.Item
+                        {
+                               attributes = new PacketeryService.Attribute[]
+                               {
+                                   new PacketeryService.Attribute {key = "customsCode", value = "09030000"},
+                                   new PacketeryService.Attribute {key = "countryOfOrigin", value = "CN"},
+                                   new PacketeryService.Attribute {key = "value", value = "100"},
+                                   new PacketeryService.Attribute {key = "productNameEn", value = "Maté 1kg pack"},
+                                   new PacketeryService.Attribute {key = "unitsCount", value = "1"},
+                                   new PacketeryService.Attribute {key = "weight", value = "1"}
+                               }
+                        }
+                }
+            };
+
+            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            try
+            {
+                createPacketResponse response = await client.createPacketAsync(new createPacketRequest(apiPassword, packetAttributes));
+
+                //Process response
+                Console.WriteLine(response.createPacketResult.id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+<TabItem value="js" label="Node.js">
+
+```js
+import { Builder, Parser } from "xml2js"
+
+const requestBody = {
+    createPacket: {
+        apiPassword: "apiPassword",
+        packetAttributes: {
+            addressId: 3294,
+            name: "John",
+            surname: "Doe",
+            phone: "+41337237500",
+            email: "example@packetatest.com",
+            value: 100,
+            weight: 1,
+            eshop: "MyEshop",
+            number: "orderNumber",
+            street: "Viktoriapl",
+            houseNumber: "1",
+            city: "Bern",
+            zip: "3013",
+            size: {
+                width: 50,
+                height: 200,
+                length: 150
+            },
+            attributes: {
+                attribute: [
+                    { key: "ead", value: "create" },
+                    { key: "deliveryCost", value: "200" },
+                    { key: "invoiceNumber", value: "35421568" },
+                    { key: "invoiceIssueDate", value: "2021-5-10" },
+                    { key: "invoiceFile", value: "31759" }
+                ]
+            },
+            items: {
+                item: [
+                    {
+                        attributes: {
+                            attribute: [
+                                { key: "customsCode", value: "09030000" },
+                                { key: "countryOfOrigin", value: "CN" },
+                                { key: "value", value: "100" },
+                                { key: "productNameEn", value: "Maté 1kg pack" },
+                                { key: "unitsCount", value: "1" },
+                                { key: "weight", value: "1" },
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
+
+try {
+    const response = await fetch(
+        "https://www.zasilkovna.cz/api/rest",
+        {
+            method: "POST",
+            body: new Builder().buildObject(requestBody)
+        }
+    );
+
+    const responseBody = await new Parser({ explicitArray: false }).parseStringPromise(await response.text());
+
+    //process response
+    console.dir(responseBody, { depth: null });
+}
+catch (exception) {
+    console.log(exception);
+}
+```
+
+</TabItem>
+</Tabs>

@@ -1,0 +1,66 @@
+---
+sidebar_position: 1
+---
+
+# Packeta Pick-up points
+
+### Using Widget
+To implement our Widget into your website, we recommend using our integration library located at 
+[https://widget.packeta.com/v6/www/js/library.js](https://widget.packeta.com/v6/www/js/library.js)
+
+You may mirror this library locally, but you won't receive any updates, so we recommend linking this library into your website dynamically using
+
+```html
+<script src="https://widget.packeta.com/v6/www/js/library.js"></script>
+```
+
+:::note
+We have created a variation of our `library.js` which can be used by e-shops which validate file integrity. You can find this version [here](https://widget.packeta.com/v6/www/js/library-1.0.0.js) 
+:::
+
+To open the widget window, the library provides the `Packeta.Widget.pick(apiKey, callback, options*, inElement*)` method.
+
+Below, you will find an example widget implementation for offering Packeta pick-up points:
+
+
+<iframe 
+  height="800" 
+  style={{width: "100%"}} 
+  scrolling="no" 
+  title="widget--packeta-pick-up-points"
+  src="https://codepen.io/zeecapp/embed/wvpVMZX?default-tab=result&editable=true&theme-id=light"
+  frameborder="no" 
+  loading="eager" 
+  allowtransparency="true" 
+  allowfullscreen="true"
+  sandbox>
+            See the Pen <a href="https://codepen.io/zeecapp/pen/wvpVMZX">
+            widget--packeta-pick-up-points</a> by Honza L. (<a href="https://codepen.io/zeecapp">@zeecapp</a>)
+            on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+:::tip
+Choose a pick-up point using the Widget above and open the developer console of your browser to see the object our widget returns upon pick-up point selection.
+
+You can also try inserting your own API key in the JS section of the fiddle.
+:::
+
+### Using data feed
+To download the data of currently available Packeta pick-up points, you can use our
+[`Branch export`](../branch-export-v5). This data can be used to build
+your own solution for offering pick-up points to your customers.
+
+The URLs for downloading Packeta pick-up point data are
+```html
+<!--for XML data-->
+https://www.zasilkovna.cz/api/v4/__API_KEY__/branch.xml?lang=__LANGUAGE__
+<!--for JSON data-->
+https://www.zasilkovna.cz/api/v5/__API_KEY__/branch.json?lang=__LANGUAGE__
+```
+
+[`Branch export`](../branch-export-v5) data is updated every hour, so we recommend
+our clients to update their pick-up point data at least every hour.
+
+:::warning
+Not updating your pick-up point data periodically may cause problems during the packet creation process.
+:::

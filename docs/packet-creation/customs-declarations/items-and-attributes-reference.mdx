@@ -1,0 +1,76 @@
+---
+sidebar_position: 2
+---
+
+# Items and Attributes reference
+
+## Types
+
+Every values are represented as string. The type only determines the format of this string.
+
+### Bool
+
+It can be `0` (false) or `1` (true).
+
+### Country
+
+It's country code defined by ISO-3166-1, Alpha 2. See https://en.wikipedia.org/wiki/ISO_3166-1. For example `CZ` is
+Czech Republic, `DE` is Germany.
+
+### Currency
+
+It's currency code defined by ISO-4217. See https://en.wikipedia.org/wiki/ISO_4217. For example `CZK`, `USD` or `EUR`.
+
+### Date
+
+Date in format YYYY-MM-DD. For example `2028-12-31` or `1998-01-08`.
+
+### Decimal
+
+Decimal number. It can have 1 to 8 decimal places before the decimal point and 1 to 8 places after the decimal point.
+For example `0`, `1520`, `2.72` or `-0.1551`.
+
+### Ead
+
+Values can be `own`, `create` or `carrier`.
+
+### Int
+
+Integer number. For example `0`, `152` or `-25420`.
+
+### Storage File
+
+ID of inserted document in the [Storage File](./storage-file.mdx).
+
+### String
+
+String. For example `red hat with Packet logo`.
+
+## Packet attributes
+
+| Key                     | Type                               | Required   | Summary                     | Description                                                                    | Conditions                                                                                                |
+|-------------------------|------------------------------------|------------|-----------------------------|--------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| ead                     | [`Ead`](#ead)                      | yes        | Method of customs procedure | Available methods will advise with your customs declarant.                     |                                                                                                           |
+| deliveryCost            | decimal                            | yes        | Delivery cost               | Delivery cost in the currency of the packet.                                   | Positive value                                                                                            |
+| invoiceNumber           | string                             | yes        | Invoice number              |                                                                                |                                                                                                           |
+| invoiceIssueDate        | date                               | yes        | Invoice issue date          | Invoice issue date (Y-M-D format).                                             |                                                                                                           |
+| isDocument              | bool                               | no         |                             | For specific carriers (Aramex).                                                |                                                                                                           |
+| consigneeIdentification | string                             | yes *      |                             | Consignee's identifications documents  number. For specific carriers (Aramex). |                                                                                                           |
+| mrn                     | string                             | yes *      | Your MRN                    |                                                                                | * Only for ead = `own`                                                                                    |
+| eadFile                 | [`StorageFile`](./storage-file)    | yes *      | Storage File ID             | EAD document.                                                                  | * Only for ead = `own`                                                                                    |
+| invoiceFile             | [`StorageFile`](./storage-file)    | yes / no * | Storage File ID             | Invoice document.                                                              | * Required only for ead = `own` or `create`. For ead = `carrier` is optional except for `Aramex` carrier. |
+| carDeliveryId           | string                             | no         | Car delivery ID             | For internal use                                                               |                                                                                                           |
+
+## Packet items attributes
+
+| Key              | Type                        | Required | Summary                               | Description                                              | Conditions               |
+|------------------|-----------------------------|----------|---------------------------------------|----------------------------------------------------------|--------------------------|
+| countryOfOrigin  | [`Country`](#country)   | yes      | Country of origin code (2 chars)      |                                                          |                          |
+| customsCode      | string                      | yes      | Customs code                          |                                                          |                          |
+| productName      | string                      | no       | Product name                          |                                                          |                          |
+| productNameEn    | string                      | yes      | Product name (EN)                     | Product name in English.                                 |                          |
+| value            | decimal                     | yes      | Value                                 | Total value of item in the packet in the currency of the packet. | Positive value           |
+| unitsCount       | int                         | yes      | Units count                           |                                                          | Positive value           |
+| weight           | decimal                     | yes      | Weight (kg)                           | Total weight of item in the packet in kilograms.         | Positive value           |
+| isFoodBook       | bool                        | no       | Is food/book?                         | Is food or book?                                         |                          |
+| isVoc            | bool                        | no       | Is VOC?                               | Is volatile organic compound?                            |                          |

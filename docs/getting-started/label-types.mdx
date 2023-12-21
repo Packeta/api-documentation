@@ -1,0 +1,53 @@
+---
+sidebar_position: 3
+---
+
+# Label types 
+
+Packeta offers two different types of labels, **Packeta labels** and **Carrier labels**. Which one you will use will depend on the services
+you end up using in your implementation.
+
+## Packeta labels 
+
+**Packeta labels** are labels, that are generated directly from our system, meaning we don't obtain them from any third party. These labels can be used for all types of packets and they come in a wide 
+variety of different formats.
+
+As mentioned above, these labels can be used for all packets, but if your packet is headed to an external carrier, our Packeta label will be re-labeled with the carrier's label
+at our depot.
+
+### Packeta label example
+<div style={{display: "flex", justifyContent: "center"}}>
+    <img src="/img/exampleLabel.png" width="700"/>
+</div>
+
+*Packeta label example*
+
+## Carrier labels 
+
+**Carrier labels** are labels of external carriers. These labels are obtained from carriers and aren't generated in our system. For this reason
+carrier labels are only available for packets that are heading to an external carrier or a carrier pick-up point.
+
+If you are sending packets to external carriers or carrier pick-up points, we **strongly** recommend using carrier labels instead of Packeta labels. If you do not use a direct label in this case
+and choose to use our Packeta labels instead, the Packeta labels will be re-labeled with the carrier's carrier labels at our depot. This can cause slower delivery times and increased costs.
+
+:::info
+Keep in mind that not all carriers support direct label printing. You can find out which carriers support direct label printing using 
+our [address delivery feed](../pick-up-point-selection/branch-export-v5#carrier-feeds-address-delivery) using the `apiAllowed` parameter. If a carrier doesn't
+support direct label printing, no extra cost will be charged in the case of using Packeta labels.
+:::
+
+:::info
+Obtaining indirect labels on shipments to carriers is depricated and in buoucnu bue prohibited. Implement a method for carrier labels - packetCourierLabelPdf/Png (packetCourierLabelsPdf/Png)
+:::
+
+
+### Carrier label example
+
+Please, keep in mind that we work with a wide variety of different carriers and each one has its unique label. This means
+that **labels from different carriers will look different visually**. Below you will find an example label of Slovenia Post Home Delivery.
+
+<div style={{display: "flex", justifyContent: "center"}}>
+    <img src="/img/CarrierLabelExample.png" width="450"/>
+</div>
+
+*Carrier label example*

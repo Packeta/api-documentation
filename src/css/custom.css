@@ -1,0 +1,108 @@
+/* stylelint-disable docusaurus/copyright-header */
+
+
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+
+/* You can override the default Infima variables here. */
+
+:root {
+    --ifm-color-primary: #ba1b02;
+    --ifm-color-primary-dark: #a71802;
+    --ifm-color-primary-darker: #9e1702;
+    --ifm-color-primary-darkest: #821301;
+    --ifm-color-primary-light: #cd1e02;
+    --ifm-color-primary-lighter: #d61f02;
+    --ifm-color-primary-lightest: #f22303;
+    --ifm-code-font-size: 95%;
+}
+
+.docusaurus-highlight-code-line {
+    background-color: rgb(72, 77, 91);
+    display: block;
+    margin: 0 calc(-1 * var(--ifm-pre-padding));
+    padding: 0 var(--ifm-pre-padding);
+}
+
+a.main-button {
+    background: white;
+    color: rgb(28, 30, 33) !important;
+}
+
+a.main-button:hover {
+    opacity: 0.8;
+}
+
+/* Because of long mermaid charts */
+img[title="`mermaid` image"] {
+    max-width: unset !important;
+}
+
+
+/* Hiding file names in MD pages since you can see the title in the menu */
+
+/*.docTitle_node_modules-\@docusaurus-theme-classic-lib-theme-DocItem- {
+    display: none;
+}*/
+
+
+.theme-doc-sidebar-item-link-level-2{
+    font-weight: 400;
+}
+
+.theme-doc-sidebar-item-link-level-3{
+    font-weight: 400;
+}
+
+.packeta-logo{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0px 20px 0px;
+}
+
+.docs-wrapper details{
+    background-color: rgba(50, 50, 50, 0.01);
+    --ifm-alert-border-color: rgba(162, 27, 2, 1);
+}
+
+.docs-wrapper details summary code{
+    background-color: rgba(162, 27, 2, 0.05);
+    border-color: rgba(162, 27, 2, 0.35);
+}
+
+.widgetContainer{
+    height: 700px;
+    width: 100%;
+}
+
+.mermaid-flowchart-container{
+    display: flex;
+    justify-content: stretch;
+    width: 100%;
+}
+
+.mermaid-flowchart-container img{
+    width: 100%;
+}
+
+.warning-header {
+    background-color: var(--ifm-color-primary);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    max-height: 60px;
+    padding: 2px 0px 2px 0px;
+}
+
+@media (max-width: 600px)  {
+    .widgetContainer{
+        height: 600px;
+    }
+}

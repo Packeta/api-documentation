@@ -1,0 +1,39 @@
+# Common issues
+
+### The [`eshop`](../api-reference/data-structures-reference#packetattributes) parameter
+
+Our users often run more than 1 website and they need to be able to differentiate between them. This parameter serves as an identifier to determine from which e-shop does each packet come from.
+
+In ideal circumstances, you should allow users to set it themselves. If you wish not to, you can use the e-shop's name or something similar. However, it is not very safe to use the current request URI as the e-shop might be using several different domains, which would cause you to send different information based on the domain from which the order was created or the domain from which the export was handled.
+
+### Single field for name and surname
+
+If you don't keep the end user's name and surname separate, you don't need to worry. You can just send the whole string as [`name`](../api-reference/data-structures-reference#packetattributes) and we will try to split the surname from the name for you.
+
+### Single field for street and house number
+
+The same applies to name and surname, if you send us the whole address in one string as [`street`](../api-reference/data-structures-reference#packetattributes), we will try our best to separate the house number from the street name properly. However, we can't guarantee a proper split in case of complicated addresses when users specify apartment numbers, etc.
+
+### Supported cash on delivery values
+
+Our pick-up points need to be able to collect the whole value in cash, as well as they need to be able to return exact change. Because of these necessities, the values we accept for COD need to be in multiples of the lowest nominal value of the destination country's currency.
+
+I.e. for CZK, the value needs to be a whole number, while for HUF the value needs to be a multiple of 5.
+
+### Currency conversions
+
+We strongly suggest to always specify the currency of the packet's value and COD amount. If not specified, our system will assume, that the entered values are in the destination country's currency.
+ 
+I.e. let's try to consign a packet with a value of 500. If we send this packet to a czech pick-up point, the value will be 500 CZK, while if we send it to a Hungarian pick-up point, the value will be 500 HUF.
+
+### Phone number country codes
+
+Similar logic as with currency conversions is applied to phone numbers. If you don't specify a country phone code, we will assume the number is from the destination country and we will attempt to notify the user of this number with the corresponding destination country code.
+
+I.e. when you enter a phone number "123456789" while sending to Hungary, we will assume the correct phone number is "***+36***123456789".
+
+Examples of phone number formats are in [phone number formats](../api-reference/phone-number-formats).
+
+### Editing exported orders
+
+Unfortunately, we don't support editing existing orders via API.

@@ -1,0 +1,113 @@
+---
+sidebar_position: 4
+---
+
+# Packetery API
+
+We offer API interface using [SOAP](https://en.wikipedia.org/wiki/SOAP) protocol or a REST interface using XML request bodies. Both offer the same functionality.
+
+Please see [API reference](../api-reference/api-methods-reference) for more details.
+
+## SOAP
+
+- WSDL: https://soap.api.packeta.com/api/soap.wsdl
+- WSDL for PHP (32bit): https://soap.api.packeta.com/api/soap-php-bugfix.wsdl
+
+:::warning
+Native PHP SoapClient on 32bit systems fails at processing 64bit integers; please use the bugfix WSDL for PHP, where the `unsignedLong` type is replaced by `string`. **It is important to treat packet IDs as** `string`, since the standard `signedInt` would not be able to contain the value.
+:::
+
+Example:
+
+```csharp
+using System;
+using System.ServiceModel;
+
+namespace ConsoleApplication1
+{
+	using Packetery;
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			Packetery.PacketeryClient gw = new PacketeryClient();
+			string apiPassword = "1234567890abcdef1234567890abcdef";
+
+			PacketAttributes attrs = new PacketAttributes();
+			attrs.number = "123456";
+			attrs.name = "John";
+			attrs.surname = "Doe";
+			attrs.email = "example@packetatest.com";
+			attrs.phone = "+420777123456";
+			attrs.addressId = 79; //Praha 4, Pražského povstání, Na Pankráci 969/97
+			attrs.cod = 145;
+			attrs.value = 145.55;
+			attrs.weight = 2;
+			attrs.eshop = "MyEshop";
+
+			PacketIdDetail packet;
+			try
+			{
+				packet = gw.createPacket(apiPassword, attrs);
+			}
+			catch (FaultException<PacketAttributesFault> e) {
+				// TODO: process error
+			}
+		}
+	}
+}
+```
+
+```php
+<?php
+$gw = new SoapClient("https://soap.api.packeta.com/api/soap.wsdl");
+$apiPassword = "1234567890abcdef1234567890abcdef";
+
+try {
+	$packet = $gw->createPacket($apiPassword, array(
+		'number' => "123456",
+		'name' => "John",
+		'surname' => "Doe",
+		'email' => "example@packetatest.com",
+		'phone' => "+420777123456",
+		'addressId' => 79,
+		'cod' => 145,
+		'value' => 145.55,
+		'weight' => 2,
+		'eshop' => "MyEshop"
+	));
+} catch (SoapFault $e) {
+	var_dump($e->detail); // property detail contains error info
+}
+```
+
+## REST/XML
+
+- API URL: https://www.zasilkovna.cz/api/rest
+
+Always send a POST request with a XML document body, using the requested API method as the root element's name and method's arguments as subelements.
+
+Example:
+```xml
+<createPacket>
+	<apiPassword>__API_PASSWORD__</apiPassword>
+	<packetAttributes>
+		<number>123456</number>
+		<name>John</name>
+		<surname>Doe</surname>
+		<email>example@packetatest.com</email>
+		<addressId>79</addressId>
+		<value>145.55</value>
+		<weight>2</weight>fixed
+		<eshop>MyEshop</eshop>
+	</packetAttributes>
+</createPacket>
+```
+
+The server response follows the same rules as the request, except the root element is the name of the return type.
+
+## Testing
+
+**You can freely use your standard account for testing purposes**. We do not charge anything for packets that were not physically consigned to one of our branches.
+
+However if you insist on testing on a different account (you don't wish to pollute your packet history), just ask e-commerce.support@packeta.com for one.

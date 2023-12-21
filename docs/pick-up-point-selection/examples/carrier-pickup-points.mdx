@@ -1,0 +1,58 @@
+---
+sidebar_position: 2
+---
+
+# Carrier Pick-up points
+
+### Using Widget
+The process of implementing our widget to offer Carrier pick-up points on your website is identical to the process used to implement our widget to offer Packeta pick-up points mentioned above.
+Our widget will, by default, try to offer both our own Packeta pick-up points, as well as Carrier pick-up points. You can alter this behaviour by using the [`carriers`](../widget#options) option when calling the `Packeta.Widget.pick()` method of our integration library.
+
+If you leave this option empty, our widget will display both Packeta, as well as Carrier pick-up points. If you pass the value `"packeta"` into this option, only Packeta pick-up points will be displayed. Similarly, if you pass
+an ID of an external carrier, only pick-up points of that carrier will be displayed. You can find carriers who offer their own pick-up points using our [Address delivery export](../branch-export-v5.mdx#carriers-feed-address-delivery).
+
+Below, you will find an example widget implementation for offering Carrier pick-up points:
+
+<iframe 
+  height="800" 
+  style={{width: "100%"}} 
+  scrolling="no" 
+  title="packeta--carrier-pick-up-points"
+  src="https://codepen.io/zeecapp/embed/NWXQrop?default-tab=result&editable=true&theme-id=light" 
+  frameborder="no" 
+  loading="eager" 
+  allowtransparency="true" 
+  allowfullscreen="true"
+  sandbox>
+    See the Pen <a href="https://codepen.io/zeecapp/pen/NWXQrop">
+    packeta--carrier-pick-up-points</a> (<a href="https://codepen.io/zeecapp">@zeecapp</a>)
+    on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+:::tip
+Choose a pick-up point using the Widget above and open the developer console of your browser to see the object our widget returns upon pick-up point selection.
+
+You can also try inserting your own API key in the JS section of the fiddle.
+:::
+
+### Using data feed
+
+Our [branch export](../branch-export-v5) for obtaining pick-up point data doesn't contain data of Carrier pick-up points. Since delivery to Carrier pick-up points is a separate service from Packeta pick-up point delivery,
+Carrier pick-up points are located in a separate data feed.
+
+Carrier pick-up points can be obtained using our [Carrier pick-up point export](../carrier-pickup-points-export)
+```html
+<!--for XML data-->
+https://www.zasilkovna.cz/api/__API_KEY__/point.xml?ids=__BRANCH_IDS__ 
+<!--for JSON data-->
+https://www.zasilkovna.cz/api/__API_KEY__/point.json?ids=__BRANCH_IDS__
+```
+
+:::warning
+Not updating your pick-up point data periodically may cause problems during the packet creation process.
+:::
+
+You can choose to specify IDs of desired carriers using the `ids` parameter. This will cause the export to only contain pick-up points of certain specified carriers. If no `ids` are specified,
+all Carrier pick-up points are downloaded.
+
+The obtained data can be used to build your custom solution for offering Carrier pick-up points to your customers.

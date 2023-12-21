@@ -1,0 +1,151 @@
+---
+sidebar_position: 1
+---
+
+# Carrier selection
+
+## Overview
+
+If you wish to use our **address delivery** service, you will first have to choose a carrier. To do this, we provide an address delivery export, which contains the full list of all available
+carriers, their ID's and more detailed information about each carrier, for example, if they support direct label printing, which currency they use etc.
+
+To use these carriers in your requests/file import, you use the carrier's ID the same way as you would use our Packeta pick-up point's ID.
+
+The list can be obtained in both `XML` and `JSON` formats, depending on the URL used.
+
+
+The URLs used to access the address delivery export are the following:
+
+- For `XML`:
+```
+https://www.zasilkovna.cz/api/v5/API_KEY/branch.xml?address-delivery
+```
+- For `JSON`:
+```
+https://www.zasilkovna.cz/api/v5/API_KEY/branch.json?address-delivery
+```
+
+:::info
+To download the feed, you will have to replace the `API_KEY` part of the URL with your actual API key obtained from our client section [here](https://client.packeta.com/support/)
+
+If you do not specify your API key, the URL **will not** work.
+:::
+
+<br></br>
+
+Carrier names in this export have the following format:
+- 2-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-2)
+- carrier name
+- delivery type
+  - `HD` Home Delivery
+  - `PP` Pick-up Point Delivery
+  - `Box` Box/Locker Delivery
+
+*e.g.: HR DPD HD*
+
+## Export format reference
+
+### `<export>`
+
+Root element of the document
+
+```xml
+<export xmlns="http://www.zasilkovna.cz/api/v4/branch" xmlns:ns="http://www.zasilkovna.cz/api/v4/branch" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.zasilkovna.cz/api/v4/branch http://www.zasilkovna.cz/api/v4/branch.xsd">
+	<contacts>
+		See documentation for "<contacts>" element
+	</contacts>
+	<carriers>
+		See documentation for "<carriers>" element
+	</carriers>
+</export>
+```
+
+| Name     | Type      | Description                                         |
+|----------|-----------|-----------------------------------------------------|
+| contacts | Container | Container for [`<contact>`](#contact) elements. |
+| carriers | Container | Container for [`<carrier>`](#carrier) elements. |
+
+### `<contacts>`
+
+Contained exactly once by [`<export>`](#export).
+
+Contains contacts for customer support for all countries.
+
+```xml
+<contacts>
+	<contact>
+		See documentation for "<contact>" element
+	</contact>
+</contacts>
+```
+
+### `<contact>`
+
+Contained once or many times by [`<contacts>`](#contacts).
+
+Contains basic information about customer support for each country.
+
+```xml
+<contact>
+	<country>cz</country>
+	<phone>+420 216 216 516</phone>
+	<email>example@packetatest.com</email>
+	<businessHours>Po-Pá 08:00 – 20:00 hod.</businessHours>
+</contact>
+```
+
+### `<carriers>`
+
+Contained exactly once by [`<export>`](#export).
+
+```xml
+<carriers>
+	<carrier> <!--OPTIONAL-->
+		See documentation for "<carrier>" element
+	</carrier>
+</carriers>
+```
+
+### `<carrier>`
+
+Contained none or many times by [`<carriers>`](#carriers).
+
+Represents a carrier.
+
+```xml
+<carrier> <!--OPTIONAL-->
+	<id>0</id>
+	<name>Czech Carrier</name>
+	<pickupPoints>false</pickupPoints>
+	<apiAllowed>false</apiAllowed>
+	<separateHouseNumber>false</separateHouseNumber>
+	<customsDeclarations>false</customsDeclarations>
+	<requiresEmail>false</requiresEmail>
+	<requiresPhone>false</requiresPhone>
+	<requiresSize>false</requiresSize>
+	<disallowsCod>false</disallowsCod>
+	<country>cz</country>
+	<currency>CZK</currency>
+	<maxWeight>15</maxWeight>
+	<labelRouting>A--0--000</labelRouting> <!--OPTIONAL-->
+	<labelName>Carrier 1</labelName> <!--OPTIONAL-->
+</carrier>
+```
+
+| Name                 | Type      | Description                                                                                                                                                                                             |
+|----------------------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| id                   | Integer   | A unique id.                                                                                                                                                                                            |
+| name                 | String    | Carrier name.                                                                                                                                                                                           |
+| pickupPoints         | Boolean   | Indicates whether the carrier offers its own pick-up points. Please refer to our [carrier pick up points documentation](../pick-up-point-selection/carrier-pickup-points-export) for more information.     |
+| apiAllowed           | Boolean   | Indicates whether the carrier supports direct label printing, ie. whether the label is available via [packetCourierLabelPdf()](../api-reference/api-methods-reference#packetcourierlabelpdf), [packetCourierLabelPng()](../api-reference/api-methods-reference#packetcourierlabelpng) and [packetsCourierLabelsPdf()](../api-reference/api-methods-reference#packetscourierlabelspdf) methods.|
+| separateHouseNumber  | Boolean   | Indicates whether the carrier requires a descriptive number to be entered in the houseNumber parameter.                                                                                                 |
+| customsDeclarations  | Boolean   | Indicates whether the carrier requires the completion of customs declarations using the [Item](../api-reference/data-structures-reference#item) and [Attribute](../api-reference/data-structures-reference#attribute) parameters.|
+| requiresEmail        | Boolean   | Indicates whether the carrier requires an email.                                                                                                                                                        |
+| requiresPhone        | Boolean   | Indicates whether the carrier requires a phone number.                                                                                                                                                  |
+| requiresSize         | Boolean   | Indicates whether the carrier requires size.                                                                                                                                                            |
+| disallowsCod         | Boolean   | If true is marked, it is not possible to send a cash on delivery shipment through this carrier.                                                                                                         |
+| country              | String    | Country code.                                                                                                                                                                                           |
+| currency             | String    | Currency code accepted by the carrier.                                                                                                                                                                  |
+| maxWeight            | Integer   | Maximal weight of the packet the carrier is able to handle.                                                                                                                                             |
+| labelRouting         | String    | Routing code of the carrier. Used for custom labels.                                                                                                                                                    |
+| labelName            | String    | Carrier name for printing on custom labels.                                                                                                                                                             |
