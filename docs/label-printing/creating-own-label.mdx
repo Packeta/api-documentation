@@ -2,50 +2,109 @@
 sidebar_position: 3
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
 # Creating own packet label
 
-In case you decide to print your own packet labels, it is necessary to state all of the basic information.
+If you choose to create your own packet labels, it is crucial to incorporate all of the essential data.
 
-## Regular packet
+:::caution
+Regardless of whether a custom label is being used, it is mandatory to provide the packet data via the API using the [`createPacket`](../api-reference/api-methods-reference#createpacket) method.
+:::
 
-![alt text](label-desc-v3.png)
+## Standard A6 label
 
-### Logo and barcode
-
-
-1. It is essential that the Packeta logo is visibly displayed on the label. In order to obtain Packeta logo, please contact one of our sales managers.
-2. Tracking code is displayed as a barcode using **Code 128** symbology. To create the barcode use the tracking code in following format: `Z1234567890`.
-3. Around the barcode there must to be a **quiet zone**. Which is a strip of white space at both sides of the barcode. Make sure the last line of your barcode isn't placed too close to the edge of the paper. The quiet zone should be at least as wide as 10 times the thinnest line of the barcode (usually 0.5 cm to 1 cm). For more information on quiet zones, see [this link](https://barcode-labels.com/why-are-quiet-zones-so-important/).
-4. Text form of the tracking code in the `Z 000 0000 000` format must be placed beneath the barcode and the last three digits must be visibly bigger than the rest of the number.
+![Packeta label - regular](/img/PacketaLabelDescription.png)
 
 
-### Sender
+### Label description
 
-5. Eshop name.
-6. Eshop's number of order.
-7. Routing codes for returning packets. It is a pair of strings separated by a new line. The code is used to navigate the packet correctly in case of its return. They are generated dynamically by our system, based on invoicing address used for the eshop. It is possible to get those strings from API by calling [`senderGetReturnRouting()`](../api-reference/api-methods-reference#sendergetreturnrouting) method.
-8. Billing address name.
+<Tabs className="customBarcodeDescription">
+    <TabItem value="PacketaLogo" label="Packeta Logo (1)" default>
+        1. **Packeta logo**
+            - must be easily recognizable on the label
+            - the Packeta logo can be obtained in format
+            <a target="_blank" href="/img/PacketaLogo.svg" download>SVG</a> or
+            <a target="_blank" href="/img/PacketaLogo.png" download>PNG</a>
+    </TabItem>
+    <TabItem value="SenderDetails" label="Sender's details (2-8)">
+        2. **Name of your e-shop** (size: 9 pt, bold)
+            - the e-shop's name can be configured in your Client section under the [Senders](https://client.packeta.com/senders/) category
+        3. **Number of your purchase order** (size: 9 pt, bold, refer to Dimensions and font tab)
+        4. **Name of your account** (size: 9 pt)
+            - accessible from the Client section in the top-right corner
+            - to change it, reach out to your assigned sales manager
+        5. **E-shop logo** - optional
+        6. **Dimensions and weight of the packet** (size: 7.5 pt)
+        7. **Extra services**
+            1. age verification (only if age verification is required, otherwise leave empty)
+            2. signature (only if signature is required, otherwise leave empty)
+            3. reserved for future purposes
+             - Z-BOX delivery does not support extra services
+        8. **Routing codes for packet returns** (size: 10 pt, bold)
+            - sets of strings split by a vertical line
+            - these codes assist in accurate tracking of the packet when a return occurs
+            - our system creates these strings dynamically based on the billing address of the e-shop, you can obtain them using [`senderGetReturnRouting()`](../api-reference/api-methods-reference#sendergetreturnrouting) API method
+    </TabItem>
+    <TabItem value="RecipientDetails" label="Recipient's details (9-12)">
+        9. **Name and Surname of the recipient** (size: 16 pt, bold, refer to Dimensions and font tab)
+        10. **Name of the Pick-up Point** (size: 12 pt)
+            - available through [Packeta Pick-up Points feed](../pudo-delivery/packeta-pudos#feed-for-packeta-pick-up-points) using the `labelName` parameter from the target pick-up point
+        11. **Address of the Pick-up Point** (size: 8 pt)
+            - available through [Packeta Pick-up Points feed](../pudo-delivery/packeta-pudos#feed-for-packeta-pick-up-points) by combining the `street`, `city`, and `zip` parameters
+        12. **Note on the label** - optional (size: 8 pt)
+    </TabItem>
+    <TabItem value="BarcodeAndPacketNumber" label="Barcode and packet number (13-15)">
+        13. **Barcode**
+            - tracking code in the format of a barcode using the **Code 128** symbology
+            - the structure for the tracking code should be `Z1234567890`
+            - Enclose the barcode with a **quiet zone**, an empty space on both sides of the barcode. Make sure the barcode's last line isn't too close to the edge of the paper. The quiet zone should ideally be 10 times the width of the barcode's thinnest line (generally between 0.5 cm and 1 cm).
+            - for further specifics on quiet zones, refer to [barcode-labels.com](https://barcode-labels.com/why-are-quiet-zones-so-important/)
+        14. **Formatted text version of the tracking code** (size: letter “Z” and first 7 digits 12 pt, last 3 digits 14 pt, bold)
+            - to be displayed below the barcode, structured like this: `Z 123 4567 890`
+            - the last three digits should be notably larger than the rest of the number
+        15. **QR code**  (size: 35 × 35 mm)
+            - encodes the packet’s tracking number (35 × 35 mm)
+            - the structure for the tracking code should be `Z1234567890`
+    </TabItem>
+    <TabItem value="RoutingDetails" label="Routing details (16-20)">
+        16. **Packet routing code**  (size: 20 pt, bold)
+            - routing code of the destination branch or external carrier is printed in **white on black**
+            - routing code available through [Packeta Pick-up Points feed](../pudo-delivery/packeta-pudos#feed-for-packeta-pick-up-points) as the `labelRouting` of the destination branch
+        17. **Cash-On-Delivery (COD)**  (size: 20 pt, bold)
+            - necessary for packets requiring cash on delivery (otherwise leave empty)
+        18. **Delivery method type** (size: 20 pt, bold)
+            - CD = pick-up point delivery
+            - HD = home delivery
+            - ZB = Z-BOX delivery
+        19. **Service type** (size: 20 pt, bold)
+            - standard value is B2C, unless you use different services
+        20. **Label creation date** (size: 7 pt)
+            - corresponds to the date and time when the label is created
+    </TabItem>
+    <TabItem value="DimensionesAndFont" label="Dimensions and font">
+        The following dimensions apply to all types of Packeta’s labels:
+            - Labels are formatted in A6 size, with a landscape orientation
+            - **Helvetica** font is used for all text strings
+            - Points correspond to standard PostScript Points, with a density of 72 ppi
+            - **Name and Surname:**
+                - For a length of 34 characters or fewer, a font size of 16 pt
+                - For a length exceeding 34 characters, a font size of 13 pt
+            - **Order Number:**
+                - For a length of 27 characters or fewer, a font size of 9 pt
+                - For a length exceeding 28 characters, a 6.5 pt font size
 
-### Recipient
+        ![Packeta label - dimensions inner](/img/PacketLabelDimensionsInner.png)
+        ![Packeta label - dimensions Outer](/img/PacketLabelDimensionsOuter.png)
+    </TabItem>
+</Tabs>
 
+## Claim Assistant labels
 
-9. Name and Surname
-10. Routing code of destination branch/external carrier printed **white on black**. Routing code can be obtained from [branches export](../pick-up-point-selection/branch-export-v5) as `labelRouting` of the destination branch.
-11. Name of branch. In [branches export](../pick-up-point-selection/branch-export-v5) it is the `nameStreet` property of the destination branch.
+When you make use of the Claim Assistant service and decide to print these labels independently, divergent from customary labels, it is required to replace the **recipient's** address with the highlighted term **Claim Assistant**. Ensure that this term is struck through and clearly visible.
 
-
-## Label for "Claim Assistant" packets
-
-In case that you use Claim Assistant service and you print these labels by yourself, compared to usual labels it is necessary to substitute the address of **sender** by inscription **Claim Assistant** which should be crossed out and clearly visible.
-
-![label-claim.png](label-claim-v3.png)
-
-## Direct printing for external carrier
-
-In case that you decide to directly print external carriers label, you need to follow these steps:
-
-
-1. Create packet by using method [createPacket()](../api-reference/api-methods-reference#createpacket).
-2. Obtain packets tracking code by using method [packetCourierNumber()](../api-reference/api-methods-reference#packetcouriernumber).
-3. Print packets external carrier label by using one of these methods: [packetCourierLabelPng()](../api-reference/api-methods-reference#packetcourierlabelpng), [packetCourierLabelPdf()](../api-reference/api-methods-reference#packetcourierlabelpdf), [packetCourierLabelsPdf()](../api-reference/api-methods-reference#packetcourierlabelspdf), [packetCourierLabelsZpl()](../api-reference/api-methods-reference#packetcourierlabelzpl).
-
+<div class={"img-custom-label"}>
+    <img src="/img/claim-packet-label.png"/>
+</div>

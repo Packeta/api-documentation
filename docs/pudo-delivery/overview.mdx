@@ -1,0 +1,36 @@
+---
+sidebar_position: 1
+---
+
+# Overview
+
+To create pick-up point packets, you need to first enable your customers to select their preferred pick-up point. You can achieve this in two ways:
+1. [Widget](widget) (**recommended**)
+2. [Packeta PUDOs feed](packeta-pudos)
+
+## Widget
+
+Our widget is a ready-to-use solution that can be seamlessly integrated into your e-shop. It allows for both Packeta PUDOs and carrier PUDOs selection.
+
+The primary advantages of opting for a widget over a feed include:
+- **Reduced maintenance** - there's no need to maintain a database of our or carrier PUDOs.
+- **Effortless and quick implementation** - hassle-free integration.
+- **A uniform appearance across various e-shops** - enriching the end-user experience.
+
+For widget implementation examples, refer to [Packeta Pick-up Points Widget Example](examples/packeta-pudos#using-widget) and [Carrier PUDOs Widget Example](examples/carriers-pudos#using-widget).
+
+Find a comprehensive guide on the widget implementation in the [Widget](widget) section.
+
+## Data feeds
+
+For those interested in developing their own pick-up point solution, our data feeds offer direct access to raw data through our API.
+
+We provide two distinct data feeds:
+1. [Packeta PUDOs Feed](packeta-pudos) - provides data for all Packeta pick-up locations, along with information on home delivery carriers.
+2. [Carriers' PUDOs Feed](carriers-pudos) - provides data regarding the carriers' PUDOs.
+
+It's vital to download these data feeds on a regular basis to ensure information accuracy. Under normal circumstances, it's advised to perform this operation **at least once a day**. For greater relevance, a four times daily download is ideally suggested. However, during high-activity periods or peak seasons, the recommended frequency is every hour.
+
+:::caution
+Our data feeds are not intended to work along with our Widget. If possible, avoid cross-checking data from our widget with the data sourced from our feeds.
+:::

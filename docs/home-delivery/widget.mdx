@@ -1,0 +1,124 @@
+---
+sidebar_position: 3
+---
+
+# Widget
+This document details the standard implementation of Packeta Home Delivery (HD) address selection utilizing an embeddable application. We recommend embedding the application using the integration library outlined below.
+
+## Supported browser versions
+
+List of minimal supported browser versions:
+- Google Chrome 79
+- Mozilla Firefox 79
+- Microsoft Edge 18
+- Safari 11
+- Opera 70
+
+## Intended audience
+
+This manual is intended for technically advanced internet stores which require and are able to implement custom interaction with the widget.
+
+Specifically, the following skills are required:
+- Basic JavaScript programming
+- Basic HTML/CSS knowledge
+
+## Getting Started – Examples
+
+We offer an integration library to simplify the process of embedding the widget into your website. You're free to make a copy of it (although it won't have automatic updates) or use it however you wish:
+- [library.js](https://hd.widget.packeta.com/v6/www/js/library.js)
+- Here are some examples using the library: [simple](https://hd.widget.packeta.com/doc/standard-example-simple-hd.html), [complex](https://hd.widget.packeta.com/doc/standard-example-complex-hd.html), [combination](https://hd.widget.packeta.com/doc/standard-example-together.html)
+- Remember to insert your API key (look for ``packetaApiKey``) for the examples to function correctly
+    - Your API key is a unique identifier tied to your Packeta account, which can be found in the [Packeta Client Section](https://client.packeta.com/) or provided by your account manager.
+
+## Basic embeddable application implementation details
+The embeddable application exists within an isolated iframe, which can only interact with your main webpage through sending messages via ``window.postMessage()``.
+
+The application will utilize the parameters of the pick function, denoted further below, as query string parameters for the iframe. For instance, [https://hd.widget.packeta.com/#/?layout=hd&carrierId=80&apiKey=XXXXXXXXXXXXX&country=cz,sk](https://hd.widget.packeta.com/#/?layout=hd&carrierId=80&apiKey=**XXXXXXXXXXXXX**&country=cz,sk) (note this is just an example - you must input your own API Key for the widget to function properly)
+
+**Permissions for Iframe:**
+
+- recommended: ``sandbox="allow-scripts allow-same-origin" allow="geolocation"``
+- minimal requirement: ``sandbox="allow-scripts"``
+- be aware that geolocation is only available if your online store operates over https (not just http)
+- persistence of cookies
+
+**The shopping cart has two unique operational modes:**
+
+1. Selection of the pick-up point happens within a modal dialog (this opens after the customer opts for delivery to a Packeta pick-up point, or via a button next to such a delivery method)
+1. Inline UI controls, incorporated as part of the selection process for the delivery method
+The application supports both modes. When implementing the latter, ensure compatibility with mobile phones and tablets through thorough testing.
+
+## Integration library – methods
+
+We provide an integration library available at this URL:
+- https://hd.widget.packeta.com/www/js/library.js
+
+The library provides following methods:
+
+```
+Packeta.Widget.pick(apiKey, callback, options, inElement)
+```
+
+This method launches the widget.
+There is no return value.
+
+|**Argument**|**Type**|**Required**|**Description**|
+| :- | :- | :- | :- |
+|``apiKey``|``string[16]``|yes|An identifier of your Packeta account, available in Packeta Client section, or can be provided by your account manager.|
+|``callback``|``function``|yes|Function which will be called when the user confirms or cancels delivery address selection. The function will receive one argument, which will be either an [Return values](#return-values) object if delivery address was selected, or null if selection was cancelled.|
+|``options``|``Object`` [Options](#options)|yes|Additional configuration options of the application, see below.|
+|``inElement``|``DOM element``|no|If not null, application will be displayed inside the specified DOM element. We recommend that the element has dimensions specified.|
+
+```
+Packeta.Widget.close()
+```
+
+Close any previously displayed widget. This method will succeed even if none is currently open.
+There is no return value ``address``.
+
+## Data structures
+
+### ``Options``
+
+|**Key**|**Type**|**Required**|**Description**|
+| :- | :- | :- | :- |
+|`layout`|`string`|yes|Parameter for loading the widget HD. Enter value "**hd**".
+|`carrierId`|`string`|yes|Only postcodes where the carrier deliveries can be selected. Carrier ids can be found in the [carriers list](../pudo-delivery/packeta-pudos.mdx).|
+|`language`|`string[2]`|no|Display user interface in language specified with ISO 639-1 code. If not set, browser preference will be used. *(browser language by default or en)*|
+|`country`|`string[2]`|no|Allowed country specified with ISO 3166-1 alpha-2 code in lower case. Either *cz* or *sk*. If no country is specified or user don’t allow location, or centerCountry is not specified, the map will center to the given country  *(cz by default)*|
+|`county`|`string`|no|~~Province or region~~ **OBSOLETE - Use the field **`centerCounty`** instead**|
+|`city`|`string`|no|~~City name~~ **OBSOLETE - Use the field **`centerCity`** instead**|
+|`postcode`|`string`|no|~~Postal code~~ **OBSOLETE - Use the field **`centerPostcode`** instead**|
+|`street`|`string`|no|~~Street name. If not specified, the city name will be used.~~ **OBSOLETE - Use the field **`centerStreet`** instead**|
+|`houseNumber`|`string`|no|~~House number~~ **OBSOLETE - Use the field **`centerHouseNumber`** instead**|
+|`centerCountry`|`string[2]`|no|Centers the map according to the country code, specified with ISO 3166-1 alpha-2 code in lower case and separated by comma (e.g.: au, be, gb).|
+|`centerCounty`|`string`|no|Province or region|
+|`centerRegion`|`string`|no|Province or region|
+|`centerCity`|`string`|no|City name|
+|`centerPostcode`|`string`|no|Postal code|
+|`centerStreet`|`string`|no|Street name. If not specified, the city name will be used. |
+|`centerHouseNumber`|`string`|no|House number|
+
+For pre-selection of a delivery address, at least one of the houseNumber, postcode, city, country, or county options must be specified.
+
+## Return values
+
+The message posted by ``window.postMessage()``, that you can listen to using ``window.addEventListener()``:
+
+|**Value**|**Type**|**Description**|
+| :- | :- | :- |
+|``packetaWidgetMessage``|``bool``|true|
+|``address``|``Object`` [Address](#address)|Delivery address|
+
+### ``Address``
+
+|**Value**|**Type**|**Description**|
+| :- | :- | :- |
+|``country``|``string``|Country specified with ISO 3166-1 alpha-2 code in lower case.|
+|``county``|``string``|Provinces and regions|
+|``city``|``string``|City name|
+|``postcode``|``string``|Postal code|
+|``street``|``string``|Street name|
+|``houseNumber``|``string``|House number|
+|``latitude``|``string``|Latitude|
+|``longitude``|``string``|Longitude|

@@ -1,0 +1,104 @@
+---
+sidebar_position: 1
+---
+
+# Carriers
+
+## General information
+If your preference is to utilize our **home delivery** service, the initial step is selecting a carrier. We offer a list of carriers, comprehensively detailing all available carriers, their respective IDs, and more specific information about each one, such as whether they support direct label printing, what currency they use, and so on.
+
+For incorporating these carriers into your requests/file import, you would apply the carrier's ID in the same manner as you would use our Packeta pick-up point's ID.
+
+## Carriers list
+The list is accessible in both `XML` and `JSON` formats, and the required format depends on the URL used.
+
+The subsequent URLs are used to retrieve the list of carriers:
+
+- For `XML`:
+```
+https://www.zasilkovna.cz/api/v4/__API_KEY__/branch.xml?address-delivery
+```
+- For `JSON`:
+```
+https://pickup-point.api.packeta.com/v5/__API_KEY__/carrier.json?lang=__LANGUAGE__
+```
+
+:::info
+In order to retrieve the list, the `__API_KEY__` section of the URL needs to be replaced with your actual API key. This key can be acquired from the [Client Section - Support](https://client.packeta.com/support/).
+
+Without the specification of your API key, the URL **will not** function.
+:::
+
+### Result JSON
+```json
+[
+    {
+        "id": "80",
+        "name": "AT Rakouská pošta HD",
+        "available": "true",
+        "pickupPoints": "false",
+        "apiAllowed": "true",
+        "separateHouseNumber": "false",
+        "customsDeclarations": "false",
+        "requiresEmail": "true",
+        "requiresPhone": "true",
+        "requiresSize": "false",
+        "disallowsCod": "false",
+        "country": "at",
+        "currency": "EUR",
+        "maxWeight": "30",
+        "labelRouting": "C37-118-080",
+        "labelName": "AT Rakouská pošta HD"
+    },
+    {
+        "id": "106",
+        "name": "CZ Zásilkovna domů HD",
+        "available": "true",
+        "pickupPoints": "false",
+        "apiAllowed": "true",
+        "separateHouseNumber": "false",
+        "customsDeclarations": "false",
+        "requiresEmail": "true",
+        "requiresPhone": "true",
+        "requiresSize": "false",
+        "disallowsCod": "false",
+        "country": "cz",
+        "currency": "CZK",
+        "maxWeight": "30",
+        "labelRouting": "C41-***-106",
+        "labelName": "CZ Zásilkovna domů HD"
+    }
+]
+```
+
+### Data specification
+
+Carrier names in this export have the following format:
+- 2-letter [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-2)
+- carrier name
+- delivery type
+  - `HD` Home Delivery
+  - `PP` Pick-up Point Delivery
+  - `Box` Box/Locker Delivery
+
+
+
+
+| Name                 | Type      | Description                                                                                                                                                                                             |
+|----------------------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| id                   | Integer   | A unique id of carrier branch.                                                                                                                                                                          |
+| name                 | String    | Carrier name.                                                                                                                                                                                           |
+| available            | Boolean   | Indicates whether the carrier is available for delivery.                                                                                                                                                |
+| pickupPoints         | Boolean   | Indicates whether the carrier offers its own pick-up points. Please refer to our [carriers' PUDOs feed documentation](../pudo-delivery/carriers-pudos) for more information.  |
+| apiAllowed           | Boolean   | Indicates whether the carrier supports direct label printing, ie. whether the label is available via [packetCourierLabelPdf()](../api-reference/api-methods-reference#packetcourierlabelpdf), [packetCourierLabelPng()](../api-reference/api-methods-reference#packetcourierlabelpng) and [packetsCourierLabelsPdf()](../api-reference/api-methods-reference#packetscourierlabelspdf) methods.|
+| separateHouseNumber  | Boolean   | Indicates whether the carrier requires a descriptive number to be entered in the houseNumber parameter.                                                                                                 |
+| customsDeclarations  | Boolean   | Indicates whether the carrier requires the completion of customs declarations using the [Item](../api-reference/data-structures-reference#item) and [Attribute](../api-reference/data-structures-reference#attribute) parameters.|
+| requiresEmail        | Boolean   | Indicates whether the carrier requires an email.                                                                                                                                                        |
+| requiresPhone        | Boolean   | Indicates whether the carrier requires a phone number.                                                                                                                                                  |
+| requiresSize         | Boolean   | Indicates whether the carrier requires size.                                                                                                                                                            |
+| disallowsCod         | Boolean   | If true is marked, it is not possible to send a cash on delivery packet through this carrier.                                                                                                         |
+| country              | String    | Country code.                                                                                                                                                                                           |
+| currency             | String    | Currency code accepted by the carrier.                                                                                                                                                                  |
+| maxWeight            | Integer   | Maximal weight of the packet the carrier is able to handle.                                                                                                                                             |
+| labelRouting         | String    | Routing code of the carrier. Used for custom labels.                                                                                                                                                    |
+| labelName            | String    | Carrier name for printing on custom labels.                                                                                                                                                             |

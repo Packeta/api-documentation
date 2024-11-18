@@ -1,0 +1,51 @@
+---
+sidebar_position: 2
+---
+
+# Carriers' PUDOs
+
+### Using Widget
+Implementation of our widget to display carrier PUDOs on your website follows the identical procedure as that for integrating our widget to present Packeta pick-up points described above. By default, our widget attempts to showcase both our Packeta pick-up points and carrier PUDOs. This behaviour can be altered using the [`vendors`](../widget#options) option during the invocation of `Packeta.Widget.pick()` method from our integration library.
+
+If this option is left blank, the widget will present both Packeta and carrier PUDOs. Entering `"packeta"` into this option will exclusively display Packeta pick-up points. Correspondingly, including an ID of an external carrier will yield only that carrier's pick-up points. The [carriers list](../packeta-pudos.mdx#carriers-list) can be referred to identify carriers with their own pick-up points.
+
+Below is an example of widget implementation for presenting carrier PUDOs:
+
+<iframe
+    height="800"
+    style={{width: "100%"}}
+    scrolling="no"
+    title="Widget implementation - Carrier PUDOs"
+    src="https://codepen.io/Packeta/embed/xxNRWEN?default-tab=result"
+    frameborder="no"
+    loading="lazy"
+    allowtransparency="true"
+    allowfullscreen="true"
+    sandbox>
+  See the Pen <a href="https://codepen.io/Packeta/pen/xxNRWEN">
+  Widget implementation</a> by Packeta Developers (<a href="https://codepen.io/Packeta">@Packeta</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+:::tip
+Utilize the Widget above to select a pick-up point, and then open your browser's developer console to view the object returned by our widget upon selection of a pick-up point.
+
+Additionally, you have the option to insert your own API key in the JS section of the fiddle.
+:::
+
+### Using data feed
+Our [Packeta PUDOs feed](../packeta-pudos) used for fetching pick-up point data does not include carrier PUDOs data. Given that delivery to carrier PUDOs and delivery to Packeta pick-up points are distinctive services, carrier PUDOs are housed in a separate data feed.
+
+You can acquire carrier PUDOs using our [Carriers' PUDOs feed](../carriers-pudos)
+```html
+<!--for JSON data-->
+https://pickup-point.api.packeta.com/api/v5//__API_KEY__/point.json?ids=__BRANCH_IDS__
+```
+
+:::danger[Warning]
+Not updating your carriers' pick-up point data regularly can lead to issues during the packet creation process. We recommend updating these data once a day.
+:::
+
+You have the option to specify the IDs of specific carriers using the `ids` parameter. This action will result in the export only including pick-up points belonging to the indicated carriers. If no `ids` are specified, PUDOs from all carriers will be downloaded.
+
+The data retrieved in this manner can serve the development of your custom solution for providing carrier PUDOs to your customers.

@@ -4,49 +4,44 @@ sidebar_position: 1
 
 # Overview
 
-When sending packets outside of the EU, you will be required to provide necesarry data for the customs clearance process.
+For packet shipping outside of the EU, you'll need to furnish necessary data for the customs clearance process.
 
 :::info
-If you have any questions regarding customs procedures that are not covered in this section of the documentation, you can contact our customs department at customs@packeta.com 
+For any questions regarding customs procedures that are not covered in this section of the documentation, you can contact our customs department at customs@packeta.com
 :::
 
 ## Basic information
 
 ### Customs clearance options
 
-There are 3 options of customs export clearance that our clients can take advantage of:
-1. Self-declaration (clients have their own export document or an EAD), where the EAD must be
-uploaded into the system upon packet submission and sent via email to customs@packeta.com
-along with the packet ID.
-2. Issuing a customs declaration via Zásilkovna/Packeta (according to the valid price list).
-3. Customs clearance through a partner carrier (without the customs export document and fees).
+We offer our clients 3 options for the customs export clearance:
+1. Self-declaration: If clients have their own export document or an EAD. In this case, the EAD needs to be uploaded into the system when submitting the packet and forwarded via email to customs@packeta.com along with the packet ID.
+2. Procurement of a customs declaration via Zásilkovna/Packeta (according to the valid price list).
+3. Customs clearance via a partner carrier (without the customs export document and additional charges).
 
 ### Required administrative
-When choosing option 1 or 2, in order to have packet shipping approved, we require a filled-out and signed Power
-of Attorney for Indirect representation in customs proceedings document, along with a valid EU EORI.
+For options 1 and 2, to permit packet shipping, it's essential for us to receive a completed and signed document of Power of Attorney for Indirect representation in customs proceedings, supplemented with a valid EU EORI.
+
 
 #### TARIC code (the integrated Tariff of the European Union)
-Meaning the 8-digit designation of traded goods, or the so-called combined nomenclature based on the HS code
-and supplemented by a two-digit description. For detailed information about the TARIC code for particular goods,
-click [HERE](https://ec.europa.eu/taxation_customs/dds2/taric/taric_consultation.jsp?Lang=en) and browse the nomenclature.
+This refers to the 8-digit identification of goods for trade, namely the combined nomenclature based on the HS code and a two-digit description added. For comprehensive information about the TARIC code for specific goods, consult the [TARIC Consultation](https://ec.europa.eu/taxation_customs/dds2/taric/taric_consultation.jsp?Lang=en) and explore the nomenclature.
 
 
-#### packet weight
-Information about packet weight in customs declaration must be as accurate as possible. In the customs declaration, clients fill out the net weight of the transported goods (meaning the actual weight without packaging).
+#### Packet weight
+The data about packet weight for customs declaration must be as precise as can be. In the customs declaration, clients provide the net weight of the goods being transported (meaning the weight of the item without its packaging included).
 
 :::info
-Each carrier may require different information for their customs clearance process. You can find a list af required information for each carrier [here](https://client.packeta.com/assets/documentation/Customs-documentation-en.pdf)
+Every carrier might need distinct details for their customs clearance procedure.
+You can locate a list of necessary information for each carrier in the [Customs Documentation](https://client.packeta.com/assets/documentation/Customs-documentation-en.pdf).
 :::
 
 ## How to declare customs data
 
 ### Client section
-
-When creating packets through our [Client section](https://client.packeta.com/), you will be automatically presented with customs declarations form upon selecting an eligible carrier.
+While creating packets via our [Client section](https://client.packeta.com/), a customs declarations form will appear automatically once you pick an eligible carrier.
 
 ### API
+While creating packets with customs declarations through our API, please use the [`Item`](../../api-reference/data-structures-reference.mdx#item) and [`Attribute`](../../api-reference/data-structures-reference.mdx#attribute) data structures.
+A list of possible `Item` and `Attribute` values is available in the [Items and Attributes Reference](./items-and-attributes-reference.mdx).
 
-When creating packets with customs declarations through our API, please use the [`Item`](../../api-reference/data-structures-reference.mdx#item) and [`Attribute`](../../api-reference/data-structures-reference.mdx#attribute) data structures.
-List of possible `Item` and `Attribute` values can be found [here](./items-and-attributes-reference.mdx).
-
-You can find an example of a [`createPacket()`](../../api-reference/api-methods-reference.mdx#createpacket) request with customs declarations [here](../address-delivery#address-delivery-with-customs-data)
+A [`createPacket()`](../../api-reference/api-methods-reference.mdx#createpacket) request sample with customs declarations is provided in the [Home Delivery with Customs Data](../home-delivery#home-delivery-with-customs-data) section.

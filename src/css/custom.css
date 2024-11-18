@@ -21,6 +21,10 @@
     --ifm-code-font-size: 95%;
 }
 
+html[data-theme="dark"] .prolog {
+    color: rgb(110, 110, 220) !important;
+}
+
 .docusaurus-highlight-code-line {
     background-color: rgb(72, 77, 91);
     display: block;
@@ -42,6 +46,11 @@ img[title="`mermaid` image"] {
     max-width: unset !important;
 }
 
+.img-custom-label{
+    margin: auto;
+    max-width: 600px;
+}
+
 
 /* Hiding file names in MD pages since you can see the title in the menu */
 
@@ -59,10 +68,8 @@ img[title="`mermaid` image"] {
 }
 
 .packeta-logo{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 10px 0px 20px 0px;
+    max-width: 200px;
+    padding: 10px 0;
 }
 
 .docs-wrapper details{
@@ -90,6 +97,19 @@ img[title="`mermaid` image"] {
     width: 100%;
 }
 
+@media (max-width: 600px)  {
+    .widgetContainer{
+        height: 600px;
+    }
+}
+
+.tabs-container:has(> .customBarcodeDescription){
+    background-color: #fdebe9;
+    padding: 10px;
+}
+
+/* Temp styles */
+
 .warning-header {
     background-color: var(--ifm-color-primary);
     color: white;
@@ -98,11 +118,11 @@ img[title="`mermaid` image"] {
     align-items: center;
     text-align: center;
     max-height: 60px;
-    padding: 2px 0px 2px 0px;
+    padding: 2px 0 2px 0;
 }
 
-@media (max-width: 600px)  {
-    .widgetContainer{
-        height: 600px;
-    }
+.warning-header a {
+    color: white;
+    text-decoration: underline;
+    font-weight: bold;
 }

@@ -6,17 +6,20 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
 
+
 # Carrier labels
 
-To print carrier labels, you first have to obtain the **courier number**. Courier number
-is the number of a packet in the carrier's system. You can obtain the courier number using [`packetCourierNumber()`](../api-reference/api-methods-reference#packetcouriernumber) or [`packetCourierNumberV2()`](../api-reference/api-methods-reference#packetcouriernumberv2) API methods. After you have obtained a courier number, you can call any of the
-API methods used for carrier label printing.
+Before you can print carrier labels, the **courier number** must first be obtained. This is essentially the packet's identification number within the carrier's system.
 
-**Carrier labels** can be printed using the following API methods:
-- [`packetCourierLabelPdf()`](../api-reference/api-methods-reference#packetcourierlabelpdf)
-- [`packetCourierLabelPng()`](../api-reference/api-methods-reference#packetcourierlabelpng)
-- [`packetsCourierLabelsPng()`](../api-reference/api-methods-reference#packetscourierlabelspdf)
-- [`packetCourierLabelZpl()`](../api-reference/api-methods-reference#packetcourierlabelzpl)
+If you opt to print the external carrier's label directly, the following steps need to be undertaken:
+
+1. Create a packet using the [createPacket()](../api-reference/api-methods-reference#createpacket) method.
+2. Retrieve the packet's tracking code via the [packetCourierNumberV2()](../api-reference/api-methods-reference#packetcouriernumberv2) method.
+3. Use one of the available methods to generate the packet's external carrier label:
+    - [packetCourierLabelPng()](../api-reference/api-methods-reference#packetcourierlabelpng)
+    - [packetCourierLabelPdf()](../api-reference/api-methods-reference#packetcourierlabelpdf)
+    - [packetCourierLabelsPdf()](../api-reference/api-methods-reference#packetcourierlabelspdf)
+    - [packetCourierLabelsZpl()](../api-reference/api-methods-reference#packetcourierlabelzpl)
 
 ### Example requests
 
@@ -106,7 +109,7 @@ try {
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using PacketeryService;
+using PacketaService;
 using System.IO;
 
 namespace PacketaClientExample
@@ -122,7 +125,7 @@ namespace PacketaClientExample
             ulong packetId = 1234567890;
             string courierNumber = "5451339442605";
 
-            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            PacketaClient client = new PacketaClient(binding, endpointAddress);
             try
             {
                 packetCourierLabelPdfResponse response = await client.packetCourierLabelPdfAsync(
@@ -268,7 +271,7 @@ try {
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using PacketeryService;
+using PacketaService;
 using System.IO;
 
 namespace PacketaClientExample
@@ -284,7 +287,7 @@ namespace PacketaClientExample
             ulong packetId = 1234567890;
             string courierNumber = "5451339442605";
 
-            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            PacketaClient client = new PacketaClient(binding, endpointAddress);
             try
             {
                 packetCourierLabelPngResponse response = await client.packetCourierLabelPngAsync(
@@ -459,7 +462,7 @@ try {
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using PacketeryService;
+using PacketaService;
 using System.IO;
 
 namespace PacketaClientExample
@@ -479,7 +482,7 @@ namespace PacketaClientExample
             string format = "A6 on A4";
             uint offset = 0;
 
-            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            PacketaClient client = new PacketaClient(binding, endpointAddress);
             try
             {
                 packetsCourierLabelsPdfResponse response = await client.packetsCourierLabelsPdfAsync(
@@ -638,7 +641,7 @@ try {
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using PacketeryService;
+using PacketaService;
 using System.IO;
 
 namespace PacketaClientExample
@@ -655,7 +658,7 @@ namespace PacketaClientExample
             string courierNumber = "994717547550638255";
             uint dpi = 300;
 
-            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            PacketaClient client = new PacketaClient(binding, endpointAddress);
             try
             {
                 packetCourierLabelZplResponse response = await client.packetCourierLabelZplAsync(
@@ -715,7 +718,6 @@ catch (exception) {
 </Tabs>
 </details>
 
-Similarily to Packeta labels, `PDF` and `PNG` labels are returned in a base64 encoded format and need to be decoded. 
+Like Packeta labels, `PDF` and `PNG` labels are provided in base64 encoded form, and thus require decoding.
 
-`ZPL` labels are XML escaped since the ZPL format can contain characters that are used as special characters in the XML format. Because of this, ZPL labels need to be
-XML Unescaped before printing.
+`ZPL` labels come with XML escaping as the ZPL format may include characters that are interpreted as special characters in XML. Because of this, ZPL labels need to be XML unescaped before printing.

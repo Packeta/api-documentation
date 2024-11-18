@@ -1,0 +1,58 @@
+---
+sidebar_position: 1
+---
+
+# Packeta PUDOs
+
+### Using Widget
+For integrating our Widget into your website, we suggest utilizing our integration library, which can be found at [https://widget.packeta.com/v6/www/js/library.js](https://widget.packeta.com/v6/www/js/library.js).
+
+You have the option to create a local mirror of this library. However, this approach won't provide access to any updates. As such, we advise dynamically linking this library to your website.
+
+```html
+<script src="https://widget.packeta.com/v6/www/js/library.js"></script>
+```
+
+:::tip
+We've created a special version of our `library.js` tailored for e-shops that require file integrity validation. You can find this version at [library-1.0.0.js](https://widget.packeta.com/v6/www/js/library-1.0.0.js).
+:::
+
+The library offers the `Packeta.Widget.pick(apiKey, callback, options*, inElement*)` method to open the widget window.
+
+The following is an example of a widget implementation designed to present Packeta pick-up points:
+
+<iframe
+    height="800"
+    style={{width: "100%"}}
+    scrolling="no"
+    title="Widget implementation - Packeta Pick-up points"
+    src="https://codepen.io/Packeta/embed/qBvvyQR?default-tab=result"
+    frameborder="no"
+    loading="lazy"
+    allowtransparency="true"
+    allowfullscreen="true"
+    sandbox>
+  See the Pen <a href="https://codepen.io/Packeta/pen/qBvvyQR">
+  Widget implementation</a> by Packeta Developers (<a href="https://codepen.io/Packeta">@Packeta</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+:::tip
+Use the Widget above to select a pick-up point and then open your browser's developer console to observe the object our widget returns upon selection of the pick-up point.
+
+Additionally, you have the option to insert your own API key in the JS section of the fiddle.
+:::
+
+### Using data feed
+To access the data on the currently available Packeta pick-up points, feel free to use our [Packeta PUDOs feed](../packeta-pudos). This data may assist you in crafting your own method for providing pick-up point options to your customers.
+
+The URL for retrieving Packeta pick-up point data is as follows:
+```html
+https://pickup-point.api.packeta.com/api/v5/__API_KEY__/branch.json?lang=__LANGUAGE__
+```
+
+It's vital to download these data feeds on a regular basis to ensure information accuracy. Under normal circumstances, it's advised to perform this operation at least once a day. For greater relevance, a four times daily download is ideally suggested. However, during high-activity periods or peak seasons, the recommended frequency is every hour.
+
+:::danger[Warning]
+Not updating your pick-up point data regularly can lead to issues during the packet creation process.
+:::

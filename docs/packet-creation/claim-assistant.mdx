@@ -10,12 +10,12 @@ import CodeBlock from '@theme/CodeBlock';
 
 ## Claim Assistant
 
-[Claim Assistant](../getting-started/available-delivery-services#claim-assistant) is a service that can be used to easily allow your customers to return their parcels to the sender.
+[Claim Assistant](../getting-started/available-delivery-services#claim-assistant) is a service that can be used to easily allow your customers to return their packets to the sender.
 
-Claim Assistant parcels can be generated either through our API using the [`createPacketClaim()`](../api-reference/api-methods-reference#createpacketclaim) or 
+Claim Assistant packets can be generated either through our API using the [`createPacketClaim()`](../api-reference/api-methods-reference#createpacketclaim) or
 [`createPacketClaimWithPassword()`](../api-reference/api-methods-reference#createpacketclaimwithpassword) methods, or using our [client section](https://client.packeta.com/claim-assistant/post).
 
-The pick-up point to which a Claim Assistant parcel will be returned cannot be chosen dynamically, instead, it has to be set through our client section [here](https://client.packeta.com/cs/invoice-addresses/) on a per-billing address basis.
+The pick-up point for returning a Claim Assistant packet cannot be chosen dynamically. Instead, it should be set per billing address in the [Client Section - Invoice Addresses](https://client.packeta.com/en/invoice-addresses/).
 
 <details>
 <summary>
@@ -46,7 +46,7 @@ Example <code>createPacketClaim()</code> request/response
     <result>
         <id>123456789</id>
         <barcode>Z123456789</barcode>
-        <barcodeText>Z 12345 67890</barcodeText>
+        <barcodeText>Z 123 4567 890</barcodeText>
     </result>
 </response>
 
@@ -84,7 +84,7 @@ Example <code>createPacketClaim()</code> request/response
          <createPacketClaimResult>
             <ns1:id>1234567890</ns1:id>
             <ns1:barcode>Z1234567890</ns1:barcode>
-            <ns1:barcodeText>Z 12345 67890</ns1:barcodeText>
+            <ns1:barcodeText>Z 123 4567 890</ns1:barcodeText>
          </createPacketClaimResult>
       </ns1:createPacketClaimResponse>
    </SOAP-ENV:Body>
@@ -136,7 +136,7 @@ catch (SoapFault $e){
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using PacketeryService;
+using PacketaService;
 
 namespace PacketaClientExample
 {
@@ -159,7 +159,7 @@ namespace PacketaClientExample
                 sendLabelToEmail = false
             };
 
-            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            PacketaClient client = new PacketaClient(binding, endpointAddress);
             try
             {
                 createPacketClaimResponse response = await client.createPacketClaimAsync(new createPacketClaimRequest(apiPassword, claimAttributes));
@@ -272,7 +272,7 @@ Example <code>createPacketClaimWithPassword()</code> request/response
          <apiPassword>{{apiPassword}}</apiPassword>
          <claimWithPasswordAttributes>
             <soap1:number>claimNumber</soap1:number>
-            <soap1:email>umpa.lumpa@packetatest.com</soap1:email>
+            <soap1:email>test@packetatest.com</soap1:email>
             <soap1:phone>+420777777777</soap1:phone>
             <soap1:value>100</soap1:value>
             <soap1:currency>CZK</soap1:currency>
@@ -313,7 +313,7 @@ $apiPassword = 'apiPassword';
 
 $claimAttributes = [
     'number' => '20220513001',
-    'email' => 'umpa.lumpa@packetatest.com',
+    'email' => 'test@packetatest.com',
     'phone' => '603603603',
     'value' => '100',
     'currency' => 'CZK',
@@ -348,7 +348,7 @@ catch (SoapFault $e){
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using PacketeryService;
+using PacketaService;
 
 namespace PacketaClientExample
 {
@@ -363,15 +363,15 @@ namespace PacketaClientExample
             ClaimWithPasswordAttributes claimAttributes = new ClaimWithPasswordAttributes
             {
                 phone = "+48698183000",
-                email = "test@test.cz",
-                value = 500,
+                email = "test@packetatest.cz",
+                value = 100,
                 eshop = "MyEshop",
                 number = "orderNumber",
                 currency = "CZK",
                 sendEmailToCustomer = false
             };
 
-            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            PacketaClient client = new PacketaClient(binding, endpointAddress);
             try
             {
                 createPacketClaimWithPasswordResponse response = await client.createPacketClaimWithPasswordAsync(new createPacketClaimWithPasswordRequest(apiPassword, claimAttributes));
@@ -434,7 +434,7 @@ catch (exception) {
 </Tabs>
 </details>
 
-## Return Parcels
+## Return Packets
 
-Our Return Parcels service can be used only by generating a Return parcel code through our client section [here](https://client.packeta.com/cs/eshop-identifiers/edit).
+Our Return Packets service can be utilized only by generating a Return Packet code through the [Client Section](https://client.packeta.com/cs/eshop-identifiers/edit).
 **This service cannot be used through our API**.

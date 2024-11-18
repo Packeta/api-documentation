@@ -1,0 +1,416 @@
+---
+sidebar_position: 4
+---
+
+# Widget
+This document details the standard implementation of Packeta pick-up points selection utilizing an embeddable application (widget) found at https://widget.packeta.com/v6/.
+
+## Supported browser versions
+
+List of minimal supported browser versions:
+
+- Google Chrome 79
+- Mozilla Firefox 79
+- Microsoft Edge 18
+- Internet Explorer 11
+- Safari 11
+- Opera 70
+
+## Intended audience
+
+This manual is intended for technically advanced internet stores which require and are able to implement custom interaction with the widget.
+
+Specifically, the following skills are required:
+- Basic JavaScript programming
+- Basic HTML/CSS knowledge
+
+## Important information
+
+The widget can function correctly only with a **correctly configured API key**. The key can be obtained at the [Packeta Client section](https://client.packeta.com), or it can be supplied by your account manager.
+
+**For Utilizing Carriers' PUDOs:**
+
+- Following successful widget implementation using the Packeta integration library **library.js** (as detailed below), you still need to enable the display of external pick-up points at the [Packeta Client section](https://client.packeta.com).
+- Ensure the desired country for viewing pick-up points is enabled at the [Packeta Client section](https://client.packeta.com).
+- Any newly enabled country will be applicable in your widget within a maximum of 90 minutes.
+
+## Functional cookies
+
+| Argument               | Type   | Max-age    | Description                                                                                                                                |
+| ---------------------- | ------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| branchId               | string | 2147483647 | Stores and identifier of the last selected pick-up. When end user visits any eshop, the widget centers the map to the pick-up. |
+| favorite-pick-up points| string | 2147483647 | Stores identifiers of pick-up points marked as favorite. User can list his/her favorite pick-up points in the widget.                      |
+
+## Quick start – examples
+
+We provide an integration library, which you **may** mirror (without automatic updating) and/or use in any way:
+
+| Name             | Link                                                                                                           | Description                                    | Expiration   |
+| ---------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ------------ |
+| library.js       | [https://widget.packeta.com/v6/www/js/library.js](https://widget.packeta.com/v6/www/js/library.js)             | For e-shops that do not verify file integrity. | permanently  |
+| library-1.0.6.js |  [https://widget.packeta.com/v6/www/js/library-1.0.6.js](https://widget.packeta.com/v6/www/js/library-1.0.6.js)|For e-shops that verify file integrity.|last version|
+
+- Example using the library: [configurator](https://configurator.widget.packeta.com/?apiKey=XXX%20XXX%20XXX)
+- Please note you have to provide your API key, for the example to work correctly.
+
+## Basic embedable application implementation details
+
+The embeddable application lives in an isolated iframe, which cannot interact with your main webpage in any other way than sending messages using `window.postMessage()`.
+
+**Iframe permissions:**
+
+- Recommended: `sandbox="allow-scripts allow-same-origin" allow="geolocation"`
+- Minimal required: `sandbox="allow-scripts"`
+- Please note that geolocation is only available if your internet store is served over https (not just http)
+- Cookies persistence
+
+**There are two distinct possible modes of operation in the shopping cart:**
+
+<ol type="A">
+	<li>the pick-up selection is done in a modal dialog (which opens after the customer selects delivery to Packeta pick-up, or by a button available next to such delivery method)</li>
+	<li>inline UI controls, part of delivery method selection</li>
+</ol>
+
+Both modes are supported by the application. When doing the later, make sure to test on mobile phones and tablets.
+
+## Integration library – methods
+
+You can find the integration library as defined at the [Quick start – examples](#quick-start--examples) paragraph.
+
+The library provides following methods:
+
+### `Packeta.Widget.pick(apiKey, callback, options*, inElement*)`
+
+This method launches the widget.
+
+There is no return value.
+
+| Argument    | Type                                                   | Required | Description                                                                                                                                                                                                                                                                                                                                                                                    |
+| ----------- | ------------------------------------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apiKey`    | `string[16]`                                           | yes      | An identifier of your Packeta account, available at [Packeta Client section](https://client.packeta.com), or can be provided by your account manager.                                                                                                                                                                                                                                          |
+| `callback`  | `function`                                             | yes      | Function which will be called when the user confirms or cancels pick-up selection. The function will receive one argument, which will be either an [`Point`](#point) object if pick-up was selected, or `null` if selection was cancelled. To get selected pick-up's vendor code, call the [validation endpoint](#validation-of-selected-pick-up-point). |
+| `options`   | Options JSON URL, or [`Object: Options`](#options)     | no       | URL of a JSON file containing the Options object, or the Options object itself.                                                                                                                                                                                                                                                                                                                |
+| `inElement` | `DOM element`                                          | no       | If not null, application will be displayed inside the specified DOM element. We recommend that the element has dimensions specified.                                                                                                                                                                                                                                                           |
+
+### `Packeta.Widget.close()`
+
+Closes any previously displayed widget. This method will succeed even if none is currently open.
+
+There is no return value.
+
+## Data structures
+
+- Fields marked with **Required: yes** are mandatory and will be always present
+- **Required: no** are optional and may not be present
+- **Required: recommended** are strongly recommended to be used
+
+### `Options`
+
+- Additional configuration options of the application
+
+| Key                 | Type                             | Required    | Description                                                                                                                                                                                                                                                                                                                                                                        |
+| ------------------- | -------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `webUrl`            | `string: URL`                    | no          | Provides your e-shop address, either a full URL, or at least top level domain.                                                                                                                                                                                                                                                                                                     |
+| `appIdentity`       | `string`                         | no          | Provides the e-shop software name and version, and if applicable also Packeta module version. E.g. "prestashop-1.6-packeta-4.1"                                                                                                                                                                                                                                                    |
+| `vendors`           | [`Array: Vendor`](#vendor)       | recommended | List of pick-up vendors. Only the specified vendors and their pick-up points will be displayed. If not present, all vendors and all pick-up points will be displayed. Available vendors respect the Allowed branch settings in the [Packeta Client section](https://client.packeta.com/en/user-branch-settings/edit).                                                                                                                                                                                                                                                                                                               |
+| `country`           | `string`                         | no          | Shows only pick-up points from particular countries, specified with ISO 3166-1 alpha-2 code in lower case and separated by comma (e.g.: au, be, gb). If not set, specific pick-up points configured in the client section will be displayed. Default value is based on the Allowed branch settings in the [Packeta Client section](https://client.packeta.com/en/user-branch-settings/edit). Country restricts the list of pick-up `vendors`. Consider using the `vendors` field. |
+| `language`          | `string[2]`                      | recommended | Displays user interface in language specified with following options: ['en', 'cs', 'bg', 'hu', 'pl', 'ro', 'sk', 'fr', 'uk', 'de', 'sl', 'lv', 'it', 'hr', 'fi', 'et', 'da', 'es', 'el', 'lt', 'nl', 'pt', 'ru', 'sv']. If not set, browser preference will be used. Default value is "en" language.                                                                               |
+| `claimAssistant`    | `string`                         | no          | If present and set to "yes", it will only display pick-up points, which provide the Claim Assistant (Return packet) service. If present and set to any other value, it will only display pick-up points which do not provide the Claim Assistant (Return packet) service.                                                                                                          |
+| `packetConsignment` | `string`                         | no          | If present and set to "yes", it will only display pick-up points, which provide new packet consignment service. If present and set to any other value, it will only display pick-up points which do not provide new packet consignment service.                                                                                                                                    |
+| `weight`            | `float`                          | no          | If present, it will only display pick-up points, which accept packets of this weight in kilograms.                                                                                                                                                                                                                                                                                 |
+| `longitude`         | `float`                          | no          | If location is not allowed use longitude and latitude as current position.                                                                                                                                                                                                                                                                                                         |
+| `latitude`          | `float`                          | no          | If location is not allowed use longitude and latitude as current position.                                                                                                                                                                                                                                                                                                         |
+| `livePickupPoint`   | `boolean`                        | no          | If present and set to true, only pick-up points where age 18+ verification service is available are displayed.                                                                                                                                                                                                                                                                     |
+| `expeditionDay`     | `string: YYYY-MM-DD`             | no          | Expected date of the packet expedition. A pick-up will be unavailable when the shipping date falls within the pick-up´s holiday that lasts more than 3 days.                                                                                                                                                                                                           |
+| `defaultPrice`      | `float`                          | no          | Default vendor's shipping price. If not specified, no shiping price will be displayed.                                                                                                                                                                                                                                                                                             |
+| `defaultCurrency`   | `string`                         | no          | Default vendor's currency. ISO 4217 currency alphabetic.                                                                                                                                                                                                                                                                                                                           |
+
+### `Vendor`
+
+- Vendor of pick-up points is an abstraction of a delivery method.
+
+| Field Name | Type      | Required                                                      | Description                                                                                                                                                       |
+| ---------- | --------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `carrierId`| `string`  | yes if `country` and `group` is not specified                 | Carrier ID for an external carrier                                                                                                                                |
+| `country`  | `string`  | yes if `carrierId` is not specified                           | Country of the Packeta internal carrier. ISO 3166-1 alpha-2 code.                                                                                                 |
+| `group`    | `string`  | yes if `carrierId` is not specified and group is not zpoint   | Group of the Packeta internal carrier. Either `zbox` or empty for `z-point`.                                                                                      |
+| `selected` | `boolean` | no                                                            | If present and set to true, the vendor vill be selected.                                                                                                          |
+| `price`    | `float`   | no                                                            | Vendor's shipping price. If not present, the default price will be used.                                                                                          |
+| `currency` | `string`  | no                                                            | If not present, the default currency will be used. If there is no currency and the price is not 0, the price will not be displayed. ISO 4217 currency alphabetic. |
+
+### `Point`
+
+- There is always at least one of "error", "warning", "recommended" or "isNew" set (not null, not false).
+
+| Field Name | Type | Description ||
+|---|---|---|-----|
+|  `id`  |  `string`  | For internal pick-up points: Branch ID; For external pick-up points: External carrier's pick-up code. | |
+|  `name`  |  `string`  | Name which usually means city and street address. For large cities also includes city district. |
+|  `country`  |  `string[2]`  | Country code. ISO 3166-1 alpha-2 code in lower case. |
+|  `currency`  |  `string[3]`  | ISO 4217 currency alphabetic code |
+|  `place`  |  `string`  | Name of the business place |
+|  `special`  |  `string`  | Short additional information about the pick-up place, e.g. "by the subway entrance" |
+|  `street`  |  `string`  | Street name and house number |
+|  `city`  |  `string`  | City name |
+|  `zip`  |  `string`  | Postal code |
+|  `gps`  |  [`GpsCoordinates`](#gpscoordinates)  | GPS coordinates |
+|  `packetConsignment`  |  `boolean`  | Does the pick-up allow consigning new packets? |
+|  `claimAssistant`  |  `boolean`  | Does the pick-up accept Return packets (paid by you / receipient)? |
+|  `maxWeight`  |  `integer`  | The maximum accepted weight of packet in kilograms. |
+|  `error`  |  `null | string`  | If not null, then it indicates that you **must not** allow this pick-up to be selected by customer. However, you **must** display it and indicate its unavailability because this state is usually only temporary. Possible values are: |
+|  | **`vacation`** | The pick-up is temporarily closed due to staff vacation. The state persists at least for a week, typically 1 or 2 weeks. |
+|  | **`full`** | The pick-up is currently over maximum capacity. |
+|  | **`closing`** | The pick-up will be closed in near future. Displaying a pick-up in such a case will help the customer understand why the pick-up is not available anymore. |
+|  | **`technical`** | Various other reasons. |
+|  | **`xxx`** | If an unknown string value occurs (new reason introduced in the future), treat it as `technical`. |
+|  `warning`  |  `null | string`  | If not null, then it indicates that you **must** discourage the customer from selecting this pick-up. Possible values are: |
+|  | **`almostFull`** | The pick-up is approaching full capacity and it is possible that the customer may experience some wait time due to servicing others. |
+|  `recommended`  |  `null | string`  | If not null, then it indicates you **should** promote this pick-up over others. Possible values are: |
+|  | **`quick`** | The pick-up is far below capacity and the customer can expect very quick service. |
+|  `isNew`  |  `boolean`  | Indicates if the pick-up is new and if it is, you **should** promote it, so that customers take a notice of new pick-up points in their preferred areas. |
+|  `creditCardPayment`  |  `null | boolean`  | Indicates (true/false) if the pick-up allows C.O.D. payment via payment card. If you have disabled card payments for your Packeta client account, the return value will be always be null ("not available"), even if the pick-up allows card payments for other clients. |
+|  `saturdayOpenTo`  |  `float`  | Indicates if the pick-up is open on Saturday, and if so, until which hour. If it's closed, the value is 0. Recommended as a filtering option. |
+|  `sundayOpenTo`  |  `float`  | Indicates if the pick-up is open on Sunday, and if so, until which hour. If it's closed, the value is 0. Recommended as a filtering option. |
+|  `businessDaysOpenUpTo`  |  `float`  | Indicates the latest hour until which the pick-up is open on any single day of the week. E.g. if the opening hours are Mon-Thu 10:00-18:00, Fri 12:00-20:00, then the value would be 20. Recommended as a filtering option. |
+|  `businessDaysOpenLunchtime`  |  `boolean`  | Indicates if the pick-up is open during lunch time (does not have a break during lunch time). Recommended as a filtering option. |
+|  `directions`  |  `string: HTML`  | Information about the pick-up whereabouts. Possible tags: `&lt;p&gt;`, `&lt;b&gt;`, `&lt;a href target&gt;`, `&lt;i&gt;`, `&lt;em&gt;`, `&lt;strong&gt;`, `&lt;span&gt;`, `&lt;br&gt;`. |
+|  `directionsCar`  |  `string: HTML`  | Instructions for car access to the pick-up, parking, etc. Possible tags: `&lt;p&gt;`, `&lt;b&gt;`, `&lt;a href target&gt;`, `&lt;i&gt;`, `&lt;em&gt;`, `&lt;strong&gt;`, `&lt;span&gt;`, `&lt;br&gt;`. This can be an empty string. |
+|  `directionsPublic`  |  `string: HTML`  | Instructions for public transport access to the pick-up, bus stop name, etc. Possible tags: `&lt;p&gt;`, `&lt;b&gt;`, `&lt;a href target&gt;`, `&lt;i&gt;`, `&lt;em&gt;`, `&lt;strong&gt;`, `&lt;span&gt;`, `&lt;br&gt;`. This can be an empty string. |
+|  `holidayStart`  |  `null | string: YYYY-MM-DD`  | ~~If there is pick-up vacation upcoming or in progress, this indicates when it starts. This will usually appear earlier than error=vacation.~~ **OBSOLETE - Use the field `exceptionDays` instead** |
+|  `holidayEnd`  |  `null | string: YYYY-MM-DD`  | ~~If there is pick-up vacation upcoming or in progress, this indicates when it ends. This will usually appear earlier than error=vacation.~~ **OBSOLETE - Use the field `exceptionDays` instead** |
+|  `exceptionDays`  |  [`Array: ExceptionDay`](#exceptionday)  | Contains holidays, exceptions or changes from opening hours. |
+|  `wheelchairAccessible`  |  `boolean`  | Is the pick-up accessible to people on wheelchairs? |
+|  `url`  |  `string: URL`  | ~~Address of pick-up detail web page~~ **OBSOLETE - Use field `branchCode` instead.** |
+|  `branchCode`  |  `string`  | Only for internal pick-up points: Unique URL safe identifier to be used in an address of a pick-up detail web page |
+|  `photo`  |  [`Array: Photo`](#photo)  | Provides thumbnail and full-size photos of pick-up. |
+|  `photos`  |  [`Array: Photo`](#photo)  | ~~Provides thumbnail and full-size photos of pick-up.~~ **OBSOLETE - Use field `photo` instead.** |
+|  `openingHours`  |  [`Object: PointHours`](#pointhours)  | Provides HTML and structured information about pick-up business hours. |
+|  `pickupPointType`  |  `string`  | Values to be provided are either "internal" (internal pick-up points) or "external" (external pick-up points). |
+|  `routingCode`  |  `string`  | Routing code of the branch. Used for custom labels. |
+|  `carrierId`  |  `string`  | Only for external pick-up points: External carrier ID |
+|  `carrierPickupPointId`  |  `string`  | Only for external pick-up points: External carrier's pick-up code |
+|  `group`  |  `string`  | Only for Packeta internal pick-up points: Group of pick-up. Either `zbox` or empty for `z-point`. |
+
+### `GpsCoordinates`
+
+| Field Name | Type | Description |
+| ---------- | ------- | ----------- |
+|  `lat`  |  `float`  | Latitude |
+|  `lon`  |  `float`  | Longitude |
+
+### `ExceptionDay`
+
+| Field Name | Type | Description |
+| ---------- | -------------------------- | ------------------- |
+|  `from`  |  `string: YYYY-MM-DD`  | start date |
+|  `to`  |  `null | string: YYYY-MM-DD`  | end date |
+|  `times`  |  [`Array: Time`](#time)  |  |
+
+
+### `Time`
+
+| Field Name | Type            | Description |
+| ---------- | --------------- | ----------- |
+| `open`     | `string: HH:mm` | open time   |
+| `close`    | `string: HH:mm` | close time  |
+
+### `Photo`
+
+| Field Name  | Type          | Description                                     |
+| ----------- | ------------- | ----------------------------------------------- |
+| `thumbnail` | `string: URL` | Link to thumbnail-sized photo of pick-up. |
+| `normal`    | `string: URL` | Link to standard-sized photo of pick-up.  |
+
+### `PointHours`
+
+| Field Name     | Type                          | Description                                                                                                                                                                                                                                                                                                                                                             |
+| -------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `compactShort` | `string: HTML`                | The most compact version of business hours. May contain the following HTML: &lt;br /&gt;, &lt;strong&gt;, &lt;strong style='color: red;'&gt;                                                                                                                                                                                                                            |
+| `compactLong`  | `string: HTML`                | Same as compactShort, more text may be used to explain upcoming changes. May contain the following HTML: &lt;br /&gt;, &lt;strong&gt;, &lt;strong style='color: red;'&gt;                                                                                                                                                                                               |
+| `tableLong`    | `string: HTML`                | Provides business hours in a table with row for each day of week. More text may be used to explain upcoming changes. May contain the following HTML: &lt;br /&gt;, &lt;strong&gt;, &lt;strong style='color: red;'&gt;, &lt;table class='packetery-hours'&gt;, &lt;tr&gt;, &lt;th&gt;, &lt;th style='color: red;'&gt;, &lt;td&gt;, &lt;td colspan='2' align='center'&gt; |
+| `regular`      | [`WeekHours`](#weekhours) | Provides structured information about current business hours.                                                                                                                                                                                                                                                                                                           |
+| `exceptions`   |                               | **OBSOLETE - Use field `exceptionDays` instead.**                                                                                                                                                                                                                                                                                                                       |
+
+### `WeekHours`
+
+| Field Name  | Type                                 | Description |
+| ----------- | ------------------------------------ | ----------- |
+| `monday`    | [`string: Hours`](#string-hours) |             |
+| `tuesday`   | [`string: Hours`](#string-hours) |             |
+| `wednesday` | [`string: Hours`](#string-hours) |             |
+| `thursday`  | [`string: Hours`](#string-hours) |             |
+| `friday`    | [`string: Hours`](#string-hours) |             |
+| `saturday`  | [`string: Hours`](#string-hours) |             |
+| `sunday`    | [`string: Hours`](#string-hours) |             |
+
+### `string: Hours`
+
+- The format for business hours is one, two or three blocks separated by a comma, e.g.:
+  - 08:00–12:30
+  - 08:00–12:30, 13:30–17:30
+  - 08:00–12:30, 13:30–17:30, 18:30–21:00
+- Please note the dash (&mdash;), not hyphen (-), between open and close times
+
+## Validation of selected pick-up point
+
+Selection of pick-up is done entirely on end user's device.
+Technically skilled user is able to bypass our validation (allowed pick-up points, available capacity, etc.).
+To solve this issue we provide validation endpoint.
+The validation endpoint should be called with the same parameters that the widget was initialized with (see Data structures - Options).
+
+The endpoint is available at URL `https://widget.packeta.com/v6/api/pps/api/widget/v1/validate`. HTTP method is `POST`.
+
+### Request
+
+#### Headers
+
+| Header Name  | Type   | Required | Description                                                                                                                                                       |
+| ------------ | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `X-Language` | string | no       | Language code in format ISO 639-1. When specified, error messages are displayed in given language if the translation is available. Default language code is `en`. |
+
+#### Parameters
+
+Parameters are posted as a JSON object.
+
+| Field Name             | Type                                        | Required            | Description                                                                                                                      |
+| ---------------------- | ------------------------------------------- | --------------------| -------------------------------------------------------------------------------------------------------------------------------- |
+| `apiKey`               | `string[16]`                                | yes                 | An identifier of your Packeta account, available in Packeta Client section, or can be provided by your account manager.          |
+| `options`              | [`Object: ValidatedOptions`](#validatedoptions) | no                  |                                                                                                                                  |
+| `point`                | [`Object: ValidatedPoint`](#validatedpoint)     | yes                 |                                                                                                                                  |
+| `id`                   | `string`                                    | for internal points | ~~Branch ID.~~**OBSOLETE - Use `ValidatedPoint` instead**                                                                                                                       |
+| `carrierId`            | `string`                                    | for external points | ~~External carrier ID.~~**OBSOLETE - Use `ValidatedPoint` instead**                                                                                                               |
+| `carrierPickupPointId` | `string`                                    | for external points | ~~External carrier's pick-up code.~~**OBSOLETE - Use `ValidatedPoint` instead**                                                                                             |
+| `country`              | `string`                                    | no                  | ~~Comma separated list of allowed countries, specified with ISO 3166-1 alpha-2 code in lower case.~~**OBSOLETE - Use `ValidatedOptions` instead**                                   |
+| `carriers`             | `string`                                    | no                  | ~~Comma separated list of allowed carriers, or string `packeta` for Packeta internal pick-up points.~~**OBSOLETE - Use `ValidatedOptions` instead**                               |
+| `claimAssistant`       | `boolean`                                   | no                  | ~~If present and set to `true`, selected pick-up must provide Claim Assistant service.~~**OBSOLETE - Use `ValidatedOptions` instead**                                       |
+| `packetConsignment`    | `boolean`                                   | no                  | ~~If present and set to `true`, selected pick-up must provide new packet consignment service.~~**OBSOLETE - Use `ValidatedOptions` instead**                                |
+| `weight`               | `float`                                     | no                  | ~~If present, selected pick-up must accept packets of this weight in kilograms.~~**OBSOLETE - Use `ValidatedOptions` instead**                                                    |
+| `livePickupPoint`      | `boolean`                                   | no                  | ~~If present and set to `true`, selected pick-up must provide age verification service.~~**OBSOLETE - Use `ValidatedOptions` instead**                                      |
+| `expeditionDay`        | `string:YYYY-MM-DD`                         | no                  | ~~Expected date of the packet expedition. The selected pick-up must not have a holiday of more than 3 days during this date.~~**OBSOLETE - Use `ValidatedOptions` instead** |
+
+#### ValidatedOptions
+
+| Field Name             | Type                                               | Required                     | Description                                                                                                                      |
+| ---------------------- | -------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `country`              | `string`                                           | no                           | Comma separated list of allowed countries, specified with ISO 3166-1 alpha-2 code in lower case.                                 |
+| `carriers`             | `string`                                           | no                           | Comma separated list of allowed carriers, or string `packeta` for Packeta internal pick-up points.                               |
+| `claimAssistant`       | `boolean`                                          | no                           | If present and set to `true`, selected pick-up must provide Claim Assistant service.                                       |
+| `packetConsignment`    | `boolean`                                          | no                           | If present and set to `true`, selected pick-up must provide new packet consignment service.                                |
+| `weight`               | `float`                                            | no                           | If present, selected pick-up must accept packets of this weight in kilograms.                                                    |
+| `livePickupPoint`      | `boolean`                                          | no                           | If present and set to `true`, selected pick-up must provide age verification service.                                      |
+| `expeditionDay`        | `string:YYYY-MM-DD`                                | no                           | Expected date of the packet expedition. The selected pick-up must not have a holiday of more than 3 days during this date. |
+| `vendors`              | [`Array: ValidatedVendor`](#validatedvendor)   | no                           | List of vendor options.                                                                                                                                                                                                                                                                                                                |
+
+#### `ValidatedVendor`
+
+| Field Name | Type      | Required                                                      | Description                                                                                                                                                       |
+| ---------- | --------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `carrierId`| `string`  | yes if `country` and `group` is not specified                 | Carrier ID for an external carrier                                                                                                                                |
+| `country`  | `string`  | yes if `carrierId` is not specified                           | Country of the Packeta internal carrier. ISO 3166-1 alpha-2 code.                                                                                                 |
+| `group`    | `string`  | yes if `carrierId` is not specified and group is not `zpoint` | Group of the Packeta internal carrier. Either `zbox` or empty for `z-point`.                                                                                      |
+
+#### `ValidatedPoint`
+
+| Field Name             | Type                | Required            | Description                                                                                                                      |
+| ---------------------- | ------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                   | `string`            | for internal points | Branch ID.                                                                                                                       |
+| `carrierId`            | `string`            | for external points | External carrier ID.                                                                                                             |
+| `carrierPickupPointId` | `string`            | for external points | External carrier's pick-up code.                                                                                           |
+
+#### Example
+
+Example request body:
+
+```
+{
+  "apiKey": "<your-api-key>",
+  "point":
+  {
+    "id": "<id-of-selected-pick-up-point>"
+  },
+  "options":
+  {
+    "country": "cz,sk",
+    "carriers": "packeta",
+    "weight": 3.1,
+    "livePickupPoint": true,
+    "expeditionDay": "2022-08-31",
+	"vendors":
+	[
+	  {
+	    "country": "cz",
+      "group": "zbox"
+	  }
+	]
+  }
+}
+```
+
+### Response
+
+Possible HTTP status codes of the response:
+
+| Status code | Description                                                                       |
+| ----------- | --------------------------------------------------------------------------------- |
+| 200         | pick-up was validated. Inspect response body to get validation status.      |
+| 400         | Missing or incorrect parameters. Inspect response body to get more error details. |
+| 401         | Invalid API key.                                                                  |
+
+Response is returned as JSON object with following properties:
+
+| Property Name | Type                            | Description                                                                                                                                                          |
+| ------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `isValid`     | `boolean`                       | `true` means that the selected pick-up meets all the criteria of the validation request and the e-shop settings. In case of `false` inspect `errors` property. |
+| `point`       | [`Object: ValidPoint`](#validpoint) |                                                                                                                                                                      |
+| `errors`      | `array`                         | An array which contains all discovered validation errors with their error codes and descriptions.                                                                    |
+
+#### `ValidPoint`
+
+| Field Name | Type      | Present                                                              | Description                                                                                                                                                       |
+| ---------- | --------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `carrierId`| `string`  | yes if `country` and `group` is not present                          | Carrier ID for an external carrier                                                                                                                                |
+| `country`  | `string`  | yes if `carrierId` is not present                                    | Country of the Packeta internal carrier. ISO 3166-1 alpha-2 code.                                                                                                 |
+| `group`    | `string`  | yes if `carrierId` is not present and group is not `zpoint`          | Group of the Packeta internal carrier. Either `zbox` or empty for `z-point`.                                                                                      |
+
+#### Error codes
+
+| Error code                    | Description                                                                                        |
+| ----------------------------- | -------------------------------------------------------------------------------------------------- |
+| `NotFound`                    | The pick-up was not found.                                                                   |
+| `InvalidCarrier`              | The pick-up has not allowed carrier.                                                         |
+| `InvalidCountry`              | The pick-up is not in allowed country.                                                       |
+| `EmptyListOfAllowedCountries` | Cannot perform country validation because the list of allowed countries is empty.                  |
+| `NoClaimAssistant`            | The pick-up does not offer Complaints Assistant Service.                                     |
+| `HasClaimAssistant`           | The pick-up offers Complaints Assistant Service.                                             |
+| `NoPacketConsignment`         | The pick-up is not drop-off point.                                                           |
+| `HasPacketConsignment`        | The pick-up is drop-off point.                                                               |
+| `InvalidWeight`               | The pick-up does not accept packets with given weight.                                       |
+| `NoAgeVerification`           | The pick-up does not offer Age Verification Service.                                         |
+| `PickupPointVacation`         | The pick-up currently does not accept any packets due to reported holiday.                   |
+| `PickupPointClosing`          | The pick-up does not accept new shipments because it will be closed soon.                    |
+| `PickupPointIsFull`           | The pick-up does not accept any packets at the moment due to its full capacity.              |
+| `PickupPointForbidden`        | The pick-up cannot be selected.                                                              |
+| `PickupPointTechnicalReason`  | The pick-up cannot be chosen as a final destination of your packet due to technical reasons. |
+| `InvalidVendor`               | The pick-up has not allowed vendor.                                                          |
+
+#### Example
+
+Example response body:
+
+```
+{
+  "isValid": false,
+  "point": 
+  { 
+	"country": "cz", 
+	"group": "zbox"
+  },
+  "errors": 
+  [
+    {
+      "code": "NoAgeVerification",
+      "description": "The pick-up does not offer Age Verification Service."
+    }
+  ]
+}
+```

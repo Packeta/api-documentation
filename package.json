@@ -1,6 +1,6 @@
 {
-  "name": "packetery-docs",
-  "version": "2.0.0",
+  "name": "packeta-docs",
+  "version": "3.6.1",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
@@ -15,22 +15,24 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@cmfcmf/docusaurus-search-local": "^0.10.0",
-    "@docusaurus/core": "^2.0.0-beta.15",
-    "@docusaurus/preset-classic": "^2.0.0-beta.15",
-    "@docusaurus/theme-live-codeblock": "^2.0.0-beta.18",
-    "@mdx-js/react": "^1.6.21",
-    "@mermaid-js/mermaid-cli": "8.13.7",
-    "clsx": "^1.1.1",
-    "prism-react-renderer": "^1.2.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "@docusaurus/core": "^3.6.1",
+    "@docusaurus/plugin-content-docs": "^3.6.1",
+    "@docusaurus/preset-classic": "^3.6.1",
+    "@docusaurus/theme-live-codeblock": "^3.6.1",
+    "@mdx-js/react": "^3.1.0",
+    "@mermaid-js/mermaid-cli": "^11.4.0",
+    "clsx": "^2.1.1",
+    "docusaurus-lunr-search": "^3.5.0",
+    "prism-react-renderer": "^2.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "remark-mermaid": "git+https://github.com/Serkmus/remark-mermaid.git"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^2.0.0-beta.15",
-    "@tsconfig/docusaurus": "^1.0.4",
-    "typescript": "^4.5.2"
+    "@docusaurus/module-type-aliases": "^3.6.1",
+    "@docusaurus/tsconfig": "3.0.0",
+    "@types/react": "^18.3.12",
+    "typescript": "^5.6.3"
   },
   "browserslist": {
     "production": [

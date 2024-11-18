@@ -1,0 +1,96 @@
+---
+sidebar_position: 10
+---
+
+# Invoice data exporting
+
+## Basic guidelines
+
+Several API endpoints are available for exporting invoice data:
+- a list of [invoices in CSV format](#list-of-invoices-in-csv-format)
+- a single [invoice in PDF format](#an-invoice-in-pdf-format)
+- a single [invoice in CSV format](#an-invoice-in-csv-format)
+- a single [invoice in CSV for Pohoda economic system](#an-invoice-in-csv-for-pohoda-economic-system)
+
+You have to authenticate to each of these endpoints via:
+
+| Parameter  | Required | Constraints | Description       |
+|------------|----------|-------------|-------------------|
+| `key`      | yes      | string      | your API key      |
+| `password` | yes      | string      | your API password |
+
+
+## Specification of API endpoints
+
+### List of invoices in CSV format
+A list of available invoices, their numbers and corresponding data.
+
+You can access it via following URL:
+```
+https://www.zasilkovna.cz/api/invoice.csv
+```
+
+| Parameter | Required | Constraints              | Description                                   |
+|-----------|----------|--------------------------|-----------------------------------------------|
+| `lang`    | no       | string ['cs', 'sk', ...] | language for proper decimal values formatting |
+| `version` | no       | int [1, 2]               | version of the exported data (see below)      |
+
+
+##### CSV version 7
+
+| Column | CS field name                         | EN field name                |
+|--------|---------------------------------------|------------------------------|
+| 1      | Váš e-shop                            | Your eshop                   |
+| 2      | Datum vložení                         | Entry Date                   |
+| 3      | Datum podání                          | Date of posting              |
+| 4      | Vyzvednutí či vrácení                 | Date of Delivery or Return   |
+| 5      | Vaše obj. č.                          | Order Number                 |
+| 6      | Jméno                                 | Name                         |
+| 7      | Příjmení                              | Surname                      |
+| 8      | Čárový kód                            | Barcode                      |
+| 9      | Účtované služby                       | Billed service               |
+| 10     | DPH %                                 | VAT %                        |
+| 11     | Služby s DPH                          | Service Incl VAT             |
+| 12     | Měna účtovaných služeb                | Currency of billed services  |
+| 13     | Vybraná dobírka                       | COD amount                   |
+| 14     | Měna dobírky                          | COD currency                 |
+| 15     | SS                                    | Specific symbol              |
+| 16     | Poznámka                              | Note                         |
+| 17     | Stav                                  | Status                       |
+| 18     | Hmotnost                              | Weight                       |
+| 19     | Základní cena                         | Base price                   |
+| 20     | Dobírka                               | COD surcharge                |
+| 21     | Pojištění                             | Insurance                    |
+| 22     | Pod.mimo depo                         | Non depot posting            |
+| 23     | Příplatek za vratku                   | Returned package fee         |
+| 24     | Ostatní                               | Other                        |
+| 25     | Dopravné celkem bez DPH               | Transport without VAT        |
+| 26     | Palivový příplatek                    | Fuel surcharge               |
+| 27     | Mýtný příplatek                       | Toll surcharge               |
+| 28     | Platba kartou                         | Card payment surcharge       |
+| 29     | Hodnota vybrané dobírky v místní měně | COD Amount in local currency |
+| 30     | Měna vybrané dobírky                  | COD currency                 |
+| 31     | Cílová země                           | Destination country          |
+| 32     | Dopravce                              | Carrier                      |
+| 33     | Uživatelská poznámka                  | User note                    |
+| 34     | Trasovací číslo ext. dopravce         | External tracking code       |
+
+
+
+
+### An invoice in CSV for Pohoda economic system
+Invoice exported as CSV file in Pohoda economic system format. Particular invoice is specified by GET parameter - see below.
+
+
+You can access it via following URL:
+```
+https://www.zasilkovna.cz/api/invoice-packet-pohoda-payU.csv?...
+```
+
+You have to specify required GET parameter and may use the optional ones to specify the result:
+
+| Parameter    | Required             | Constraints             | Description                                    |
+|--------------|----------------------|-------------------------|------------------------------------------------|
+| `number`     | yes (or var_symbol)  | string                  | number of an invoice                           |
+| `var_symbol` | yes (or number)      | int                     | variable symbol of an invoice                  |
+| `lang`       | no                   | string ['cs', 'sk', ...] | language for proper decimal values formatting |

@@ -8,10 +8,9 @@ import CodeBlock from '@theme/CodeBlock';
 
 # Packeta labels
 
-As mentioned in the chapter about [label types](../getting-started/label-types.mdx), Packeta labels can be used for all packets, but we recommend
-using [direct labels](../getting-started/label-types.mdx#carrier-labels) for packets heading to external carriers. 
+As outlined in the section on [label types](../getting-started/label-types.mdx), Packeta labels are suitable for all packets, yet for packets designated to external carriers, we advise utilizing [direct labels](../getting-started/label-types.mdx#carrier-labels).
 
-**Packeta labels** can be printed using the following API methods:
+For printing **Packeta labels**, you can utilize the subsequent API methods:
 - [`packetLabelPdf()`](../api-reference/api-methods-reference#packetlabelpdf)
 - [`packetsLabelsPdf()`](../api-reference/api-methods-reference#packetslabelspdf)
 - [`packetLabelZpl()`](../api-reference/api-methods-reference#packetlabelzpl)
@@ -108,7 +107,7 @@ try {
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using PacketeryService;
+using PacketaService;
 using System.IO;
 
 namespace PacketaClientExample
@@ -125,7 +124,7 @@ namespace PacketaClientExample
             string format = "A6 on A4";
             uint offset = 0;
 
-            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            PacketaClient client = new PacketaClient(binding, endpointAddress);
             try
             {
                 packetLabelPdfResponse response = await client.packetLabelPdfAsync(
@@ -286,7 +285,7 @@ try {
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using PacketeryService;
+using PacketaService;
 using System.IO;
 
 namespace PacketaClientExample
@@ -303,7 +302,7 @@ namespace PacketaClientExample
             string format = "A6 on A4";
             uint offset = 0;
 
-            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            PacketaClient client = new PacketaClient(binding, endpointAddress);
             try
             {
                 packetsLabelsPdfResponse response = await client.packetsLabelsPdfAsync(
@@ -454,7 +453,7 @@ try {
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using PacketeryService;
+using PacketaService;
 using System.IO;
 
 namespace PacketaClientExample
@@ -470,7 +469,7 @@ namespace PacketaClientExample
             ulong packetId = 1234567890;
             uint dpi = 300;
 
-            PacketeryClient client = new PacketeryClient(binding, endpointAddress);
+            PacketaClient client = new PacketaClient(binding, endpointAddress);
             try
             {
                 packetLabelZplResponse response = await client.packetLabelZplAsync(
@@ -529,7 +528,6 @@ catch (exception) {
 </Tabs>
 </details>
 
-`PDF` labels are returned in a base64 encoded format and need to be decoded. 
+`PDF` labels are delivered in a base64 encoded style and require decoding.
 
-`ZPL` labels are XML escaped since the ZPL format can contain characters that are used as special characters in the XML format. Because of this, ZPL labels need to be
-XML Unescaped before printing.
+`ZPL` labels come with XML escaping as the ZPL format may include characters that are interpreted as special characters in XML. Because of this, ZPL labels need to be XML unescaped before printing.

@@ -1,109 +1,109 @@
 ---
-sidebar_position: 5
+sidebar_position: 4
 ---
 
 # Client section
 
 ## Overview
 
-If you don't want to implement our API for the purposes of creating packets, you can use semi-automate process for creating packets - our [Client section](https://client.packeta.com/) packet import instead.
+If you're unable or prefer not to use our API for packet creation, we have an alternative - a semi-automated packet creation process through our [Client section](https://client.packeta.com/) for packet import.
 
-Our client section supports packet imports in two file formats:
+In our client section, we support packet imports in the following file formats:
 - `CSV`
 - `XML`
+- `XLS`
 
-You fill find more details about each format below.
+:::caution
+- Both CSV and XML files must follow the respective technical documentation. Alternatively, you can opt for XLS, XLSX, or ODT files, which need to meet the same criteria as CSV or XML files.
+- Ensure all data and source files being uploaded comply with UTF-8 encoding. This encoding is critical to validate and transmit electronic data across carriers globally.
+:::
+
+You can find more details about each format in the sections below.
 
 ## CSV import
 
 ### Basic guidelines
 
-In **[Client section](http://client.packeta.com)** there is an option to upload a CSV file containing packet data.
-:::info
-CSV file is not suitable to import packets with mandatory **customs declarations**. In that case the better option is the **[XML import](#xml-import)** (otherwise customs declarations have to be **filled in manually** afterwards). 
+Within the **[Client Section](https://client.packeta.com/cs/packets-import/upload)**, you have the option to upload a CSV file comprising of packet data.
+
+:::caution
+If your packets require mandatory **customs declarations**, a CSV file might not be suitable for the import. In such cases, the **[XML import](#xml-import)** option would be a better choice; otherwise, customs declarations would need to be **filled in manually** at a later stage.
 :::
 
-
-The file needs to conform to the following rules:
-
-- First two rows of the file are header rows and:
-
-    - First row needs to contain the string `version 7` at first position (first cell). The rest is ignored.
-    - Second row is ignored.
-- The third row of the file is the first packet-data row.
-- Allowed separators are comma `,` and semicolon `;` characters.
-- Allowed decimal point separators are dot `.` and comma `,`. Comma must be within quotes `"` if comma `,` is already used as CSV separator.
-- Optionally, the cell content can be quoted using double quote `"` characters.
-
-:::info
-To use double quote as a part of the value, i.e. name is `Jeff "the Dude" Lebowski`, you need to escape the quote **by doubling it**. The name from previous example should then look like this: `Jeff ""the Dude"" Lebowski`.
-:::
-
-- Accepted file encoding is `UTF-8`.
-- Whitespace characters will be stripped from the beginning and the end of the value.
+The file must adhere to these rules:
+- The file encoding must be `UTF-8`.
+- Acceptable separators include the comma `,` or semicolon `;` characters.
+- Acceptable decimal point separators are the dot `.` and comma `,`. If the comma is used as the CSV separator, a comma inside quotes `"` must be used instead.
+- Any whitespace characters at the beginning or end of the value will be removed.
+- The first two rows of the file serve as header rows:
+    - The first row should have the string `version 7` at the first position (first cell). Any additional content in this row is not considered.
+    - The second row is not considered.
+- The third row of the file begins the packet-data rows.
+- Optionally, you can enclose the cell content within double quote `"` characters. If you need to include a double quote as part of the value, such as in `John "Billy" Doe`, you should escape the quote by **doubling it**. Following this rule, the name in the previous example should appear as `John ""Billy"" Doe`.
 
 
-## Fields reference
+### Fields reference
 
-You can download **example** CSV file [here](/files/example.csv).
+You can download the [example CSV](/files/example.csv) file.
 ```
 "version 7"
 
-,"20","John","Doe",,"packetatest@test","+420601234567","1200","CZK","1200.50","0.8",95,"my-eshop.com","0",,,,,,,,,,
+,"20","John","Doe",,"john@doe.com","+420601234567","1200","CZK","1200.50","0.8",95,"my-eshop.com","0",,,,,,,,,,
 ,"201600002","John","Doe","ACME ltd.","john@doe.com","+420601234567","0","CZK","1500","1.2",3060,"my-eshop.com","0",,,,,,"AI0B5","100","100","100",
 ,"201600003","John","Doe",,"john@doe.com","+420601234567","0","CZK","400","0.4",250,"my-eshop.com","1",,,,,,,,,,
 ,"201100004","John","Doe","ACME ltd.","john@doe.com","+420601234567","32.21","EUR","32.21","1.5","16","my-second-eshop.com",,,"Street","123","City","12345","","150","200","250","Note"
-,"201100005","John","Doe","ACME ltd.","john@doe.com","+420601234567","32.21","EUR","32.21","1.5","16","my-second-eshop.com",,,"Street","123","City","12345","","150","200","250","Note","1","a1a2a3a4a5a6a7a8,1b2b3b4b5b6b7b
+,"201100005","John","Doe","ACME ltd.","john@doe.com","+420601234567","32.21","EUR","32.21","1.5","16","my-second-eshop.com",,,"Street","123","City","12345","","150","200","250","Note","1",,
+,"201100006","John","Doe","ACME ltd.","john@doe.com","+420601234567","32.21","EUR","32.21","1.5","16","my-second-eshop.com",,,"Street","123","City","12345","","150","200","250","Note","0","a1a2a3a4a5a6a7a8,1b2b3b4b5b6b7b8b",
 ```
 
 | Col. | Field name              | Format                                                  | Required                 | Description                                                                                                                             |
 |------|-------------------------|---------------------------------------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
 | 1    | Reserved                |                                                         |                          | The first column is reserved and needs to be empty.                                                                                     |
 | 2    | Order number            | 1-24 characters                                         | Yes                      | Order number (from your eshop). If the value is shorter than 4 charactes, it will be padded by `0` characters from left, i.e. `0015`.   |
-| 3    | Name                    | 1-32 characters                                         | Yes                      | Recipient's name.                                                                                                                       |
-| 4    | Surname                 | 1-32 characters                                         | Yes                      | Recipient's surname.                                                                                                                    |
+| 3    | Name                    | 1-32 characters (regex `/^[\p{L}\p{N} ,.'\-&()]+$/ui`)  | Yes                      | Recipient's name.                                                                                                                       |
+| 4    | Surname                 | 1-32 characters (regex `/^[\p{L}\p{N} ,.'\-&()]+$/ui`)  | Yes                      | Recipient's surname.                                                                                                                    |
 | 5    | Company                 | 1-32 characters                                         | No                       | Recipient's company.                                                                                                                    |
-| 6    | E-mail                  | valid email                                             | If no phone              | Recipient's e-mail.                                                                                                                     |
+| 6    | email                  | valid email                                             | If no phone              | Recipient's email.                                                                                                                     |
 | 7    | Phone                   | valid phone number                                      | If no email              | Recipient's phone number. The phone number is validated and needs to be in the valid destination country's format.                      |
 | 8    | COD                     | decimal, non-negative                                   | No                       | For CZK only whole values are allowed, for EUR max 2 decimal places are allowed, for HUF only multiples of 5 are allowed.               |
 | 9    | Currency                | [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) code | No                       | If left blank, currency of the destination country is used. The currency applies to `COD` and `Value` fields.                           |
 | 10   | Value                   | decimal > 0                                             | Yes                      | Same rules apply as with the field `COD`. The value should reflect real value of the packet, it is used for insurance purposes.         |
 | 11   | Weight                  | decimal > 0                                             | Yes                       | The weight of the packet in kilograms (`kg`).                                                                                           |
-| 12   | Pick-up point or carrier| integer                                                 | Yes                      | Unique ID of the pick-up point or an address delivery service.                                                                           |
-| 13   | Sender label            | 1-64 characters                                         | If you have more senders | A label of your sender (e-shop). In case you are sending packets as more than one sender, this field is required. The latest active record is taken.                      |
+| 12   | Pick-up point or carrier| integer                                                 | Yes                      | Unique ID of the pick-up point or an home delivery service.                                                                           |
+| 13   | Sender indication       | 1-64 characters                                         | If you have more senders | A label of your sender (e-shop). In case you are sending packets as more than one sender, this field is required. The latest active record is taken.                      |
 | 14   | Adult content           | 0-1                                                     | No                       | Indicates whether the packet is to be delivered only to a person older than 18 years of age. Identification will be required on pickup. |
 | 15   | Delayed delivery        | date d.m.Y                                              | No                       | Delays the delivery so that the packet isn't delivered before this date. Accepted dates are from today to 14 days from today.           |
-| 16   | Street                  | 1-32 characters                                         | On address delivery      |                                                                                                                                         |
-| 17   | House number            | 1-16 characters                                         | On address delivery      |                                                                                                                                         |
-| 18   | City                    | 1-32 characters                                         | On address delivery      |                                                                                                                                         |
-| 19   | ZIP                     | valid ZIP                                               | On address delivery      | Valid destination country's ZIP code.                                                                                                   |
+| 16   | Street                  | 1-32 characters                                         | On home delivery      |                                                                                                                                         |
+| 17   | House number            | 1-16 characters                                         | On home delivery      |                                                                                                                                         |
+| 18   | City                    | 1-32 characters                                         | On home delivery      |                                                                                                                                         |
+| 19   | ZIP                     | valid ZIP                                               | On home delivery      | Valid destination country's ZIP code.                                                                                                   |
 | 20   | Carrier pick-up point   | String                                                  | If carrier requires it   | Unique ID of the carrier pick-up point                                                                                                   |
 | 21   | Size - width            | String                                                  | If carrier requires it   | Packet width in mm                                                                                                                      |
 | 22   | Size - height           | String                                                  | If carrier requires it   | Packet height in mm                                                                                                                     |
 | 23   | Size - depth            | String                                                  | If carrier requires it   | Packet depth in mm                                                                                                                      |
 | 24   | Note                    | 1-128 characters                                        | No                       | Sender's note. It will be displayed on the label, if supported by courier. It will be shortened up to 32 characters, if limited by courier. |
-| 25   | Carrier service         | String                                                  | If carrier support it   | Carrier services separated by comma. More information can be found [here](https://docs.packetery.com/03-creating-packets/06-packetery-api-reference.html#toc-carrier-service). |
-| 26   | Allow public tracking   | 0 or 1                                                  | No                       | Allow public tracking of package. |
-| 27   | Allow tracking for users| 16 characters (digits and letters) separated by commas  | No                       | Api keys of users who are allowed to track this packet. Example: a1a2a3a4a5a6a7a8,1b2b3b4b5b6b7b8b |
+| 25   | Allow public tracking   | 0 or 1                                                  | No                       | Allow [public tracking](https://tracking.packeta.com/en_GB/tracking/search) of package. |
+| 26   | Allow tracking for users| 16 characters (digits and letters) separated by commas  | No                       | Api keys of users who are allowed to track this packet. Example: a1a2a3a4a5a6a7a8,1b2b3b4b5b6b7b8b |
+| 27   | Carrier service         | String                                                  | If carrier support it    | Carrier services separated by comma. More information can be found in [Packeta API Reference - Carrier Service](../api-reference/data-structures-reference.mdx#carrier-service). |
 
 ## XML import
 
 ### Basic guidelines
 
-In **[Client section](http://client.packeta.com)** there is an option to upload a XML file containing packet data. It is suitable for import complete packet data including customs declaration.
+In the **[Client section](http://client.packeta.com)**, you have the option to upload an XML file that contains packet data. This is ideal for importing complete packet data, including customs declarations.
 
-The file needs to conform to the following rules:
-
-- The structure of the file has to correspond to the **[XML schema definition](https://client.packeta.com/assets/schemas/packetImport_v1.xsd)** which contains brief descriptions of particular fields.
+The file must adhere to these rules:
+- The file encoding must be `UTF-8`.
 - Currently supported version is `1`.
-- Accepted file encoding is `UTF-8`.
+- The structure of the file has to correspond to the **[XML schema definition](https://client.packeta.com/assets/schemas/packetImport_v1.xsd)** which contains brief descriptions of particular fields.
+
 
 
 
 ### XML file example
 ```xml
 <packets version="1">
-	<packet> <!-- address delivery example -->
+	<packet> <!-- home delivery example -->
 		<orderNumber>123abc</orderNumber>
 		<senderLabel>my-eshop</senderLabel>
 		<name>John</name>
@@ -124,7 +124,7 @@ The file needs to conform to the following rules:
 		<allowPublicTracking>1</allowPublicTracking>
 		<allowTrackingForUsers>a1a2a3a4a5a6a7a8,1b2b3b4b5b6b7b8b</allowTrackingForUsers>
 	</packet>
-	<packet> <!-- address delivery incl. customs declaration data example -->
+	<packet> <!-- home delivery incl. customs declaration data example -->
 		<orderNumber>246def</orderNumber>
 		<senderLabel>my-eshop</senderLabel>
 		<name>John</name>

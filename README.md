@@ -3,7 +3,7 @@
 ## Introduction
 
 This is the official repository for the Packet API documentation, available at https://api-docs.packeta.dev 
-(with the previous version and the current production version at https://docs.packetery.com). 
+(with the previous version and the current production version at https://docs.packeta.com). 
 This repository was created with the intention of offering direct documentation support.
 
 ## Support

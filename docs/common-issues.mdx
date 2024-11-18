@@ -1,0 +1,42 @@
+---
+sidebar_position: 9
+---
+
+# Common issues
+
+### Understanding the [`eshop`](api-reference/data-structures-reference#packetattributes) parameter
+Many of our clients operate multiple websites, requiring a system to distinguish between these platforms. The `eshop` parameter fulfills this requirement, acting as a unique identifier to discern the origination of each packet. An E-shop (sender) is directly linked to the invoice address, which influencing the invoice methodology for the sender's packets.
+
+This parameter needs to be configured in the [client section senders' setting](https://client.packeta.com/senders/). It's worth noting that using the current request URI is not recommended as E-shops may use multiple distinct domains. This can result in the sender transmitting varied information based on the domain creating the order or managing the export.
+
+### Single field for the First and Last Name
+Even if you don't maintain separate fields for the user's first name and last name, there's no need for concern. You may forward the entire string as [`name`](api-reference/data-structures-reference#packetattributes), and we'll make every effort to discern the surname from the first name on your behalf.
+
+### Single field for the Street and House number
+Much like the name and surname, we handle full addresses forwarded in a single string as [`street`](api-reference/data-structures-reference#packetattributes). We'll strive to correctly split the house number from the street name. However, we must note that we cannot assure a correct separation for complex addresses that include apartment numbers and such.
+
+### Accepted Cash on Delivery Values
+Our pick-up points must have the capacity to collect the complete value in cash and also return the exact change. As a result, the accepted COD values must be multiples of the smallest nominal value of the currency of the destination country.
+
+For instance, for CZK, the value needs to be an integer, while for HUF, the value must be a multiple of 5.
+
+### Handling Currency Conversions
+We highly recommend always specify the currency for the value of the packet and the Cash on Delivery (COD) amount. You can either input the currency of the packet's destination country, or if you've configured currency conversion at the packet submission stage (not at the money sending stage), you can also input the target currency for conversion. This can be configured in the Client section under [currency conversion settings](https://client.packeta.com/user-conversions/).
+
+If not explicitly specified, our system will default to assuming the values are in the currency of the destination country.
+
+:::info
+For example, consider a packet with a value of 500. If we dispatch this packet to a pick-up point in the Czech Republic, the value will be understood as 500 CZK. However, if we send it to a pickup point in Hungary, the value will be interpreted as 500 HUF.
+:::
+
+### Handling Country Codes in Phone Numbers
+The approach we take with currency conversion also applies to phone numbers. If a country's phone code is not specified, we will assume the number belongs to the destination country and will attempt to notify the user using the appropriate country code for that destination.
+
+:::info
+For instance, if you enter the phone number "123456789" while sending to Hungary, we will interpret the correct phone number as "**+36**123456789".
+:::
+
+You can find examples of phone number structures in [phone number formats](api-reference/phone-number-formats).
+
+### Modifying Exported Orders
+Unfortunately, it's not possible to modify existing orders using our API.

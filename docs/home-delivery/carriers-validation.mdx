@@ -1,0 +1,168 @@
+---
+sidebar_position: 2
+---
+
+# Carriers' validation
+
+Some external carriers do have specific limitations and properties which we aim to document in this section.
+
+## Common rules
+- weight is **mandatory** for all carriers (value must be bigger than 0)
+- allowed label print formats:
+  - A6 on A4
+  - A6 on A6
+
+## Possible errors
+- List of known error messages with details can be found at [Packeta API Reference](../api-reference/errors-reference)
+
+Known restrictions are listed for relevant carriers.
+
+## Carrier validations
+
+### AT Austrian Post HD
+- weight validation (max. 30kg)
+
+### BG Sameday Box
+- require filled in packet dimensions
+
+### BG Speedy HD
+- recipient name validation (min. 3 characters)
+- address validation (zip code, city)
+
+### BG Speedy PP
+- name validation (min. 3 characters)
+- address validation (zip code, city)
+
+### BE Dutch Post HD
+- weight validation (max. 20kg)
+
+### CZ Packeta HD
+- email address validation
+- phone number validation
+
+### DE Green Delivery
+- require filled in packet dimensions
+
+### DE Hermes HD
+- weight validation (max. 30kg)
+
+### DE Hermes PP
+- weight validation (max. 30kg)
+
+### DK DAO HD
+- require filled in packet dimensions
+
+### DK DAO PP
+- require filled in packet dimensions
+
+### ES Envialia
+- require filled in packet dimensions
+
+### ES Correos HD
+- minimum insurance is 200 EUR
+- forbidden prefixes for zip codes:
+  - `07`
+  - `35`
+  - `38`
+  - `51`
+  - `52`
+
+### ES MRW HD
+- cash on delivery (COD) validation (min. 2.5 euro)
+- forbidden prefixes for zip codes:
+  - `07`
+  - `35`
+  - `38`
+  - `51`
+  - `52`
+
+### ES MRW PP
+- cash on delivery (COD) validation (min. 2.5 euro)
+- forbidden prefixes for zip codes:
+  - `07`
+  - `35`
+  - `38`
+  - `51`
+  - `52`
+
+### Estonia Omniva Box
+- require filled in packet dimensions
+
+### FR Colissimo HD
+- address validation (zip code)
+
+### FR Colissimo PP
+- address validation (zip code)
+
+### FR Private Parcel HD
+- address validation (zip code)
+
+### HR Croatian Post HD
+- surname is mandatory
+
+### HR Croatian Post PP
+- surname is mandatory
+
+### HU Hungarian Post HD
+- address validation
+
+### HU Express One (Trans-o-flex) HD
+- address validation (zip code, country)
+
+### IT Italian Post HD
+- require filled in recipient phone
+
+### IT Italian Post PP
+- require filled in recipient phone
+
+### IT Italian Post Punto Poste PP
+- require filled in recipient phone
+
+### Lithuania Omniva Box
+- require filled in packet dimensions
+
+### Latvia Omniva Box
+- require filled in packet dimensions
+
+### LT Lithuanian Post HD
+- require filled in packet dimensions
+
+### NL PostNL HD
+- weight validation (max. 20kg)
+
+### PL Parcel Lockers Box
+- require size
+
+### PL Parcel Lockers
+- require filled in packet dimensions
+
+### Polish post PP
+- require filled in packet dimensions
+
+### RO FAN HD
+- address validation (zip code)
+
+### RO Sameday Box
+- require size
+
+### RO Sameday HD
+- require size
+
+### SI DPD HD
+- address validation
+- the recipient's name validation (max. 35 characters)
+
+### SI Post of Slovenia Box
+- surname is mandatory
+
+### SI Post of Slovenia HD
+- surname is mandatory
+
+### SI Post of Slovenia PP
+- surname is mandatory
+
+### UA Nova Poshta Direct
+-  require filled in packet dimensions
+
+### UA Nova Poshta Direct Pickup
+-  require filled in packet dimensions

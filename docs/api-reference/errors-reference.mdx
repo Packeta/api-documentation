@@ -6,18 +6,12 @@ sidebar_position: 3
 
 ### `AttributeFault`
 
-Indicates an error that occured on a field specified by field's `name` and `fault` string.
+Indicates an error that occurred on a field specified by field's `name` and `fault` string.
 
 | Type     | Field name | Required | Description                            |
 |----------|------------|----------|----------------------------------------|
 | `string` | `name`     | yes      | Name of the invalid attribute (field). |
 | `string` | `fault`    | yes      | Description of the error.              |
-
-### `ShipmentNotFoundFault`
-
-Shipment was not found by provided shipment identifier.
-
-Does not contain any additional information.
 
 ### `CustomBarcodeNotAllowedFault`
 
@@ -33,13 +27,25 @@ Does not contain any additional information.
 
 ### `DispatchOrderNotAllowedFault`
 
-An error has occured while validating packet attributes: trying to issue a [`DispatchOrder`](data-structures-reference#dispatchorder) by setting [`PacketAttributes.dispatchOrder`](data-structures-reference#packetattributes), while no fullfillment agreement is in place.
+An error has occurred while validating packet attributes: trying to issue a [`DispatchOrder`](data-structures-reference#dispatchorder) by setting [`PacketAttributes.dispatchOrder`](data-structures-reference#packetattributes), while no fulfillment agreement is in place.
+
+Does not contain any additional information.
+
+### `ExternalGatewayFault`
+
+An error occurred while communicating with third party service.
 
 Does not contain any additional information.
 
 ### `IncorrectApiPasswordFault`
 
 An invalid API password was used.
+
+Does not contain any additional information.
+
+### `InvalidCourierNumber`
+
+Supplied courier number was either not valid or couldn't be verified.
 
 Does not contain any additional information.
 
@@ -57,13 +63,13 @@ Does not contain any additional information.
 
 ### `PacketAttributesFault`
 
-An error has occured while validating packet attributes.
+An error has occurred while validating packet attributes.
 
 Contains an array of type [`AttributeFault`](data-structures-reference#attributefault).
 
 ### `PacketIdFault`
 
-An error has occured while validating packet attributes, an entered [`packetId`](data-structures-reference#packetattributes) is either not valid .
+An error has occurred while validating packet attributes, an entered [`packetId`](data-structures-reference#packetattributes) is either not valid.
 
 Does not contain any additional information.
 
@@ -79,20 +85,14 @@ A specified sender does not exist under your account.
 
 Does not contain any additional information.
 
+### `ShipmentNotFoundFault`
+
+Shipment was not found by provided shipment identifier.
+
+Does not contain any additional information.
+
 ### `UnknownLabelFormatFault`
 
 An unknown label format was requested.
-
-Does not contain any additional information.
-
-### `ExternalGatewayFault`
-
-An error occured while communicating with third party service.
-
-Does not contain any additional information.
-
-### `InvalidCourierNumber`
-
-Supplied courier number was either not valid or couldn't be verified.
 
 Does not contain any additional information.

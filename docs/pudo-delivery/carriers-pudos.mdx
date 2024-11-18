@@ -1,0 +1,199 @@
+---
+sidebar_position: 3
+---
+
+# Carriers' PUDOs
+
+## General information
+
+Certain carriers opt to deliver packets to their own network of pick-up points instead of directly to the recipient.
+
+These pick-up points are distinct from our standard branches and their details can be accessed from a dedicated JSON feed.
+
+
+### JSON and XML
+
+The feed includes information on all currently open carriers' PUDOs feed. You can navigate to the feed using the following URLs:
+```
+https://www.zasilkovna.cz/api/__API_KEY__/point.xml?ids=__BRANCH_IDS__
+https://www.zasilkovna.cz/api/__API_KEY__/point.json?ids=__BRANCH_IDS__
+```
+
+:::tip
+When the `ids` parameter is utilized, only the carrier PUDOs associated with the specified carrier ids (comma-separated) will be exported.
+:::
+
+The schema for the XML export can be found here:
+```
+https://www.zasilkovna.cz/api/__API_KEY__/point.xsd
+```
+
+## Data specification
+
+```xml
+<export xmlns="http://www.zasilkovna.cz/api/point">
+	<carriers>
+		<carrier>
+			<id>123</id>
+			<name>Carrier Name</name>
+			<points>
+				<point>
+					<code>ABC321</code>
+					<coordinates>
+						<latitude>52.00000</latitude>
+						<longitude>18.00000</longitude>
+					</coordinates>
+					<street>Example City</street>
+					<streetNumber>12</streetNumber>
+					<city>Example street</city>
+					<zip>11-111</zip>
+					<country>pl</country>
+					<payment>Card only</payment>
+					<displayFrontend>1</displayFrontend>
+				</point>
+				...
+			</points>
+		</carrier>
+		...
+	</carriers>
+</export>
+```
+
+### `<export>`
+
+Root element of the document.
+
+```xml
+<export xmlns="http://www.zasilkovna.cz/api/point">
+	<carriers>
+		See documentation for "<carriers>" element
+	</carriers>
+</export>
+```
+
+| Name     | Type      | Description                                         |
+|----------|-----------|-----------------------------------------------------|
+| carriers | Container | Container for [`<carrier>`](#carrier) elements. |
+
+### `<carriers>`
+
+Contained exactly once by [`<export>`](#export).
+
+Container element of the carriers.
+
+```xml
+<carriers>
+	<carrier>
+		See documentation for "<carrier>" element
+	</carrier>
+	...
+</carriers>
+```
+
+| Name     | Type      | Description                                         |
+|----------|-----------|-----------------------------------------------------|
+| carrier  | Container | Container for [`<carrier>`](#carrier) elements. |
+
+### `<carrier>`
+
+Contained once or many times by [`<carriers>`](#carriers).
+
+Container element of the points.
+
+```xml
+<carrier>
+	<id>123</id>
+	<name>Carrier inc.</name>
+	<points>
+		See documentation for "<points>" element
+	</points>
+</carrier>
+```
+
+| Name     | Type      | Description                                         |
+|----------|-----------|-----------------------------------------------------|
+| id       | Integer   | ID of the carrier.                                  |
+| name     | String    | Name of the carrier.                                |
+| points   | Container | Container for [`<point>`](#point) elements.     |
+
+### `<points>`
+
+Contained exactly once by [`<carrier>`](#carrier).
+
+Container element of the points.
+
+```xml
+<points>
+	<point>
+		See documentation for "<point>" element
+	</point>
+	...
+</points>
+```
+
+### `<point>`
+
+Contained many times by [`<points>`](#points).
+
+Represents a carrier's pick up point.
+
+```xml
+<point>
+	<code>ABC321</code>
+	<coordinates>
+		See documentation for "<coordinates>" element
+	</coordinates>
+	<street>Example City</street>
+	<streetNumber>12</streetNumber>
+	<city>Example street</city>
+	<zip>11-111</zip>
+	<country>pl</country>
+	<payment>Card only</payment>
+	<displayFrontend>1</displayFrontend>
+</point>
+```
+
+| Name            | Type      | Description                                                                                                                                                               |
+|-----------------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| code            | String    | Code of the carrier pick up point.                                                                                                                                        |
+| coordinates     | Container | Coordinates element. See [`<coordinates>`](#coordinates).                                                                                                             |
+| street          | String    | Street name.                                                                                                                                                              |
+| streetNumber    | String    | House number.                                                                                                                                                             |
+| city            | String    | City name.                                                                                                                                                                |
+| zip             | String    | Zip code.                                                                                                                                                                 |
+| country         | String    | Country code.                                                                                                                                                             |
+| payment         | String    | Payment options. See [`<payment>`](#payment).                                                                                                                         |
+| displayFrontend | Integer   | Indicates whether the point is supposed to be shown to the end customer. If the value equals '0', the point is intended to be used only for your administrative purposes. |
+
+### `<coordinates>`
+
+Contained exactly once by [`<point>`](#point).
+
+Contains latitude and longitude of the carrier pick up point.
+
+```xml
+<coordinates>
+	<latitude>52.00000</latitude>
+	<longitude>18.00000</longitude>
+</coordinates>
+```
+
+| Name      | Type      | Description                                         |
+|-----------|-----------|-----------------------------------------------------|
+| latitude  | Float     | Latitude of the pick up point.                      |
+| longitude | Float     | Longitude of the pick up point.                     |
+
+### `<payments>`
+
+Contained exactly once by [`<point>`](#point).
+
+Contains information about payment methods available at the relevant carrier pick up point.
+
+Possible values:
+
+| Value          | Description                                         |
+|----------------|-----------------------------------------------------|
+| None available | No payment method available at the pick up point.   |
+| Cash only      | Payment with cash available.                        |
+| Card only      | Payment with card available.                        |
+| Card and cash  | Payment with both cash and card available.          |

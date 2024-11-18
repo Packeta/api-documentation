@@ -1,73 +1,57 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 ---
 
 # Available delivery services
 
 ### Packeta pick-up delivery
 
-We offer our own range of Packeta pick-up points that can be used for packet delivery. There are currently two types of these pick-up points:
-- **pick-up points**
-- **Z-BOXES**
-
-\- **pick-up points** are physical shops for packet delivery. Our pick-up points support **COD** (cash on delivery) as well as reciever age checking and they can be used to both pick-up and consigned packets.
-
-\- **Z-BOXES** are boxes for packet deliveries available 24/7. In order to take out packets from Z-boxes, you need to use our [mobile application 📱](https://play.google.com/store/apps/details?id=cz.zasilkovna.app&hl=en&gl=US)
+Our packet delivery options include a variety of Packeta pick-up points. These pick-up points fall into two categories:
+- **Pick-up Points**
+    - Often termed as PUDOs (an acronym for Pick-Up and Drop-Off points), represent specific physical locations for packet delivery. These points not only facilitate **COD** (Cash on Delivery) transactions but also implement recipient age verification. They can be used for both packet pick-up and drop-off.
+- **Z-BOX**
+    - Packet delivery boxes available 24/7. These boxes have keypads, facilitating the pick-up of packets without the need for our [mobile application 📱](https://play.google.com/store/apps/details?id=cz.zasilkovna.app&hl=en&gl=US). Although, the app remains necessary for **COD** (Cash on Delivery) transactions. Please note, age verification is not provisioned at Z-BOXes.
 
 :::info
-Not all **pick-up points** can be used to consign packets. You can find out which pick-up points support consigning of packages using our [pick-up export](../pick-up-point-selection/branch-export-v5.mdx) -
-specifically using the `packetConsignment` attribute.
+Not every pick-up point supports the consignment of packets. To identify which ones do, refer to our [pick-up point export](../pudo-delivery/packeta-pudos.mdx), particularly the `packetConsignment` attribute.
 :::
 
-The recommended way of offering pick-up points to your customers is using our [widget](../pick-up-point-selection/widget.mdx).
+We advise providing pick-up point options to your customers through our [widget](../pudo-delivery/widget.mdx). This is the recommended approach.
 
-You can find an example request for creating a packet headed to a Packeta pick-up [here](../packet-creation/packeta-pick-up-point.mdx)
+An example request for creating a packet that's destined for a [Packeta pick-up point](../packet-creation/packeta-pudos.mdx).
 
-### Address delivery
+### Home delivery
 
-Packeta offers home delivery services in many countries using a large selection of carriers. A list of all available carriers can be obtained using our 
-[address delivery export](../pick-up-point-selection/branch-export-v5.mdx#carriers-feed-address-delivery).
+Packeta provides home delivery services across various countries via numerous carriers. To view all available carriers, please refer to our [carriers list](../pudo-delivery/packeta-pudos.mdx#carriers-list).
 
-Each carrier has its own requirements and supported services, for example `COD`. You can find out the requirements and supported services using the above mentioned [address delivery export](../pick-up-point-selection/branch-export-v5.mdx#carriers-feed-address-delivery).
+Each carrier supports different services and has unique requirements, such as `COD`. View the respective requirements and services for each carrier using the aforementioned [carriers list](../pudo-delivery/packeta-pudos.mdx#carriers-list).
 
-A specific carrier can be selected when creating a packet using the carrier's `addressID`, or you can choose to use our **Best delivery solution**. This service operates as a normal carrier on the outside 
-(Meaning it has its own `addressId` and can be used as any other carrier when creating a packet), but internally, it encapsulates many different carriers. When using our **Best delivery solution**, our system will choose the best carrier automatically using our internal logic.
+When creating a packet, a specific carrier can be designated using its `addressID`, or alternatively, our **Best delivery solution (BDS)** can be utilized. Although it externally operates as a conventional carrier (i.e., it has its own `addressId` and can be used like any other carrier when creating a packet), internally it covers a variety of carriers. When the **Best delivery solution (BDS)** is selected, our system automatically picks the optimal carrier based on our proprietary algorithm.
 
 :::info
-Best delivery solution isn't available in all countries. You can find out which countries support our Best delivery solution using our [address delivery export](../pick-up-point-selection/branch-export-v5.mdx#carriers-feed-address-delivery)
+**Best delivery solution (BDS)** is not supported in all countries. Refer to our [carriers list](../pudo-delivery/packeta-pudos.mdx#carriers-list) to see which countries accommodate this service.
 :::
 
 :::info
-When sending packets to home delivery use printing direct labels for your packets ( method packetCourierLabel). You can find more information on direct labels [here](./label-types.mdx#carrier-labels). If you send a packet to a carrier that supports carrier (direct) label printing,
- but you choose to print a Packeta label instead of the carrier label, your packet is subject to extra charges, since your packet will have to be re-labeled at our depot.
+ For home deliveries, use direct labels for your packets (method `packetCourierLabel`). More information on direct labels is in the [Carrier Labels](./label-types.mdx#carrier-labels) section. Selecting a carrier compatible with carrier labels but printing a Packeta label instead may lead to extra charges, as our depot will need to re-label the packet.
 :::
 
 ### Carrier pick-up delivery
 
-Along with our own pick-up points, we also offer pick-up points of external carriers, since some carriers have their own networks of pick-up points or Boxes. Similarily to our pick-up points,
-a list of carrier pick-up points can be obtained using our [carrier pick-up export](../pick-up-point-selection/carrier-pickup-points-export.mdx). Using this feed, you can download
-a full list of **all** carrier pick-up points, or you can specify carrier IDs using a URL parameter when downloading the feed to only obtain pick-up points of a selected carrier/carriers.
+In addition to Packeta PUDOs, we also provide the pick-up points or boxes of external carriers, as some of them have their own networks. Similar to our PUDOs, you can access the feed of carrier PUDOs through our [carriers' PUDOs feed](../pudo-delivery/carriers-pudos.mdx). This feed allows you to download a complete list of **all** carrier PUDOs. Moreover, you can filter the results by using a URL parameter to specify carrier IDs if you want to download the PUDOs of a specific carrier or carriers.
 
-Carriers, who offer their own pick-up points or boxes are marked in our [address delivery export](../pick-up-point-selection/branch-export-v5.mdx#carriers-feed-address-delivery) using attribute `pickupPoints`.
+Carriers that provide their own pick-up points or boxes are designated in our [carriers list](../pudo-delivery/packeta-pudos.mdx#carriers-list) using the `pickupPoints` attribute.
 
 ### Claim Assistant
 
-**Claim Assistant** is a special type of packet that is used to allow your customers to return packets to the sender using a label that you provide.
+The **Claim Assistant** is a unique packet type, designed to facilitate customers in returning packets to the sender using a label supplied by you.
 
-:::info
-There is a special sub-type of Claim Assistant that can be created only through our API using the [`createPacketClaimWithPassword()`](../api-reference/api-methods-reference.mdx#createpacketclaimwithpassword) method.
-This type of Claim Assistant functions similarly to Return packets with the only difference being that each return packet has its unique password.
-:::
+There's a unique subtype of Claim Assistant that can exclusively be created via our API using the [`createPacketClaimWithPassword()`](../api-reference/api-methods-reference.mdx#createpacketclaimwithpassword) method. This version functions similar to Return packets with the only distinction being that each return packet possesses a unique password.
 
 ### Return packet
 
-**Return packet** is also a service that is used for return logistics, but instead of generating a new Claim assistant packet for each return, you only need to generate a single Return packet code
-through our [client section](https://client.packeta.com/en/eshop-identifiers/edit). You can then provide this code to your customers, who can use it to return their packets. The customer doesn't have to print any
-label when using this service, they only need to bring the packet to one of our Packeta pick-up points, tell the pick-up staff the Return packet code they obtained from the e-shop and the pick-up staff
-will take care of the rest. 
-
-<br/>
+The **Return packet** is another service designed for return logistics. Unlike the Claim assistant packet which requires a new generation for each return, you only need to generate a single Return packet code. This can be done through our [client section](https://client.packeta.com/en/eshop-identifiers/edit), and you can then pass on this code to your customers for packet return. Using this service, customers don't need to print any label. They simply have to take the packet to any of our Packeta pick-up points, tell the staff the Return packet code provided by the e-shop, and we will handle the rest.
 
 :::tip
-You can find more information regarding Claim Assistant and Return packets on our website [here](https://www.zasilkovna.cz/en/reverse-logistics)
+For details regarding Claim Assistant and Return packets, please see the [Reverse Logistics](https://www.zasilkovna.cz/en/reverse-logistics) on our website.
 :::
