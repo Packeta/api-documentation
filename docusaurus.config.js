@@ -1,15 +1,15 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer').themes.vsLight;
-const darkCodeTheme = require('prism-react-renderer').themes.vsDark;
+const lightCodeTheme = require('prism-react-renderer/themes/vsLight');
+const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 const remarkMermaid = require('remark-mermaid');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Packeta API',
   tagline: 'Packeta API documentation',
-  url: 'https://docs.packeta.com/',
+  url: 'https://docs.packetery.com/',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
   staticDirectories: ['static'],
@@ -35,16 +35,17 @@ const config = {
     ],
   ],
   plugins: [
-      [
-        require.resolve('docusaurus-lunr-search'), {
-        }
-      ]
+    [
+      require.resolve('@cmfcmf/docusaurus-search-local'),
+      {
+        language: 'en',
+      },
+    ],
   ],
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-//    TODO: Have to be moved after 3.0.0 Docusaurus version
-//    autoCollapseSidebarCategories: false,
+      autoCollapseSidebarCategories: false,
       navbar: {
         title: 'Packeta',
         logo: {
@@ -53,7 +54,7 @@ const config = {
         },
         items: [
           {
-            to: 'docs/introduction',
+            to: 'docs/getting-started/introduction',
             activeBasePath: 'docs',
             label: 'API Documentation',
             position: 'left',
@@ -65,9 +66,6 @@ const config = {
             position: 'left',
           }
         ],
-      },
-      tableOfContents: {
-        maxHeadingLevel: 4,
       },
       footer: {
         style: 'dark',
